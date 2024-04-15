@@ -1,0 +1,49 @@
+name: twinned_widgets
+description: "A new Flutter package project."
+version: 1.0.0
+homepage: https://twinned.digital
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+
+  twinned_api:
+    git:
+      url: https://scm.boodskap.io/Open/twinned_api.git
+
+  syncfusion_flutter_gauges: ^25.1.37
+  water_bottle: ^0.0.7
+  flutter_colorpicker: ^1.0.3
+  uuid: ^4.1.0
+  flutter_spinbox: ^0.13.1
+  liquid_progress_indicator_v2: ^0.5.0
+  animated_battery_gauge: ^0.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.2
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/packages/
+flutter_gen:
+  assets:
+    outputs:
+      package_parameter_enabled: true
