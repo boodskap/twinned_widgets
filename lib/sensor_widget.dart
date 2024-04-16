@@ -4,6 +4,7 @@ import 'package:twinned_api/api/twinned.swagger.dart' as twinned;
 import 'package:twinned_widgets/level/widgets/battery_gauge.dart';
 import 'package:twinned_widgets/level/widgets/conical_tank.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
+import 'package:twinned_widgets/level/widgets/cylindrical_tank.dart';
 import 'package:twinned_widgets/level/widgets/cylindrical_tank2.dart';
 import 'package:twinned_widgets/level/widgets/gauge.dart';
 import 'package:twinned_widgets/level/widgets/rectangular_tank.dart';
@@ -130,8 +131,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           liquidLevel: data[field] ?? 0,
         );
       case SensorWidgetType.cylindricalTank:
-        return CylindricalTank2(
-          tiny: widget.tiny,
+        return CylindricalTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,

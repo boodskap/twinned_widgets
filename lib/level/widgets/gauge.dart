@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twinned_widgets/widget_util.dart';
@@ -32,75 +33,47 @@ class Gauge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (tiny) {
-      return Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          SfRadialGauge(axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: startAngle,
-              endAngle: endAngle,
-              radiusFactor: 1,
-              minimum: min,
-              maximum: max,
-              labelOffset: 4,
-              interval: tiny ? max : max / interval,
-              showFirstLabel: true,
-              showLastLabel: true,
-              showTicks: true,
-              canScaleToFit: true,
-              axisLabelStyle: const GaugeTextStyle(fontSize: 8),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: value,
-                  needleEndWidth: 3,
-                )
-              ],
-            )
-          ]),
-          Text(
-            '$value $unit',
-            style: TextStyle(fontSize: fontSize, fontWeight: fontWeight),
-          ),
+    SfRadialGauge gaugeWidget = SfRadialGauge(axes: <RadialAxis>[
+      RadialAxis(
+        startAngle: startAngle,
+        endAngle: endAngle,
+        radiusFactor: 1,
+        minimum: min,
+        maximum: max,
+        labelOffset: 4,
+        interval: max / interval,
+        showFirstLabel: true,
+        showLastLabel: true,
+        showTicks: true,
+        canScaleToFit: true,
+        axisLabelStyle: const GaugeTextStyle(fontSize: 8),
+        pointers: <GaugePointer>[
+          NeedlePointer(
+            value: value,
+            needleEndWidth: 3,
+          )
         ],
-      );
-    }
+      )
+    ]);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Stack(
+      alignment: AlignmentDirectional.center,
       children: [
-        Text(
-          '$label : $value $unit',
-          style: TextStyle(fontSize: fontSize, fontWeight: fontWeight),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Expanded(
-          child: SfRadialGauge(axes: <RadialAxis>[
-            RadialAxis(
-              startAngle: startAngle,
-              endAngle: endAngle,
-              radiusFactor: 1,
-              minimum: min,
-              maximum: max,
-              labelOffset: 4,
-              interval: tiny ? max : max / interval,
-              showFirstLabel: true,
-              showLastLabel: true,
-              showTicks: true,
-              canScaleToFit: true,
-              axisLabelStyle: const GaugeTextStyle(fontSize: 8),
-              pointers: <GaugePointer>[
-                NeedlePointer(
-                  value: value,
-                  needleEndWidth: 3,
-                )
-              ],
-            )
-          ]),
+        if (tiny)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(1.0, 8.0, 1.0, 1.0),
+            child: gaugeWidget,
+          ),
+        if (!tiny) gaugeWidget,
+        Align(
+          alignment: Alignment.topCenter,
+          child: Text(
+            '$label: $value $unit',
+            style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                overflow: TextOverflow.ellipsis),
+          ),
         ),
       ],
     );
