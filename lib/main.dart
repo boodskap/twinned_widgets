@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:twinned_widgets/level/widgets/settings/bell_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/conicaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/corkedbottle_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/cylindricaltank_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/hexagon_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/pressuregauge_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/prismtank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/rectangulartank_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/roof_top_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/speedometer_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/sphericaltank_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/trapezoid_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/triangle_settings.dart';
 import 'package:twinned_widgets/sensor_widget.dart';
 
 void main() {
@@ -148,6 +154,62 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
+                      if (widgetType == SensorWidgetType.prismTank)
+              SizedBox(
+                  width: 500,
+                  child: PrismTankSettings(
+                      label: 'Prism Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+            if (widgetType == SensorWidgetType.triangleTank)
+              SizedBox(
+                  width: 500,
+                  child: TriangleTankSettings(
+                      label: 'Triangle Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+            if (widgetType == SensorWidgetType.bellTank)
+              SizedBox(
+                  width: 500,
+                  child: BellTankSettings(
+                      label: 'Bell Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+            if (widgetType == SensorWidgetType.trapezoidTank)
+              SizedBox(
+                  width: 500,
+                  child: TrapezoidTankSettings(
+                      label: 'Trapezoid Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+            if (widgetType == SensorWidgetType.hexagonTank)
+              SizedBox(
+                  width: 500,
+                  child: HexagonTankSettings(
+                      label: 'Hexagon Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+           
+                       if (widgetType == SensorWidgetType.roofTopTank)
+              SizedBox(
+                  width: 500,
+                  child: RoofTopTankSettings(
+                      label: 'Roof Top Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+
           ]),
         ),
       ),
