@@ -2,7 +2,7 @@ import 'package:animated_battery_gauge/battery_gauge.dart';
 import 'package:flutter/material.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twinned;
 import 'package:twinned_widgets/level/widgets/battery_gauge.dart';
-import 'package:twinned_widgets/level/widgets/bell.dart';
+import 'package:twinned_widgets/level/widgets/semi_circle.dart';
 import 'package:twinned_widgets/level/widgets/conical_tank.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
 import 'package:twinned_widgets/level/widgets/cylindrical_tank.dart';
@@ -30,7 +30,7 @@ enum SensorWidgetType {
   batteryGauge('Battery Gauge'),
   prismTank('Prism'),
   triangleTank('Triangle'),
-  bellTank('Bell'),
+  semiCircleTank('Semi Circle'),
   trapezoidTank('Trapezoid'),
   hexagonTank('Hexagon'),
   roofTopTank('Roof Top');
@@ -225,8 +225,8 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
-      case SensorWidgetType.bellTank:
-        return BellTank(
+      case SensorWidgetType.semiCircleTank:
+        return SemiCircleTank(
           tiny: widget.tiny,
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
@@ -313,7 +313,7 @@ class _SensorTypesDropdownState extends State<SensorTypesDropdown> {
     SensorWidgetType.batteryGauge: 'battery_gauge.png',
     SensorWidgetType.prismTank: 'prism_tank.png',
     SensorWidgetType.triangleTank: 'triangle_tank.png',
-    SensorWidgetType.bellTank: 'bell_tank.png',
+    SensorWidgetType.semiCircleTank: 'semicircle_tank.png',
     SensorWidgetType.trapezoidTank: 'trapezoid_tank.png',
     SensorWidgetType.hexagonTank: 'hexagon_tank.png',
     SensorWidgetType.roofTopTank: 'roof_top_tank.png',

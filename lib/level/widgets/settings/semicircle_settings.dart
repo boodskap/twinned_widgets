@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
-import 'package:twinned_widgets/level/widgets/bell.dart';
+import 'package:twinned_widgets/level/widgets/semi_circle.dart';
 import 'package:twinned_widgets/sensor_widget.dart';
 import 'package:uuid/uuid.dart';
 
 
-class BellTankSettings extends StatefulWidget {
+class SemiCircleSettings extends StatefulWidget {
   final String label;
   final Map<String, dynamic> settings;
   final OnSettingsSaved onSettingsSaved;
 
-  const BellTankSettings(
+  const SemiCircleSettings(
       {super.key,
       required this.settings,
       required this.onSettingsSaved,
       required this.label});
 
   @override
-  State<BellTankSettings> createState() =>
-      _BellTankSettingsState();
+  State<SemiCircleSettings> createState() =>
+      _SemiCircleSettingsState();
 }
 
-class _BellTankSettingsState extends State<BellTankSettings> {
+class _SemiCircleSettingsState extends State<SemiCircleSettings> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -31,7 +31,7 @@ class _BellTankSettingsState extends State<BellTankSettings> {
         SizedBox(
           width: 120,
           height: 120,
-          child: BellTank(
+          child: SemiCircleTank(
             key: Key(const Uuid().v4()),
             liquidColor:
                 Color(widget.settings['liquidColor'] ?? Colors.blue.value),

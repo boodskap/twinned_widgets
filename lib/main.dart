@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:twinned_widgets/level/widgets/settings/bell_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/semicircle_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/conicaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/corkedbottle_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/cylindricaltank_settings.dart';
@@ -172,11 +172,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
-            if (widgetType == SensorWidgetType.bellTank)
+            if (widgetType == SensorWidgetType.semiCircleTank)
               SizedBox(
                   width: 500,
-                  child: BellTankSettings(
-                      label: 'Bell Tank',
+                  child: SemiCircleSettings(
+                      label: 'Semi Circle Tank',
                       settings: const {},
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');

@@ -4,7 +4,7 @@ import 'package:twinned_widgets/level/liquid_container.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
 import 'package:twinned_widgets/widget_util.dart';
 
-class BellTank extends StatefulWidget {
+class SemiCircleTank extends StatefulWidget {
   final String label;
   final double liquidLevel;
   final Color liquidColor;
@@ -15,7 +15,7 @@ class BellTank extends StatefulWidget {
   final double breakpoint;
   final bool tiny;
 
-  BellTank({
+  SemiCircleTank({
     super.key,
     required String label,
     required double liquidLevel,
@@ -30,10 +30,10 @@ class BellTank extends StatefulWidget {
         label = WidgetUtil.getStrippedLabel(label);
 
   @override
-  BellTankState createState() => BellTankState();
+  SemiCircleTankState createState() => SemiCircleTankState();
 }
 
-class BellTankState extends State<BellTank>
+class SemiCircleTankState extends State<SemiCircleTank>
     with TickerProviderStateMixin, LiquidContainer {
   @override
   void initState() {
@@ -75,7 +75,7 @@ class BellTankState extends State<BellTank>
               AspectRatio(
                 aspectRatio: 1 / 1,
                 child: CustomPaint(
-                  painter: FillableBell(
+                  painter: FillableSemiCircle(
                     waterLevel: widget.liquidLevel,
                     bottleColor: widget.bottleColor,
                     capColor: Colors.transparent,
@@ -100,9 +100,9 @@ class BellTankState extends State<BellTank>
   }
 }
 
-class FillableBell extends WaterBottlePainter {
+class FillableSemiCircle extends WaterBottlePainter {
   final double breakpoint;
-  FillableBell({
+  FillableSemiCircle({
     Listenable? repaint,
     required double waterLevel,
     required Color bottleColor,
@@ -139,20 +139,20 @@ class FillableBell extends WaterBottlePainter {
       tankPaint,
     );
 
-    canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        Rect.fromCenter(
-          center: Offset(size.width / 2, -8),
-          width: size.width / 6,
-          height: 20,
-        ),
-        bottomLeft: const Radius.circular(2),
-        bottomRight: const Radius.circular(2),
-        topLeft: const Radius.circular(10),
-        topRight: const Radius.circular(10),
-      ),
-      tankPaint,
-    );
+    // canvas.drawRRect(
+    //   RRect.fromRectAndCorners(
+    //     Rect.fromCenter(
+    //       center: Offset(size.width / 2, -8),
+    //       width: size.width / 6,
+    //       height: 20,
+    //     ),
+    //     bottomLeft: const Radius.circular(2),
+    //     bottomRight: const Radius.circular(2),
+    //     topLeft: const Radius.circular(10),
+    //     topRight: const Radius.circular(10),
+    //   ),
+    //   tankPaint,
+    // );
   }
 
   @override
