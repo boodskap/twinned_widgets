@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CylinderTank extends StatelessWidget {
@@ -11,29 +10,23 @@ class CylinderTank extends StatelessWidget {
   final bool shouldAnimate;
   final double fontSize;
   final Color fontColor;
-
+  final FontWeight fontWeight;
   const CylinderTank(
       {super.key,
-      this.height = 200,
-      this.width = 200,
+      this.height = 150,
+      this.width = 150,
       required this.liquidLevel,
       this.liquidColor = Colors.lightBlue,
       this.bottleColor = Colors.black,
       this.shouldAnimate = false,
       this.fontSize = 12,
       this.fontColor = Colors.black,
-      required this.label});
+      required this.label,
+      this.fontWeight = FontWeight.bold});
 
   @override
   Widget build(BuildContext context) {
-    double liqlvl() {
-      double lq = liquidLevel >= 100
-          ? 100
-          : liquidLevel <= 0
-              ? 0
-              : liquidLevel;
-      return lq;
-    }
+  
 
     var top = EyeShapeContainer.opened;
     return Column(
@@ -41,7 +34,8 @@ class CylinderTank extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(color: fontColor, fontSize: fontSize),
+          style: TextStyle(
+              color: fontColor, fontSize: fontSize, fontWeight: fontWeight),
         ),
         const SizedBox(
           height: 8,
@@ -52,40 +46,39 @@ class CylinderTank extends StatelessWidget {
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              Container(
-                height: (liqlvl() / 100) * (height - top),
-                color: liquidColor,
-              ),
               Positioned(
                   bottom: height - (top + top / 2),
                   child: EyeShapeContainer(
                     width: width,
                     topColor: bottleColor,
                   )),
-              Container(
+              TankBody(
+                color: bottleColor,
                 height: height - top,
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: bottleColor,
-                      width: 1.0,
-                    ),
-                    left: BorderSide(
-                      color: bottleColor,
-                      width: 1.0,
-                    ),
-                    right: BorderSide(
-                      color: bottleColor,
-                      width: 1.0,
-                    ),
-                  ),
-                ),
+                width: width,
               ),
+              liquidLevel >= 15
+                  ? TankLiq(
+                      liquidColor: liquidColor,
+                      width: width,
+                      liquidLevel: (liqlvl() / 100) * (height - top),
+                      lq: liquidLevel,
+                    )
+                  : Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      height: liquidLevel >= 10
+                          ? 5
+                          : liquidLevel <= 0
+                              ? 0
+                              : 3,
+                      color: liquidColor,
+                      width: width / 2,
+                    ),
               Positioned(
                 bottom: height / 2 - top,
                 child: Text(
                   '${liqlvl()}%',
-                  style: TextStyle(color: fontColor, fontSize: fontSize),
+                  style: TextStyle(color: fontColor, fontSize: fontSize,fontWeight: fontWeight),
                 ),
               )
             ],
@@ -94,10 +87,24 @@ class CylinderTank extends StatelessWidget {
       ],
     );
   }
+
+    double liqlvl() {
+      double lq = liquidLevel >= 100
+          ? 100
+          : liquidLevel <= 0
+              ? 0
+              : liquidLevel;
+      return lq;
+    }
 }
 
+
+
+//=============================================
+// Top Open
+
 class EyeShapeContainer extends StatelessWidget {
-  static double opened = 15;
+  static double opened = 12;
   final double width;
   final Color topColor;
   const EyeShapeContainer(
@@ -176,44 +183,141 @@ class EyeShapeBorderPainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     var path = Path();
-
-    path.moveTo(0, size.height / 2);
-
-    path.quadraticBezierTo(
-      size.width / 4,
-      0,
-      size.width / 2,
-      0,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 3 / 4,
-      0,
-      size.width,
-      size.height / 2,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 3 / 4,
-      size.height,
-      size.width / 2,
-      size.height,
-    );
-
-    path.quadraticBezierTo(
-      size.width / 4,
-      size.height,
-      0,
-      size.height / 2,
-    );
-
-    path.close();
-
+    path.addOval(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+
+
+
+//========================================
+// Liquid widget
+
+class TankLiq extends StatelessWidget {
+  final double width;
+  final double liquidLevel;
+  final double lq;
+  final Color liquidColor;
+
+  const TankLiq({
+    super.key,
+    required this.width,
+    required this.liquidLevel,
+    required this.liquidColor,
+    required this.lq,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: liquidLevel <= 10 ? 3 : 0),
+      width: width,
+      height: liquidLevel,
+      child: CustomPaint(
+        painter: CurvedBorderPainter(liquidLevel, lq, liquidColor),
+      ),
+    );
+  }
+}
+
+class CurvedBorderPainter extends CustomPainter {
+  final double liqlvl;
+  final double lq;
+  final Color liquidColor;
+
+  CurvedBorderPainter(this.liqlvl, this.lq, this.liquidColor);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = liquidColor
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..moveTo(0, 10)
+      ..quadraticBezierTo(size.width / 2, 0, size.width, 10)
+      ..lineTo(size.width, size.height - 10)
+      ..quadraticBezierTo(size.width / 2, size.height, 0, size.height - 10)
+      ..close();
+    if (lq >= 13) {
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
+//========================================
+// Tank Body widget
+
+class TankBody extends StatelessWidget {
+  final double height;
+  final double width;
+  final Color color;
+
+  const TankBody(
+      {super.key,
+      required this.height,
+      required this.width,
+      required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      child: CustomPaint(
+        painter: CurvedBorderPainters(color),
+      ),
+    );
+  }
+}
+
+class CurvedBorderPainters extends CustomPainter {
+  final Color color;
+
+  CurvedBorderPainters(this.color);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.transparent
+      ..style = PaintingStyle.fill;
+
+    final path = Path()
+      ..lineTo(0, size.height - 10)
+      ..quadraticBezierTo(
+          size.width / 2, size.height, size.width, size.height - 10)
+      ..lineTo(size.width, 0)
+      ..lineTo(0, 0);
+
+    canvas.drawPath(path, paint);
+
+    final borderPaint = Paint()
+      ..color = color 
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0; 
+
+    final borderPath = Path()
+      ..moveTo(0, size.height - 10)
+      ..quadraticBezierTo(
+          size.width / 2, size.height, size.width, size.height - 10)
+      ..lineTo(size.width, size.height - 10)
+      ..lineTo(size.width, 0)
+      ..moveTo(0, 0)
+      ..lineTo(0, size.height - 10); 
+
+    canvas.drawPath(borderPath, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    throw UnimplementedError();
   }
 }

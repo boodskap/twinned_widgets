@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SizedBox(
                   width: 500,
                   child: CylinderTankSettings(
-                      label: 'Cylinder Tank',
+                      label: 'Liquid Level',
                       settings: const {},
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');

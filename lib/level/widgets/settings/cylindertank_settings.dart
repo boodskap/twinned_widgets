@@ -41,7 +41,7 @@ class _CylinderTankSettingsState extends State<CylinderTankSettings> {
             shouldAnimate: widget.settings['shouldAnimate'] ?? false,
             fontSize: widget.settings['fontSize'] ?? 10,
             label: widget.label,
-            liquidLevel: 70,
+            liquidLevel: 35,
           ),
         ),
         Column(
