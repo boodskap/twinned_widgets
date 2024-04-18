@@ -16,7 +16,7 @@ class CylinderTank extends StatelessWidget {
       this.height = 150,
       this.width = 150,
       required this.liquidLevel,
-      this.liquidColor = Colors.lightBlue,
+      this.liquidColor = Colors.lightBlueAccent,
       this.bottleColor = Colors.black,
       this.shouldAnimate = false,
       this.fontSize = 12,
@@ -26,8 +26,6 @@ class CylinderTank extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  
-
     var top = EyeShapeContainer.opened;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -58,12 +56,20 @@ class CylinderTank extends StatelessWidget {
                 width: width,
               ),
               liquidLevel >= 15
-                  ? TankLiq(
-                      liquidColor: liquidColor,
-                      width: width,
-                      liquidLevel: (liqlvl() / 100) * (height - top),
-                      lq: liquidLevel,
-                    )
+                  ? Stack(children: [
+                      TankLiq(
+                        liquidColor: liquidColor,
+                        width: width,
+                        liquidLevel: (liqlvl() / 100) * (height - top),
+                        lq: liquidLevel,
+                      ),
+                      Positioned(
+                          top: 5,
+                          child: EyeShapeContainer(
+                            width: width,
+                            fillColor: Colors.lightBlue.shade100,
+                          ))
+                    ])
                   : Container(
                       margin: const EdgeInsets.only(bottom: 8),
                       height: liquidLevel >= 10
@@ -71,14 +77,14 @@ class CylinderTank extends StatelessWidget {
                           : liquidLevel <= 0
                               ? 0
                               : 3,
-                      color: liquidColor,
+                      color: Colors.lightBlue.shade100,
                       width: width / 2,
                     ),
               Positioned(
                 bottom: height / 2 - top,
                 child: Text(
                   '${liqlvl()}%',
-                  style: TextStyle(color: fontColor, fontSize: fontSize,fontWeight: fontWeight),
+                  style: TextStyle(color: fontColor, fontSize: fontSize),
                 ),
               )
             ],
@@ -88,17 +94,15 @@ class CylinderTank extends StatelessWidget {
     );
   }
 
-    double liqlvl() {
-      double lq = liquidLevel >= 100
-          ? 100
-          : liquidLevel <= 0
-              ? 0
-              : liquidLevel;
-      return lq;
-    }
+  double liqlvl() {
+    double lq = liquidLevel >= 100
+        ? 100
+        : liquidLevel <= 0
+            ? 0
+            : liquidLevel;
+    return lq;
+  }
 }
-
-
 
 //=============================================
 // Top Open
@@ -107,13 +111,17 @@ class EyeShapeContainer extends StatelessWidget {
   static double opened = 12;
   final double width;
   final Color topColor;
+  final Color fillColor;
   const EyeShapeContainer(
-      {super.key, required this.width, this.topColor = Colors.black});
+      {super.key,
+      required this.width,
+      this.topColor = Colors.transparent,
+      this.fillColor = Colors.transparent});
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      foregroundPainter: EyeShapeBorderPainter(topColor),
+      foregroundPainter: EyeShapeBorderPainter(topColor, fillColor),
       child: ClipPath(
         clipper: EyeShapeClipper(),
         child: SizedBox(
@@ -129,39 +137,8 @@ class EyeShapeClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
-
-    path.moveTo(0, size.height / 2);
-
-    path.quadraticBezierTo(
-      size.width / 4,
-      0,
-      size.width / 2,
-      0,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 3 / 4,
-      0,
-      size.width,
-      size.height / 2,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 3 / 4,
-      size.height,
-      size.width / 2,
-      size.height,
-    );
-
-    path.quadraticBezierTo(
-      size.width / 4,
-      size.height,
-      0,
-      size.height / 2,
-    );
-
+    path.addOval(Rect.fromLTWH(0, 0, size.width, size.height));
     path.close();
-
     return path;
   }
 
@@ -173,8 +150,8 @@ class EyeShapeClipper extends CustomClipper<Path> {
 
 class EyeShapeBorderPainter extends CustomPainter {
   final Color topColor;
-
-  EyeShapeBorderPainter(this.topColor);
+  final Color fillColor;
+  EyeShapeBorderPainter(this.topColor, this.fillColor);
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
@@ -182,9 +159,14 @@ class EyeShapeBorderPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
+    var fillPaint = Paint()
+      ..color = fillColor // Choose the color for filling the shape
+      ..style = PaintingStyle.fill;
+
     var path = Path();
     path.addOval(Rect.fromLTWH(0, 0, size.width, size.height));
     canvas.drawPath(path, paint);
+    canvas.drawPath(path, fillPaint);
   }
 
   @override
@@ -192,9 +174,6 @@ class EyeShapeBorderPainter extends CustomPainter {
     return false;
   }
 }
-
-
-
 
 //========================================
 // Liquid widget
@@ -270,7 +249,7 @@ class TankBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: width,
       height: height,
       child: CustomPaint(
@@ -300,9 +279,9 @@ class CurvedBorderPainters extends CustomPainter {
     canvas.drawPath(path, paint);
 
     final borderPaint = Paint()
-      ..color = color 
+      ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0; 
+      ..strokeWidth = 1.0;
 
     final borderPath = Path()
       ..moveTo(0, size.height - 10)
@@ -311,7 +290,7 @@ class CurvedBorderPainters extends CustomPainter {
       ..lineTo(size.width, size.height - 10)
       ..lineTo(size.width, 0)
       ..moveTo(0, 0)
-      ..lineTo(0, size.height - 10); 
+      ..lineTo(0, size.height - 10);
 
     canvas.drawPath(borderPath, borderPaint);
   }
