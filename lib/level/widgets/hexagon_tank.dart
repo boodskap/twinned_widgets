@@ -123,7 +123,7 @@ class FillableHexagon extends WaterBottlePainter {
     Paint paint = Paint()
       ..color = bottleColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     double centerX = size.width / 2;
     double centerY = size.height / 2;
@@ -150,7 +150,7 @@ class FillableHexagon extends WaterBottlePainter {
     Paint paint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     double centerX1 = size.width / 1.995;
     double centerY1 = size.height / 1.995;

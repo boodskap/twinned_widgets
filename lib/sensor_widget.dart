@@ -5,6 +5,7 @@ import 'package:twinned_widgets/level/widgets/battery_gauge.dart';
 import 'package:twinned_widgets/level/widgets/semi_circle.dart';
 import 'package:twinned_widgets/level/widgets/conical_tank.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
+import 'package:twinned_widgets/level/widgets/cylinder_tank.dart';
 import 'package:twinned_widgets/level/widgets/cylindrical_tank.dart';
 import 'package:twinned_widgets/level/widgets/cylindrical_tank2.dart';
 import 'package:twinned_widgets/level/widgets/gauge.dart';
@@ -28,6 +29,7 @@ enum SensorWidgetType {
   rectangularTank('Rectangle'),
   sphericalTank('Sphere'),
   batteryGauge('Battery Gauge'),
+  cylinderTank('Cylinder Tank'),
   prismTank('Prism'),
   triangleTank('Triangle'),
   semiCircleTank('Semi Circle'),
@@ -197,9 +199,21 @@ class _SensorWidgetState extends State<SensorWidget> {
           tiny: widget.tiny,
           value: 35,
         );
-          case SensorWidgetType.prismTank:
+         case SensorWidgetType.cylinderTank:
+        return CylinderTank(
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
+        
+         case SensorWidgetType.prismTank:
         return PrismTank(
-          tiny: widget.tiny,
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
@@ -209,7 +223,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               : FontWeight.normal,
           breakpoint: settings['breakpoint'] ?? 1.2,
           label: label,
-          liquidLevel: data[field] ?? 0,
+          liquidLevel: data[field] ?? 0, tiny: widget.tiny,
         );
       case SensorWidgetType.triangleTank:
         return TriangleTank(
@@ -317,6 +331,7 @@ class _SensorTypesDropdownState extends State<SensorTypesDropdown> {
     SensorWidgetType.trapezoidTank: 'trapezoid_tank.png',
     SensorWidgetType.hexagonTank: 'hexagon_tank.png',
     SensorWidgetType.roofTopTank: 'roof_top_tank.png',
+    SensorWidgetType.cylinderTank: 'cylinder_tank.png',
   };
 
   SensorWidgetType? selected;

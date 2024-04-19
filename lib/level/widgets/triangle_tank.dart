@@ -122,7 +122,7 @@ class FillableTriangle extends WaterBottlePainter {
    final Paint paint = Paint()
       ..color = bottleColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     final double halfWidth = size.width / 2;
     final double height = size.height;

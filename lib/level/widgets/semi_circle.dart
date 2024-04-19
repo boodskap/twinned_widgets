@@ -122,7 +122,7 @@ class FillableSemiCircle extends WaterBottlePainter {
     Paint tankPaint = Paint()
       ..color = bottleColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 1;
 
     double tankWidth = size.width;
     double tankHeight = size.height;

@@ -122,7 +122,7 @@ class FillablePrism extends WaterBottlePainter {
     Paint outerPaint = Paint()
       ..color = bottleColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2; // Adjust the border width as needed
+      ..strokeWidth = 1; // Adjust the border width as needed
 
 // Calculate the dimensions and positions of the rectangles based on the size of the SizedBox
     double rect1Width = size.width;

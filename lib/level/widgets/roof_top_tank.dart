@@ -124,7 +124,7 @@ class FillableRoofTop extends WaterBottlePainter {
      Paint paint = Paint()
       ..color = bottleColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
     Rect tankBody =
         Rect.fromLTWH(0, size.height * 0.25, size.width, size.height * 0.75);
     canvas.drawRect(tankBody, paint);

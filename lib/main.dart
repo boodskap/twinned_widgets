@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_widgets/level/widgets/settings/semicircle_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/conicaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/corkedbottle_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/cylindertank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/cylindricaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/hexagon_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/pressuregauge_settings.dart';
@@ -154,7 +155,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
-                      if (widgetType == SensorWidgetType.prismTank)
+                       if (widgetType == SensorWidgetType.cylinderTank)
+              SizedBox(
+                  width: 500,
+                  child: CylinderTankSettings(
+                      label: 'Cylinder Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),           if (widgetType == SensorWidgetType.prismTank)
               SizedBox(
                   width: 500,
                   child: PrismTankSettings(
@@ -209,7 +218,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
-
           ]),
         ),
       ),

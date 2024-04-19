@@ -123,7 +123,7 @@ class FillableTrapezoid extends WaterBottlePainter {
     Paint paint = Paint()
       ..color = bottleColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.0;
 
     Path outerPath = Path();
     outerPath.moveTo(size.width * 0.2, 0); // Move to top left corner
