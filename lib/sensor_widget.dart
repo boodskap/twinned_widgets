@@ -4,6 +4,7 @@ import 'package:twinned_api/api/twinned.swagger.dart' as twinned;
 import 'package:twinned_widgets/level/widgets/battery_gauge.dart';
 import 'package:twinned_widgets/level/widgets/conical_tank.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
+import 'package:twinned_widgets/level/widgets/cylinder_tank.dart';
 import 'package:twinned_widgets/level/widgets/cylindrical_tank.dart';
 import 'package:twinned_widgets/level/widgets/cylindrical_tank2.dart';
 import 'package:twinned_widgets/level/widgets/gauge.dart';
@@ -24,7 +25,7 @@ enum SensorWidgetType {
   rectangularTank('Rectangle'),
   sphericalTank('Sphere'),
   batteryGauge('Battery Gauge'),
-  ;
+  cylinderTank('Cylinder Tank');
 
   const SensorWidgetType(this.label);
 
@@ -188,6 +189,15 @@ class _SensorWidgetState extends State<SensorWidget> {
           tiny: widget.tiny,
           value: 35,
         );
+         case SensorWidgetType.cylinderTank:
+        return CylinderTank(
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
       case SensorWidgetType.none:
         break;
     }
@@ -218,6 +228,7 @@ class _SensorTypesDropdownState extends State<SensorTypesDropdown> {
     SensorWidgetType.speedometer: 'speedometer.png',
     SensorWidgetType.sphericalTank: 'spherical_tank.png',
     SensorWidgetType.batteryGauge: 'battery_gauge.png',
+    SensorWidgetType.cylinderTank: 'cylinder_tank.png',
   };
 
   SensorWidgetType? selected;
