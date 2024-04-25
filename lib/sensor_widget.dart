@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animated_battery_gauge/battery_gauge.dart';
 import 'package:flutter/material.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twinned;
@@ -50,6 +52,19 @@ class SensorWidget extends StatefulWidget {
 }
 
 class _SensorWidgetState extends State<SensorWidget> {
+  double? toDouble(dynamic? value) {
+    if (value == null) return null;
+
+    if (value is String) {
+      return double.parse(value);
+    } else if (value is int) {
+      int ivalue = value as int;
+      return ivalue.toDouble();
+    } else {
+      return value;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> settings =
@@ -70,53 +85,55 @@ class _SensorWidgetState extends State<SensorWidget> {
       );
     }
 
+    debugPrint('SETTINGS JSON: ${jsonEncode(settings)}');
+
     switch (SensorWidgetType.values
         .byName(widget.parameter.sensorWidget!.widgetId)) {
       case SensorWidgetType.speedometer:
         return Gauge(
-          min: settings['minValue'] ?? 0,
-          max: settings['maxValue'] ?? 250,
+          min: toDouble(settings['minValue']) ?? 0,
+          max: toDouble(settings['maxValue']) ?? 250,
           interval: settings['interval'] ?? 5,
-          startAngle: settings['startAngle'] ?? 45,
-          endAngle: settings['endAngle'] ?? 15,
-          fontSize: settings['fontSize'] ?? 10,
+          startAngle: toDouble(settings['startAngle']) ?? 45,
+          endAngle: toDouble(settings['endAngle']) ?? 15,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
           tiny: widget.tiny,
           label: label,
           unit: unit,
-          value: data[field] ?? 0,
+          value: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.pressureGauge:
         return Gauge(
-          min: settings['minValue'] ?? 0,
-          max: settings['maxValue'] ?? 3000,
+          min: toDouble(settings['minValue']) ?? 0,
+          max: toDouble(settings['maxValue']) ?? 3000,
           interval: settings['interval'] ?? 5,
-          startAngle: settings['startAngle'] ?? 150,
-          endAngle: settings['endAngle'] ?? 30,
-          fontSize: settings['fontSize'] ?? 10,
+          startAngle: toDouble(settings['startAngle']) ?? 150,
+          endAngle: toDouble(settings['endAngle']) ?? 30,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
           tiny: widget.tiny,
           label: label,
           unit: unit,
-          value: data[field] ?? 0,
+          value: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.conicalTank:
         return ConicalTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
-          fontSize: settings['fontSize'] ?? 10,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
-          breakpoint: settings['breakpoint'] ?? 1.2,
+          breakpoint: toDouble(settings['breakpoint']) ?? 1.2,
           smoothCorner: settings['smoothCorner'] ?? true,
           label: label,
-          liquidLevel: data[field] ?? 0,
+          liquidLevel: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.corkedBottle:
         return CorkedBottle(
@@ -124,50 +141,50 @@ class _SensorWidgetState extends State<SensorWidget> {
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           capColor: Color(settings['capColor'] ?? Colors.grey.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
-          fontSize: settings['fontSize'] ?? 10,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
           label: label,
-          liquidLevel: data[field] ?? 0,
+          liquidLevel: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.cylindricalTank:
         return CylindricalTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
-          fontSize: settings['fontSize'] ?? 10,
+          fontSize: toDouble(settings['fontSize']) ?? 10.0,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
-          breakpoint: settings['breakpoint'] ?? 1.2,
+          breakpoint: toDouble(settings['breakpoint']) ?? 1.2,
           label: label,
-          liquidLevel: data[field] ?? 0,
+          liquidLevel: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.rectangularTank:
         return RectangularTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
-          fontSize: settings['fontSize'] ?? 10,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
           label: label,
-          liquidLevel: data[field] ?? 0,
+          liquidLevel: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.sphericalTank:
         return SphericalTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
-          fontSize: settings['fontSize'] ?? 10,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
-          breakpoint: settings['breakpoint'] ?? 3,
+          breakpoint: toDouble(settings['breakpoint']) ?? 3,
           label: label,
-          liquidLevel: data[field] ?? 0,
+          liquidLevel: toDouble(data[field]) ?? 0,
         );
       case SensorWidgetType.batteryGauge:
         return SimpleBatteryGauge(
@@ -179,7 +196,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               Color(settings['mediumColor'] ?? Colors.lightGreen.value),
           highColor: Color(settings['highColor'] ?? Colors.green.value),
           borderColor: Color(settings['borderColor'] ?? Colors.black.value),
-          fontSize: settings['fontSize'] ?? 10,
+          fontSize: toDouble(settings['fontSize']) ?? 10,
           fontWeight: settings['fontBold'] ?? true
               ? FontWeight.bold
               : FontWeight.normal,
@@ -187,7 +204,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           mode: BatteryGaugePaintMode.values
               .byName(settings['mode'] ?? BatteryGaugePaintMode.none.name),
           tiny: widget.tiny,
-          value: 35,
+          value: toDouble(data[field]) ?? 0,
         );
          case SensorWidgetType.cylinderTank:
         return CylinderTank(
