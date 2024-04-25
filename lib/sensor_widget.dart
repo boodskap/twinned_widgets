@@ -4,6 +4,7 @@ import 'package:animated_battery_gauge/battery_gauge.dart';
 import 'package:flutter/material.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twinned;
 import 'package:twinned_widgets/level/widgets/battery_gauge.dart';
+import 'package:twinned_widgets/level/widgets/bladder_tank.dart';
 import 'package:twinned_widgets/level/widgets/semi_circle.dart';
 import 'package:twinned_widgets/level/widgets/conical_tank.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
@@ -37,7 +38,8 @@ enum SensorWidgetType {
   semiCircleTank('Semi Circle'),
   trapezoidTank('Trapezoid'),
   hexagonTank('Hexagon'),
-  roofTopTank('Roof Top');
+  roofTopTank('Roof Top'),
+  bladderTank('Bladder Water Tank');
 
   const SensorWidgetType(this.label);
 
@@ -312,6 +314,16 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
+        case SensorWidgetType.bladderTank:
+        return BladderTank(
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          
+          label: label,
+          liquidLevel: data[field] ?? 0, height: 200, width: 450, fontColor: Colors.black,
+        );
       case SensorWidgetType.none:
         break;
     }
@@ -349,6 +361,7 @@ class _SensorTypesDropdownState extends State<SensorTypesDropdown> {
     SensorWidgetType.hexagonTank: 'hexagon_tank.png',
     SensorWidgetType.roofTopTank: 'roof_top_tank.png',
     SensorWidgetType.cylinderTank: 'cylinder_tank.png',
+     SensorWidgetType.bladderTank: 'bladder_tank.png',
   };
 
   SensorWidgetType? selected;

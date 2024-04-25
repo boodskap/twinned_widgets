@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twinned_widgets/level/widgets/settings/bladdertank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/semicircle_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/conicaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/corkedbottle_settings.dart';
@@ -163,7 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       settings: const {},
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
-                      })),           if (widgetType == SensorWidgetType.prismTank)
+                      })),        
+                         if (widgetType == SensorWidgetType.prismTank)
               SizedBox(
                   width: 500,
                   child: PrismTankSettings(
@@ -218,6 +220,24 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
+                       if (widgetType == SensorWidgetType.roofTopTank)
+              SizedBox(
+                  width: 500,
+                  child: RoofTopTankSettings(
+                      label: 'Roof Top Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+                        if (widgetType == SensorWidgetType.bladderTank)
+              SizedBox(
+                  width: 500,
+                  child: BladderTankSettings(
+                      label: 'Bladder Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })), 
           ]),
         ),
       ),
