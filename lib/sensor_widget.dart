@@ -4,6 +4,8 @@ import 'package:animated_battery_gauge/battery_gauge.dart';
 import 'package:flutter/material.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twinned;
 import 'package:twinned_widgets/level/widgets/battery_gauge.dart';
+import 'package:twinned_widgets/level/widgets/bladder_tank.dart';
+import 'package:twinned_widgets/level/widgets/semi_circle.dart';
 import 'package:twinned_widgets/level/widgets/conical_tank.dart';
 import 'package:twinned_widgets/level/widgets/corked_bottle.dart';
 import 'package:twinned_widgets/level/widgets/cylinder_tank.dart';
@@ -13,7 +15,10 @@ import 'package:twinned_widgets/level/widgets/gauge.dart';
 import 'package:twinned_widgets/level/widgets/rectangular_tank.dart';
 import 'package:twinned_widgets/level/widgets/spherical_tank.dart';
 import 'package:twinned_widgets/util/TwinnedWidgetUtils.dart';
-
+import 'package:twinned_widgets/level/widgets/prism_tank.dart';
+import 'package:twinned_widgets/level/widgets/roof_top_tank.dart';
+import 'package:twinned_widgets/level/widgets/trapezoid_tank.dart';
+import 'package:twinned_widgets/level/widgets/triangle_tank.dart';
 typedef OnSensorSelected = Function(SensorWidgetType? type);
 typedef OnSettingsSaved = Function(Map<String, dynamic> settings);
 
@@ -27,7 +32,14 @@ enum SensorWidgetType {
   rectangularTank('Rectangle'),
   sphericalTank('Sphere'),
   batteryGauge('Battery Gauge'),
-  cylinderTank('Cylinder Tank');
+  cylinderTank('Cylinder Tank'),
+  prismTank('Prism'),
+  triangleTank('Triangle'),
+  semiCircleTank('Semi Circle'),
+  trapezoidTank('Trapezoid'),
+  hexagonTank('Hexagon'),
+  roofTopTank('Roof Top'),
+  bladderTank('Bladder Water Tank');
 
   const SensorWidgetType(this.label);
 
@@ -212,8 +224,105 @@ class _SensorWidgetState extends State<SensorWidget> {
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
           fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
           label: label,
           liquidLevel: data[field] ?? 0,
+        );
+        
+         case SensorWidgetType.prismTank:
+        return PrismTank(
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          breakpoint: settings['breakpoint'] ?? 1.2,
+          label: label,
+          liquidLevel: data[field] ?? 0, tiny: widget.tiny,
+        );
+      case SensorWidgetType.triangleTank:
+        return TriangleTank(
+          tiny: widget.tiny,
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          breakpoint: settings['breakpoint'] ?? 1.2,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
+      case SensorWidgetType.semiCircleTank:
+        return SemiCircleTank(
+          tiny: widget.tiny,
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          breakpoint: settings['breakpoint'] ?? 1.2,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
+        case SensorWidgetType.trapezoidTank:
+        return TrapezoidTank(
+          tiny: widget.tiny,
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          breakpoint: settings['breakpoint'] ?? 1.2,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
+         case SensorWidgetType.hexagonTank:
+        return TrapezoidTank(
+          tiny: widget.tiny,
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          breakpoint: settings['breakpoint'] ?? 1.2,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
+        case SensorWidgetType.roofTopTank:
+        return RoofTopTank(
+          tiny: widget.tiny,
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          fontWeight: settings['fontBold'] ?? true
+              ? FontWeight.bold
+              : FontWeight.normal,
+          breakpoint: settings['breakpoint'] ?? 1.2,
+          label: label,
+          liquidLevel: data[field] ?? 0,
+        );
+        case SensorWidgetType.bladderTank:
+        return BladderTank(
+          liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
+          bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
+          shouldAnimate: settings['shouldAnimate'] ?? false,
+          fontSize: settings['fontSize'] ?? 10,
+          
+          label: label,
+          liquidLevel: data[field] ?? 0, height: 200, width: 450, fontColor: Colors.black,
         );
       case SensorWidgetType.none:
         break;
@@ -245,7 +354,14 @@ class _SensorTypesDropdownState extends State<SensorTypesDropdown> {
     SensorWidgetType.speedometer: 'speedometer.png',
     SensorWidgetType.sphericalTank: 'spherical_tank.png',
     SensorWidgetType.batteryGauge: 'battery_gauge.png',
+    SensorWidgetType.prismTank: 'prism_tank.png',
+    SensorWidgetType.triangleTank: 'triangle_tank.png',
+    SensorWidgetType.semiCircleTank: 'semicircle_tank.png',
+    SensorWidgetType.trapezoidTank: 'trapezoid_tank.png',
+    SensorWidgetType.hexagonTank: 'hexagon_tank.png',
+    SensorWidgetType.roofTopTank: 'roof_top_tank.png',
     SensorWidgetType.cylinderTank: 'cylinder_tank.png',
+     SensorWidgetType.bladderTank: 'bladder_tank.png',
   };
 
   SensorWidgetType? selected;
