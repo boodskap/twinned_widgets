@@ -156,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
-                       if (widgetType == SensorWidgetType.cylinderTank)
+            if (widgetType == SensorWidgetType.cylinderTank)
               SizedBox(
                   width: 500,
                   child: CylinderTankSettings(
@@ -164,8 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       settings: const {},
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
-                      })),        
-                         if (widgetType == SensorWidgetType.prismTank)
+                      })),
+            if (widgetType == SensorWidgetType.prismTank)
               SizedBox(
                   width: 500,
                   child: PrismTankSettings(
@@ -210,8 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
-           
-                       if (widgetType == SensorWidgetType.roofTopTank)
+            if (widgetType == SensorWidgetType.roofTopTank)
               SizedBox(
                   width: 500,
                   child: RoofTopTankSettings(
@@ -220,16 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
                       })),
-                       if (widgetType == SensorWidgetType.roofTopTank)
-              SizedBox(
-                  width: 500,
-                  child: RoofTopTankSettings(
-                      label: 'Roof Top Tank',
-                      settings: const {},
-                      onSettingsSaved: (settings) {
-                        debugPrint('$settings');
-                      })),
-                        if (widgetType == SensorWidgetType.bladderTank)
+            if (widgetType == SensorWidgetType.bladderTank)
               SizedBox(
                   width: 500,
                   child: BladderTankSettings(
@@ -237,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       settings: const {},
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');
-                      })), 
+                      })),
           ]),
         ),
       ),
