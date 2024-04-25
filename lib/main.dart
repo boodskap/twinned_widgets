@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twinned_widgets/level/widgets/settings/conicaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/corkedbottle_settings.dart';
+import 'package:twinned_widgets/level/widgets/settings/cylindertank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/cylindricaltank_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/pressuregauge_settings.dart';
 import 'package:twinned_widgets/level/widgets/settings/rectangulartank_settings.dart';
@@ -144,6 +145,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 500,
                   child: SphericalTankSettings(
                       label: 'Spherical Tank',
+                      settings: const {},
+                      onSettingsSaved: (settings) {
+                        debugPrint('$settings');
+                      })),
+                      if (widgetType == SensorWidgetType.cylinderTank)
+              SizedBox(
+                  width: 500,
+                  child: CylinderTankSettings(
+                      label: 'Cylinder Tank',
                       settings: const {},
                       onSettingsSaved: (settings) {
                         debugPrint('$settings');

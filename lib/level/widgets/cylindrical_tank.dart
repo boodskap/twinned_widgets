@@ -130,7 +130,7 @@ class CylinderBottleStatePainter extends WaterBottlePainter {
         canvas, startX, endX, lineY1, lineY2, outerFillPaint, borderPaint);
 
     Rect ovalRect1 =
-        Rect.fromLTWH((endX - (ovalWidth / 2)) / 2, -5, ovalWidth, ovalHeight);
+        Rect.fromLTWH((endX - (ovalWidth / 2)) / 2, -2, ovalWidth, ovalHeight);
     canvas.drawOval(ovalRect1, borderPaint);
     Rect ovalRect2 = Rect.fromLTWH((endX - (ovalWidth / 2)) / 2,
         lineY2 - (ovalHeight / 2), ovalWidth, ovalHeight);
