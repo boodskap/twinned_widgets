@@ -104,8 +104,10 @@ class _SensorWidgetState extends State<SensorWidget> {
     switch (SensorWidgetType.values
         .byName(widget.parameter.sensorWidget!.widgetId)) {
       case SensorWidgetType.blank:
-        return const Text(
-          '-',
+        return const Center(
+          child: Text(
+            '-',
+          ),
         );
       case SensorWidgetType.speedometer:
         return Gauge(
