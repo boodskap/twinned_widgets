@@ -19,6 +19,7 @@ typedef OnSettingsSaved = Function(Map<String, dynamic> settings);
 
 enum SensorWidgetType {
   none('None'),
+  blank('Blank'),
   speedometer('Speedometer'),
   pressureGauge('Pressure Gauge'),
   conicalTank('Cone'),
@@ -89,6 +90,10 @@ class _SensorWidgetState extends State<SensorWidget> {
 
     switch (SensorWidgetType.values
         .byName(widget.parameter.sensorWidget!.widgetId)) {
+      case SensorWidgetType.blank:
+        return Container(
+          color: Colors.transparent,
+        );
       case SensorWidgetType.speedometer:
         return Gauge(
           min: toDouble(settings['minValue']) ?? 0,
@@ -206,7 +211,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           tiny: widget.tiny,
           value: toDouble(data[field]) ?? 0,
         );
-         case SensorWidgetType.cylinderTank:
+      case SensorWidgetType.cylinderTank:
         return CylinderTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
