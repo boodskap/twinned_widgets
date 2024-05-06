@@ -19,6 +19,7 @@ import 'package:twinned_widgets/level/widgets/prism_tank.dart';
 import 'package:twinned_widgets/level/widgets/roof_top_tank.dart';
 import 'package:twinned_widgets/level/widgets/trapezoid_tank.dart';
 import 'package:twinned_widgets/level/widgets/triangle_tank.dart';
+
 typedef OnSensorSelected = Function(SensorWidgetType? type);
 typedef OnSettingsSaved = Function(Map<String, dynamic> settings);
 
@@ -103,8 +104,8 @@ class _SensorWidgetState extends State<SensorWidget> {
     switch (SensorWidgetType.values
         .byName(widget.parameter.sensorWidget!.widgetId)) {
       case SensorWidgetType.blank:
-        return Container(
-          color: Colors.transparent,
+        return const Text(
+          '-',
         );
       case SensorWidgetType.speedometer:
         return Gauge(
@@ -235,8 +236,8 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
-        
-         case SensorWidgetType.prismTank:
+
+      case SensorWidgetType.prismTank:
         return PrismTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
@@ -247,7 +248,8 @@ class _SensorWidgetState extends State<SensorWidget> {
               : FontWeight.normal,
           breakpoint: settings['breakpoint'] ?? 1.2,
           label: label,
-          liquidLevel: data[field] ?? 0, tiny: widget.tiny,
+          liquidLevel: data[field] ?? 0,
+          tiny: widget.tiny,
         );
       case SensorWidgetType.triangleTank:
         return TriangleTank(
@@ -277,7 +279,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
-        case SensorWidgetType.trapezoidTank:
+      case SensorWidgetType.trapezoidTank:
         return TrapezoidTank(
           tiny: widget.tiny,
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
@@ -291,7 +293,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
-         case SensorWidgetType.hexagonTank:
+      case SensorWidgetType.hexagonTank:
         return TrapezoidTank(
           tiny: widget.tiny,
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
@@ -305,7 +307,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
-        case SensorWidgetType.roofTopTank:
+      case SensorWidgetType.roofTopTank:
         return RoofTopTank(
           tiny: widget.tiny,
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
@@ -319,15 +321,17 @@ class _SensorWidgetState extends State<SensorWidget> {
           label: label,
           liquidLevel: data[field] ?? 0,
         );
-        case SensorWidgetType.bladderTank:
+      case SensorWidgetType.bladderTank:
         return BladderTank(
           liquidColor: Color(settings['liquidColor'] ?? Colors.blue.value),
           bottleColor: Color(settings['bottleColor'] ?? Colors.black.value),
           shouldAnimate: settings['shouldAnimate'] ?? false,
           fontSize: settings['fontSize'] ?? 10,
-          
           label: label,
-          liquidLevel: data[field] ?? 0, height: 200, width: 450, fontColor: Colors.black,
+          liquidLevel: data[field] ?? 0,
+          height: 200,
+          width: 450,
+          fontColor: Colors.black,
         );
       case SensorWidgetType.none:
         break;
@@ -366,7 +370,7 @@ class _SensorTypesDropdownState extends State<SensorTypesDropdown> {
     SensorWidgetType.hexagonTank: 'hexagon_tank.png',
     SensorWidgetType.roofTopTank: 'roof_top_tank.png',
     SensorWidgetType.cylinderTank: 'cylinder_tank.png',
-     SensorWidgetType.bladderTank: 'bladder_tank.png',
+    SensorWidgetType.bladderTank: 'bladder_tank.png',
   };
 
   SensorWidgetType? selected;
