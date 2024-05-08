@@ -9,8 +9,9 @@
 .history
 .svn/
 migrate_working_dir/
-nocode_commons/
 nocode_commons
+nocode_commons/
+twinned_widgets
 # IntelliJ related
 *.iml
 *.ipr
