@@ -1,6 +1,6 @@
 import 'package:twinned_api/api/twinned.swagger.dart';
 
-class TwinnedWidgetUtils {
+class WidgetUtil {
   static String getParameterLabel(String name, DeviceModel deviceModel) {
     for (var p in deviceModel.parameters) {
       if (p.name == name) {
