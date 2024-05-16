@@ -1,0 +1,5 @@
+API_TOKEN=
+PRODUCTION=false
+DEBUG=true
+DEV_HOST=twinned.boodskap.io
+PROD_HOST=twinned.digital
