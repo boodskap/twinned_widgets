@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
+import 'package:configs/models.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,14 +48,25 @@ class _MyHomePageState extends BaseState<MyHomePage> {
             if (!TwinnedSession.instance.inited)
               const Icon(Icons.hourglass_bottom),
             if (TwinnedSession.instance.inited)
-              TotalValueWidget(
-                config: TotalValueWidgetConfig(
-                  field: 'volume',
-                  fieldSuffix: ' gals',
-                  modelIds: ['9fcd0f33-092a-416e-90c1-ba84dd77fde8'],
-                  bgColor: Colors.orange.value,
-                  borderColor: Colors.red.value,
-                  borderWidth: 10.0,
+              SizedBox(
+                width: 400,
+                height: 300,
+                child: TotalValueWidget(
+                  config: TotalValueWidgetConfig(
+                      field: 'volume',
+                      fieldSuffix: ' gals',
+                      modelIds: ['9fcd0f33-092a-416e-90c1-ba84dd77fde8'],
+                      bgColor: Colors.orange.value,
+                      borderColor: Colors.red.value,
+                      borderWidth: 4.0,
+                      headerFont: FontConfig(
+                          fontColor: Colors.black.value,
+                          fontBold: true,
+                          fontSize: 40),
+                      labelFont: FontConfig(
+                          fontColor: Colors.black.value,
+                          fontBold: true,
+                          fontSize: 32)),
                 ),
               ),
           ],
@@ -69,7 +81,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
 
     await TwinnedSession.instance.load(host: 'twinned.boodskap.io');
 
-    TwinnedSession.instance.setAuthToken = 'YOUR_AUTH_TOKEN';
+    TwinnedSession.instance.authToken = '';
 
     loading = false;
     refresh();

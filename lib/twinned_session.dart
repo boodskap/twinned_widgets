@@ -28,7 +28,7 @@ class TwinnedSession {
 
   static final TwinnedSession _instance = TwinnedSession._privateConstructor();
 
-  String _authToken = '';
+  String authToken = '';
   bool _debug = true;
   String _host = '';
   digital.Twinned _twinned = digital.Twinned.create(
@@ -36,11 +36,6 @@ class TwinnedSession {
   bool _inited = false;
 
   static TwinnedSession get instance => _instance;
-
-  String get authToken => _authToken;
-  set setAuthToken(String authToken) {
-    _authToken = authToken;
-  }
 
   String get host => _host;
   bool get debug => _debug;
