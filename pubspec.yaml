@@ -1,5 +1,5 @@
 name: twinned_widgets
-description: "A new Flutter package project."
+description: "Widget library for Boodskap IoT Digital Twin Platform"
 version: 1.0.0
 homepage: https://twinned.digital
 
@@ -11,10 +11,21 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  flutter_session_manager: ^1.0.3
+
+  nocode_commons:
+    git:
+      url: https://github.com/boodskap/nocode_commons.git
+  #    path:
+  #      nocode_commons
 
   twinned_api:
     git:
       url: https://github.com/boodskap/twinned_api.git
+      ref: main
+
+  configs:
+    path: configs
 
   syncfusion_flutter_gauges: ^25.1.37
   water_bottle: ^0.0.7
@@ -47,3 +58,7 @@ flutter_gen:
   assets:
     outputs:
       package_parameter_enabled: true
+
+analyzer:
+  errors:
+    invalid_annotation_target: ignore
