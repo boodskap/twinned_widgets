@@ -7,6 +7,10 @@ import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 export 'common/total_value_widget.dart';
 export 'common/value_distribution_pie_widget.dart';
+export 'common/total_and_reporting_asset_widget.dart';
+export 'twinned_config_builder.dart';
+export 'twinned_widget_builder.dart';
+export 'twinned_session.dart';
 
 final Map<String, TwinnedWidgetBuilder> _builders = {
   'TotalValueWidget': TotalValueWidgetBuilder(),

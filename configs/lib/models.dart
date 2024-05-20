@@ -43,6 +43,10 @@ abstract class BaseConfig {
   bool isRequired(String parameter) {
     return false;
   }
+
+  bool isValid(String parameter, dynamic value) {
+    return true;
+  }
 }
 
 @unfreezed
