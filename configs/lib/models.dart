@@ -40,6 +40,10 @@ abstract class BaseConfig {
   List<String> getEnumeratedValues(String parameter) {
     return [];
   }
+
+  bool isRequired(String parameter) {
+    return false;
+  }
 }
 
 @unfreezed
@@ -148,6 +152,17 @@ class TotalValueWidgetConfig extends BaseConfig with _$TotalValueWidgetConfig {
     }
     return [];
   }
+
+  @override
+  bool isRequired(String parameter) {
+    switch (parameter) {
+      case 'modelIds':
+      case 'field':
+        return true;
+      default:
+        return false;
+    }
+  }
 }
 
 @unfreezed
@@ -229,6 +244,18 @@ class ValueDistributionPieChartWidgetConfig extends BaseConfig
     }
     return [];
   }
+
+  @override
+  bool isRequired(String parameter) {
+    switch (parameter) {
+      case 'modelIds':
+      case 'field':
+      case 'segments':
+        return true;
+      default:
+        return false;
+    }
+  }
 }
 
 @unfreezed
@@ -268,5 +295,15 @@ class TotalAndReportingAssetWidgetConfig extends BaseConfig
     }
 
     return HintType.none;
+  }
+
+  @override
+  bool isRequired(String parameter) {
+    switch (parameter) {
+      case 'assetModelIds':
+        return true;
+      default:
+        return false;
+    }
   }
 }

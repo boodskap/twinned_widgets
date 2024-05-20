@@ -4,6 +4,7 @@ import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class ValueDistributionPieChartWidget extends StatefulWidget {
   final ValueDistributionPieChartWidgetConfig config;
@@ -227,5 +228,13 @@ class _ValueDistributionPieChartWidgetState
   @override
   void setup() {
     load();
+  }
+}
+
+class ValueDistributionPieChartWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return ValueDistributionPieChartWidget(
+        config: ValueDistributionPieChartWidgetConfig.fromJson(config));
   }
 }
