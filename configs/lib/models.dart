@@ -11,7 +11,6 @@ enum DataType {
   text,
   yesno,
   enumerated,
-  object,
   font,
   listOfTexts,
   listOfNumbers,
