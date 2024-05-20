@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/twinned_session.dart';
+import 'package:configs/models.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
+import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,28 +37,303 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends BaseState<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    if (!TwinnedSession.instance.inited) {
+      return Scaffold(
+          appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ));
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (!TwinnedSession.instance.inited)
-              const Icon(Icons.hourglass_bottom),
-            if (TwinnedSession.instance.inited)
-              TotalValueWidget(
+      body: SingleChildScrollView(
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 25.0,
+          children: [
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: TotalValueWidget(
                 config: TotalValueWidgetConfig(
-                  field: 'volume',
-                  fieldSuffix: ' gals',
-                  modelIds: ['9fcd0f33-092a-416e-90c1-ba84dd77fde8'],
-                  bgColor: Colors.orange.value,
-                  borderColor: Colors.red.value,
-                  borderWidth: 10.0,
-                ),
+                    title: 'Total',
+                    field: 'volume',
+                    fieldSuffix: ' gals',
+                    borderRadius: 180,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    bgColor: Colors.orange.value,
+                    borderColor: Colors.red.value,
+                    borderWidth: 4.0,
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 28),
+                    labelFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 18)),
               ),
+            ),
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: TotalValueWidget(
+                config: TotalValueWidgetConfig(
+                    title: 'Total',
+                    field: 'volume',
+                    fieldSuffix: ' gals',
+                    borderRadius: 0,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    bgColor: Colors.green.value,
+                    borderColor: Colors.red.value,
+                    borderWidth: 4.0,
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 28),
+                    labelFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 18)),
+              ),
+            ),
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: TotalValueWidget(
+                config: TotalValueWidgetConfig(
+                    title: 'Total',
+                    field: 'volume',
+                    fieldSuffix: ' gals',
+                    borderRadius: 45,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    bgColor: Colors.transparent.value,
+                    borderColor: Colors.red.value,
+                    borderWidth: 4.0,
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 28),
+                    labelFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 18)),
+              ),
+            ),
+            SizedBox(
+              width: 300,
+              child: ValueDistributionPieChartWidget(
+                config: ValueDistributionPieChartWidgetConfig(
+                    field: 'level',
+                    title: 'Tanks',
+                    type: DistributionChartType.pie,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 22),
+                    segments: [
+                      Range(
+                          from: 0,
+                          to: 25,
+                          label: 'Critical Tanks',
+                          color: Colors.red.value),
+                      Range(
+                          from: 26,
+                          to: 50,
+                          label: 'Low Tanks',
+                          color: Colors.orange.value),
+                      Range(
+                          from: 51,
+                          to: 75,
+                          label: 'Moderate Tanks',
+                          color: Colors.lightGreen.value),
+                      Range(
+                          from: 76,
+                          label: 'Good Tanks',
+                          color: Colors.green.value),
+                    ]),
+              ),
+            ),
+            SizedBox(
+              width: 300,
+              child: ValueDistributionPieChartWidget(
+                config: ValueDistributionPieChartWidgetConfig(
+                    field: 'level',
+                    title: 'Tanks',
+                    type: DistributionChartType.doughnut,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 22),
+                    segments: [
+                      Range(
+                          from: 0,
+                          to: 25,
+                          label: 'Critical Tanks',
+                          color: Colors.red.value),
+                      Range(
+                          from: 26,
+                          to: 50,
+                          label: 'Low Tanks',
+                          color: Colors.orange.value),
+                      Range(
+                          from: 51,
+                          to: 75,
+                          label: 'Moderate Tanks',
+                          color: Colors.lightGreen.value),
+                      Range(
+                          from: 76,
+                          label: 'Good Tanks',
+                          color: Colors.green.value),
+                    ]),
+              ),
+            ),
+            SizedBox(
+              width: 300,
+              child: ValueDistributionPieChartWidget(
+                config: ValueDistributionPieChartWidgetConfig(
+                    field: 'level',
+                    title: 'Tanks',
+                    type: DistributionChartType.radial,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 22),
+                    labelFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 14),
+                    segments: [
+                      Range(
+                          from: 0,
+                          to: 25,
+                          label: 'Critical Tanks',
+                          color: Colors.red.value),
+                      Range(
+                          from: 26,
+                          to: 50,
+                          label: 'Low Tanks',
+                          color: Colors.orange.value),
+                      Range(
+                          from: 51,
+                          to: 75,
+                          label: 'Moderate Tanks',
+                          color: Colors.lightGreen.value),
+                      Range(
+                          from: 76,
+                          label: 'Good Tanks',
+                          color: Colors.green.value),
+                    ]),
+              ),
+            ),
+            SizedBox(
+              width: 300,
+              child: ValueDistributionPieChartWidget(
+                config: ValueDistributionPieChartWidgetConfig(
+                    field: 'level',
+                    title: 'Tanks',
+                    type: DistributionChartType.pyramid,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 22),
+                    labelFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 14),
+                    segments: [
+                      Range(
+                          from: 0,
+                          to: 25,
+                          label: 'Critical Tanks',
+                          color: Colors.red.value),
+                      Range(
+                          from: 26,
+                          to: 50,
+                          label: 'Low Tanks',
+                          color: Colors.orange.value),
+                      Range(
+                          from: 51,
+                          to: 75,
+                          label: 'Moderate Tanks',
+                          color: Colors.lightGreen.value),
+                      Range(
+                          from: 76,
+                          label: 'Good Tanks',
+                          color: Colors.green.value),
+                    ]),
+              ),
+            ),
+            SizedBox(
+              width: 300,
+              child: ValueDistributionPieChartWidget(
+                config: ValueDistributionPieChartWidgetConfig(
+                    field: 'level',
+                    title: 'Tanks',
+                    type: DistributionChartType.funnel,
+                    modelIds: [
+                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                    ],
+                    headerFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 22),
+                    labelFont: FontConfig(
+                        fontColor: Colors.black.value,
+                        fontBold: true,
+                        fontSize: 14),
+                    segments: [
+                      Range(
+                          from: 0,
+                          to: 25,
+                          label: 'Critical Tanks',
+                          color: Colors.red.value),
+                      Range(
+                          from: 26,
+                          to: 50,
+                          label: 'Low Tanks',
+                          color: Colors.orange.value),
+                      Range(
+                          from: 51,
+                          to: 75,
+                          label: 'Moderate Tanks',
+                          color: Colors.lightGreen.value),
+                      Range(
+                          from: 76,
+                          label: 'Good Tanks',
+                          color: Colors.green.value),
+                    ]),
+              ),
+            ),
           ],
         ),
       ),
@@ -67,9 +344,9 @@ class _MyHomePageState extends BaseState<MyHomePage> {
     if (loading) return;
     loading = true;
 
-    await TwinnedSession.instance.load(host: 'twinned.boodskap.io');
+    await TwinnedSession.instance.load(host: 'twinned.digital');
 
-    TwinnedSession.instance.setAuthToken = 'YOUR_AUTH_TOKEN';
+    TwinnedSession.instance.authToken = '';
 
     loading = false;
     refresh();

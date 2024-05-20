@@ -24,6 +24,9 @@ dependencies:
       url: https://github.com/boodskap/twinned_api.git
       ref: main
 
+  configs:
+    path: configs
+
   syncfusion_flutter_gauges: ^25.1.37
   water_bottle: ^0.0.7
   flutter_colorpicker: ^1.0.3
@@ -55,3 +58,7 @@ flutter_gen:
   assets:
     outputs:
       package_parameter_enabled: true
+
+analyzer:
+  errors:
+    invalid_annotation_target: ignore

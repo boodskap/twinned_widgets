@@ -1,7 +1,4 @@
 library twinned_widgets;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'common/total_value_widget.dart';
+export 'common/value_distribution_pie_widget.dart';
