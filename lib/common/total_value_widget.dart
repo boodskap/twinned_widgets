@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class TotalValueWidget extends StatefulWidget {
   final TotalValueWidgetConfig config;
@@ -97,5 +98,12 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class TotalValueWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return TotalValueWidget(config: TotalValueWidgetConfig.fromJson(config));
   }
 }
