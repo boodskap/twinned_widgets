@@ -6,6 +6,18 @@ part of 'models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_$ExampleImpl _$$ExampleImplFromJson(Map<String, dynamic> json) =>
+    _$ExampleImpl(
+      name: json['name'] as String,
+      age: (json['age'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$$ExampleImplToJson(_$ExampleImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'age': instance.age,
+    };
+
 _$FontConfigImpl _$$FontConfigImplFromJson(Map<String, dynamic> json) =>
     _$FontConfigImpl(
       fontSize: (json['fontSize'] as num?)?.toDouble() ?? 14,
@@ -67,3 +79,94 @@ const _$BorderStyleEnumMap = {
   BorderStyle.none: 'none',
   BorderStyle.solid: 'solid',
 };
+
+_$RangeImpl _$$RangeImplFromJson(Map<String, dynamic> json) => _$RangeImpl(
+      from: (json['from'] as num?)?.toDouble(),
+      to: (json['to'] as num?)?.toDouble(),
+      color: (json['color'] as num?)?.toInt(),
+      label: json['label'] as String? ?? 'Label',
+    );
+
+Map<String, dynamic> _$$RangeImplToJson(_$RangeImpl instance) =>
+    <String, dynamic>{
+      'from': instance.from,
+      'to': instance.to,
+      'color': instance.color,
+      'label': instance.label,
+    };
+
+_$ValueDistributionPieChartWidgetConfigImpl
+    _$$ValueDistributionPieChartWidgetConfigImplFromJson(
+            Map<String, dynamic> json) =>
+        _$ValueDistributionPieChartWidgetConfigImpl(
+          title: json['title'] as String? ?? 'Title',
+          headerFont: json['headerFont'] == null
+              ? const FontConfig(fontSize: 20, fontBold: true)
+              : FontConfig.fromJson(json['headerFont'] as Map<String, dynamic>),
+          labelFont: json['labelFont'] == null
+              ? const FontConfig()
+              : FontConfig.fromJson(json['labelFont'] as Map<String, dynamic>),
+          type: $enumDecodeNullable(
+                  _$DistributionChartTypeEnumMap, json['type']) ??
+              DistributionChartType.pie,
+          field: json['field'] as String? ?? '',
+          modelIds: (json['modelIds'] as List<dynamic>?)
+                  ?.map((e) => e as String)
+                  .toList() ??
+              const [],
+          segments: (json['segments'] as List<dynamic>?)
+                  ?.map((e) => Range.fromJson(e as Map<String, dynamic>))
+                  .toList() ??
+              const [
+                Range(from: 0, to: 25, color: 0xFFFFFFFF),
+                Range(from: 26, to: 50, color: 0xFFFFFFFF),
+                Range(from: 51, to: 75, color: 0xFFFFFFFF),
+                Range(from: 76, to: 100, color: 0xFFFFFFFF)
+              ],
+        );
+
+Map<String, dynamic> _$$ValueDistributionPieChartWidgetConfigImplToJson(
+        _$ValueDistributionPieChartWidgetConfigImpl instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'headerFont': instance.headerFont,
+      'labelFont': instance.labelFont,
+      'type': _$DistributionChartTypeEnumMap[instance.type]!,
+      'field': instance.field,
+      'modelIds': instance.modelIds,
+      'segments': instance.segments,
+    };
+
+const _$DistributionChartTypeEnumMap = {
+  DistributionChartType.pie: 'pie',
+  DistributionChartType.doughnut: 'doughnut',
+  DistributionChartType.radial: 'radial',
+  DistributionChartType.pyramid: 'pyramid',
+  DistributionChartType.funnel: 'funnel',
+};
+
+_$TotalAndReportingAssetWidgetConfigImpl
+    _$$TotalAndReportingAssetWidgetConfigImplFromJson(
+            Map<String, dynamic> json) =>
+        _$TotalAndReportingAssetWidgetConfigImpl(
+          title: json['title'] as String? ?? 'Title',
+          headerFont: json['headerFont'] == null
+              ? const FontConfig(fontSize: 20, fontBold: true)
+              : FontConfig.fromJson(json['headerFont'] as Map<String, dynamic>),
+          labelFont: json['labelFont'] == null
+              ? const FontConfig()
+              : FontConfig.fromJson(json['labelFont'] as Map<String, dynamic>),
+          assetModelIds: (json['assetModelIds'] as List<dynamic>?)
+                  ?.map((e) => e as String)
+                  .toList() ??
+              const [],
+        );
+
+Map<String, dynamic> _$$TotalAndReportingAssetWidgetConfigImplToJson(
+        _$TotalAndReportingAssetWidgetConfigImpl instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'headerFont': instance.headerFont,
+      'labelFont': instance.labelFont,
+      'assetModelIds': instance.assetModelIds,
+    };
