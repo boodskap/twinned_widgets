@@ -159,3 +159,4 @@ coverage/
 !.vscode/settings.json
 
 *.metadata
+twinned_models

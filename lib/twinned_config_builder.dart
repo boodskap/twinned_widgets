@@ -1,7 +1,7 @@
-import 'package:configs/models.dart';
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/core/model_field_dropdown.dart';
+import 'package:twinned_models/twinned_models.dart';
 
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
