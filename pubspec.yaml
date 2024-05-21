@@ -25,7 +25,7 @@ dependencies:
       ref: main
 
   configs:
-    path: configs
+    path: ./configs
 
   syncfusion_flutter_gauges: ^25.1.37
   water_bottle: ^0.0.7
