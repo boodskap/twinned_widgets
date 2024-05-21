@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/twinned_session.dart';
-import 'package:configs/models.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/twinned_config_builder.dart';
+import 'package:twinned_models/twinned_models.dart';
 
 void main() {
   runApp(const MyApp());
