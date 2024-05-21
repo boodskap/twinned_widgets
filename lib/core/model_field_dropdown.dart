@@ -44,12 +44,15 @@ class _ModelFieldDropdownState extends BaseState<ModelFieldDropdown> {
       var pRes = await TwinnedSession.instance.twin
           .listAllParameters(apikey: TwinnedSession.instance.authToken);
       if (validateResponse(pRes)) {
+        List<String> names = [];
         for (var param in pRes.body!.values!) {
           if (param.name == widget.selectedField) {
             _selectedParameter = param;
           }
+          if (names.contains(param.name)) continue;
           _dropdownMenuEntries.add(DropdownMenuEntry<twin.Parameter>(
               label: param.name, value: param));
+          names.add(param.name);
         }
       }
     });
