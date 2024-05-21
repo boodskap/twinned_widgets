@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   flutter_session_manager: ^1.0.3
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0
 
   nocode_commons:
     git:
@@ -24,8 +26,10 @@ dependencies:
       url: https://github.com/boodskap/twinned_api.git
       ref: main
 
-  configs:
-    path: configs
+  twinned_models:
+    git:
+      url: https://github.com/boodskap/twinned_models.git
+      ref: main
 
   syncfusion_flutter_gauges: ^25.1.37
   water_bottle: ^0.0.7
@@ -39,7 +43,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.2
-
+  build_runner: ^2.4.9
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
