@@ -34,6 +34,8 @@ class _ValueDistributionPieChartWidgetState
   late List<String> modelIds;
   bool isValidConfig = false;
   int? value;
+  List<Range> segments = [];
+  List<Map<String, dynamic>> segmentsEql = [];
 
   @override
   void initState() {
@@ -57,6 +59,21 @@ class _ValueDistributionPieChartWidgetState
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Wrap(
+          spacing: 8.0,
+          children: [
+            Text(
+              'Not configured properly',
+              style:
+                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
+      );
+    }
+
     if (chartData.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -193,7 +210,7 @@ class _ValueDistributionPieChartWidgetState
   }
 
   Color? getColor(String label) {
-    for (var range in widget.config.segments) {
+    for (var range in segments) {
       if (range.label == label && null != range.color) {
         return Color(range.color!);
       }
@@ -202,25 +219,36 @@ class _ValueDistributionPieChartWidgetState
   }
 
   Future load() async {
+    if (!isValidConfig) return;
+
     if (loading) return;
     loading = true;
 
     chartData.clear();
+    segments.clear();
+    segmentsEql.clear();
 
     Map<String, dynamic> terms = {
       "terms": {"modelId": widget.config.modelIds}
     };
 
+    for (Map<String, dynamic> obj in widget.config.segments) {
+      segments.add(Range(
+          from: obj['from'],
+          to: obj['to'],
+          color: obj['color'],
+          label: obj['label']));
+      segmentsEql
+          .add({'from': obj['from'], 'to': obj['to'], 'key': obj['label']});
+    }
+
     EqlCondition aggs = EqlCondition(name: 'aggs', condition: {
       "distribution": {
-        "range": {
-          "field": "data.${widget.config.field}",
-          "ranges": widget.config.segments
-              .map((e) => {"from": e.from, "to": e.to, "key": e.label})
-              .toList()
-        }
+        "range": {"field": "data.${widget.config.field}", "ranges": segmentsEql}
       }
     });
+
+    //debugPrint(aggs.toString());
 
     await execute(() async {
       TwinnedSession session = TwinnedSession.instance;
@@ -281,7 +309,15 @@ class ValueDistributionPieChartWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig() {
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return ValueDistributionPieChartWidgetConfig.fromJson(config);
+    }
     return ValueDistributionPieChartWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Pie chart based on device field data ranges';
   }
 }

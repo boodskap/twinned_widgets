@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_models/models.dart';
@@ -148,7 +146,15 @@ class DeviceCartesianChartWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig() {
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return DeviceCartesianChartWidgetConfig.fromJson(config);
+    }
     return DeviceCartesianChartWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Graph based on device field';
   }
 }

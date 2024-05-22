@@ -98,7 +98,15 @@ class TotalAndReportingAssetWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig() {
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return TotalAndReportingAssetWidgetConfig.fromJson(config);
+    }
     return TotalAndReportingAssetWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Total & Reporting Assets';
   }
 }
