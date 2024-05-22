@@ -15,7 +15,8 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.topLeft,
       child: ElevatedButton(
         onPressed: _showColorPickerDialog,
         style: ElevatedButton.styleFrom(
