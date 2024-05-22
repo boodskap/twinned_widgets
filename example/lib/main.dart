@@ -308,7 +308,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
 
     TwinnedSession.instance.init(debug: true, host: 'twinned.digital');
 
-    TwinnedSession.instance.authToken = '';
+    TwinnedSession.instance.authToken = 'ENGrp17JFuBoWNIOgT';
 
     loading = false;
     refresh();
