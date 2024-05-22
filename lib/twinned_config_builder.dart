@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:twinned_widgets/core/color_picker_field.dart';
+import 'package:twinned_widgets/core/decimal_field.dart';
 import 'package:twinned_widgets/core/device_field_dropdown.dart';
 import 'package:twinned_widgets/core/font_field.dart';
 import 'package:twinned_widgets/core/model_field_dropdown.dart';
@@ -98,38 +100,86 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       _children.add(divider());
     });
 
-    _children.add(Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
       children: [
-        IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.cancel),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: _children,
+            ),
+          ),
         ),
-        divider(horizontal: true),
-        IconButton(
-          onPressed: () async {
-            await _save();
-          },
-          icon: const Icon(Icons.save),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Tooltip(
+              message: 'Cancel',
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.cancel),
+              ),
+            ),
+            divider(horizontal: true),
+            Tooltip(
+              message: 'Save',
+              child: IconButton(
+                onPressed: () async {
+                  await _save();
+                },
+                icon: const Icon(Icons.save),
+              ),
+            ),
+          ],
         ),
       ],
-    ));
-
-    return SingleChildScrollView(
-      child: Column(
-        children: _children,
-      ),
     );
   }
 
   Widget _buildNumberField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    switch (widget.config.getHintType(parameter)) {
+      case HintType.field:
+      case HintType.modelId:
+      case HintType.assetModelId:
+      case HintType.color:
+        return const ColorPickerField();
+      default:
+        TextEditingController controller = TextEditingController();
+        _controllers.add(controller);
+        controller.addListener(() {
+          _parameters[parameter] = controller.text;
+        });
+        return TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          controller: controller,
+        );
+    }
   }
 
   Widget _buildDecimalField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    switch (widget.config.getDataType(parameter)) {
+      case DataType.decimal:
+        return const DecimalField();
+      case DataType.numeric:
+      case DataType.font:
+      case DataType.yesno:
+      case DataType.enumerated:
+      case DataType.listOfTexts:
+      case DataType.listOfNumbers:
+      case DataType.listOfDecimals:
+      case DataType.listOfObjects:
+      default:
+        TextEditingController controller = TextEditingController();
+        _controllers.add(controller);
+        controller.addListener(() {
+          _parameters[parameter] = controller.text;
+        });
+        return TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          controller: controller,
+        );
+    }
   }
 
   Widget _buildTextField(String parameter) {
@@ -150,6 +200,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           _parameters[parameter] = controller.text;
         });
         return TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
           controller: controller,
         );
     }
@@ -182,6 +233,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           _parameters[parameter] = controller.text;
         });
         return TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
           controller: controller,
         );
     }
@@ -217,6 +269,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           _parameters[parameter] = controller.text;
         });
         return TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
           controller: controller,
         );
     }

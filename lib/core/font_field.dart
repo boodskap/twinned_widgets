@@ -76,18 +76,24 @@ class _FontFieldState extends BaseState<FontField> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: selectedColor,
                 ),
-                child: const Text('Pick Color'),
+                child: const Text(
+                  'Pick Color',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(width: 10),
-            IntrinsicWidth(
-              child: SpinBox(
-                min: 4,
-                max: 50,
-                value: fontSize,
-                showCursor: true,
-                autofocus: true,
-                onChanged: _updateFontSize,
+            SizedBox(
+              height: 35,
+              child: IntrinsicWidth(
+                child: SpinBox(
+                  min: 4,
+                  max: 50,
+                  value: fontSize,
+                  showCursor: true,
+                  autofocus: true,
+                  onChanged: _updateFontSize,
+                ),
               ),
             ),
             const SizedBox(width: 10),
