@@ -3,6 +3,7 @@ import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/core/color_picker_field.dart';
 import 'package:twinned_widgets/core/decimal_field.dart';
 import 'package:twinned_widgets/core/device_field_dropdown.dart';
+import 'package:twinned_widgets/core/enumerated_field.dart';
 import 'package:twinned_widgets/core/font_field.dart';
 import 'package:twinned_widgets/core/model_field_dropdown.dart';
 import 'package:twinned_models/twinned_models.dart';
@@ -211,8 +212,60 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildEnumeratedField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    switch (widget.config.getDataType(parameter)) {
+      case DataType.enumerated:
+        List<String> enumeratedValues =
+            widget.config.getEnumeratedValues(parameter);
+        return EnumeratedDropdown(
+          enumeratedValues: enumeratedValues,
+          selectedValue: _parameters[parameter] ?? enumeratedValues.first,
+          onChanged: (String? value) {
+            setState(() {
+              _parameters[parameter] = value!;
+            });
+          },
+        );
+      case DataType.numeric:
+      case DataType.decimal:
+      case DataType.yesno:
+      case DataType.font:
+      case DataType.listOfTexts:
+      case DataType.listOfNumbers:
+      case DataType.listOfDecimals:
+      case DataType.listOfObjects:
+      default:
+        TextEditingController controller = TextEditingController();
+        _controllers.add(controller);
+        controller.addListener(() {
+          _parameters[parameter] = controller.text;
+        });
+        return TextField(
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          controller: controller,
+        );
+    }
   }
+
+  // Widget _buildEnumeratedField(String parameter) {
+  //   List<String> enumeratedValues =
+  //       widget.config.getEnumeratedValues(parameter);
+  //   String selectedValue = _parameters[parameter] ?? enumeratedValues.first;
+
+  //   return DropdownButton<String>(
+  //     value: selectedValue,
+  //     onChanged: (String? newValue) {
+  //       setState(() {
+  //         _parameters[parameter] = newValue;
+  //       });
+  //     },
+  //     items: enumeratedValues.map<DropdownMenuItem<String>>((String value) {
+  //       return DropdownMenuItem<String>(
+  //         value: value,
+  //         child: Text(value),
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
   Widget _buildFontField(String parameter) {
     switch (widget.config.getDataType(parameter)) {

@@ -14,7 +14,8 @@ class DecimalField extends StatefulWidget {
 class _DecimalFieldState extends BaseState<DecimalField> {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.topLeft,
       child: SizedBox(
         height: 45,
         width: 100,
