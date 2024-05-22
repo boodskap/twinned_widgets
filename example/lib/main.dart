@@ -74,25 +74,18 @@ class _MyHomePageState extends BaseState<MyHomePage> {
               height: 200,
               child: TotalValueWidget(
                 config: TotalValueWidgetConfig(
-                    title: 'Total',
-                    field: 'volume',
-                    fieldSuffix: ' gals',
-                    borderRadius: 180,
-                    modelIds: [
-                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
-                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
-                    ],
-                    bgColor: Colors.orange.value,
-                    borderColor: Colors.red.value,
-                    borderWidth: 4.0,
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 28),
-                    labelFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 18)),
+                  title: 'Total',
+                  field: 'volume',
+                  fieldSuffix: ' gals',
+                  borderRadius: 180,
+                  modelIds: [
+                    'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                    '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                  ],
+                  bgColor: Colors.orange.value,
+                  borderColor: Colors.red.value,
+                  borderWidth: 4.0,
+                ),
               ),
             ),
             SizedBox(
@@ -100,25 +93,18 @@ class _MyHomePageState extends BaseState<MyHomePage> {
               height: 200,
               child: TotalValueWidget(
                 config: TotalValueWidgetConfig(
-                    title: 'Total',
-                    field: 'volume',
-                    fieldSuffix: ' gals',
-                    borderRadius: 0,
-                    modelIds: [
-                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
-                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
-                    ],
-                    bgColor: Colors.green.value,
-                    borderColor: Colors.red.value,
-                    borderWidth: 4.0,
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 28),
-                    labelFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 18)),
+                  title: 'Total',
+                  field: 'volume',
+                  fieldSuffix: ' gals',
+                  borderRadius: 0,
+                  modelIds: [
+                    'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                    '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                  ],
+                  bgColor: Colors.green.value,
+                  borderColor: Colors.red.value,
+                  borderWidth: 4.0,
+                ),
               ),
             ),
             SizedBox(
@@ -126,25 +112,18 @@ class _MyHomePageState extends BaseState<MyHomePage> {
               height: 200,
               child: TotalValueWidget(
                 config: TotalValueWidgetConfig(
-                    title: 'Total',
-                    field: 'volume',
-                    fieldSuffix: ' gals',
-                    borderRadius: 45,
-                    modelIds: [
-                      'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
-                      '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
-                    ],
-                    bgColor: Colors.transparent.value,
-                    borderColor: Colors.red.value,
-                    borderWidth: 4.0,
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 28),
-                    labelFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 18)),
+                  title: 'Total',
+                  field: 'volume',
+                  fieldSuffix: ' gals',
+                  borderRadius: 45,
+                  modelIds: [
+                    'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
+                    '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
+                  ],
+                  bgColor: Colors.transparent.value,
+                  borderColor: Colors.red.value,
+                  borderWidth: 4.0,
+                ),
               ),
             ),
             SizedBox(
@@ -158,10 +137,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                       'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
                       '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
                     ],
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 22),
                     segments: [
                       Range(
                           from: 0,
@@ -196,10 +171,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                       'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
                       '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
                     ],
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 22),
                     segments: [
                       Range(
                           from: 0,
@@ -234,14 +205,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                       'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
                       '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
                     ],
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 22),
-                    labelFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 14),
                     segments: [
                       Range(
                           from: 0,
@@ -276,14 +239,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                       'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
                       '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
                     ],
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 22),
-                    labelFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 14),
                     segments: [
                       Range(
                           from: 0,
@@ -318,14 +273,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                       'e4781f46-28bf-4d71-a2ea-e5748dde28a5',
                       '9fcd0f33-092a-416e-90c1-ba84dd77fde8'
                     ],
-                    headerFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 22),
-                    labelFont: FontConfig(
-                        fontColor: Colors.black.value,
-                        fontBold: true,
-                        fontSize: 14),
                     segments: [
                       Range(
                           from: 0,
@@ -359,7 +306,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
     if (loading) return;
     loading = true;
 
-    await TwinnedSession.instance.load(host: 'twinned.digital');
+    TwinnedSession.instance.init(debug: true, host: 'twinned.digital');
 
     TwinnedSession.instance.authToken = '';
 
