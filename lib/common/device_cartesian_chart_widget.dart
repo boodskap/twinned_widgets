@@ -159,7 +159,15 @@ class DeviceCartesianChartWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig() {
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return DeviceCartesianChartWidgetConfig.fromJson(config);
+    }
     return DeviceCartesianChartWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Graph based on device field';
   }
 }

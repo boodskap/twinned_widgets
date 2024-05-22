@@ -28,6 +28,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
   late List<String> modelIds;
   bool isValidConfig = false;
   int? value;
+  int _counter = 0;
 
   @override
   void initState() {
@@ -40,8 +41,8 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
     borderStyle = config.borderStyle;
     headerFont = FontConfig.fromJson(config.headerFont);
     labelFont = FontConfig.fromJson(config.labelFont);
-    field = config.field;
-    modelIds = config.modelIds;
+    field = widget.config.field;
+    modelIds = widget.config.modelIds;
 
     headerFontColor =
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
@@ -57,17 +58,20 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
-      return const Wrap(
+      return Wrap(
         spacing: 8.0,
         children: [
           Text(
-            'Not configured properly',
-            style:
-                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+            'Not configured properly - ${_counter++}',
+            style: const TextStyle(
+                color: Colors.red, overflow: TextOverflow.ellipsis),
           ),
         ],
       );
     }
+
+    debugPrint('Value: $value');
+
     return Container(
         decoration: BoxDecoration(
           color: bgColor,
@@ -173,7 +177,15 @@ class TotalValueWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig() {
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return TotalValueWidgetConfig.fromJson(config);
+    }
     return TotalValueWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Sum of a specific field from the device data';
   }
 }

@@ -5,11 +5,13 @@ import 'package:twinned_widgets/palette_category.dart';
 abstract class TwinnedWidgetBuilder {
   Widget build(Map<String, dynamic> config);
 
-  BaseConfig getDefaultConfig();
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config});
 
   String getPaletteName();
 
   PaletteCategory getPaletteCategory();
 
   Widget getPaletteIcon();
+
+  String getPaletteTooltip();
 }
