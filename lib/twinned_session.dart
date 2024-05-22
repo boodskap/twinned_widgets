@@ -3,14 +3,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as digital;
 
 class TwinnedSession {
-  TwinnedSession._privateConstructor() {}
+  TwinnedSession._privateConstructor() {
+    _load();
+  }
 
-  Future load({bool debug = true, String host = 'twinned.digital'}) async {
-    if (_inited) return;
-
+  Future _load() async {
     await dotenv.load(fileName: 'settings.txt');
 
     var session = SessionManager();
+
+    await session.update();
+  }
+
+  void init({bool debug = true, String host = 'twinned.digital'}) {
+    if (_inited) return;
 
     _debug = debug;
     _host = host;
@@ -18,8 +24,6 @@ class TwinnedSession {
     _twinned =
         digital.Twinned.create(baseUrl: Uri.https(_host, '/rest/nocode'));
     _inited = true;
-
-    await session.update();
   }
 
   Future cleanup() async {

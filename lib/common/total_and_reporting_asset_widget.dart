@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/api/twinned.swagger.dart';
+import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class TotalAndReportingAssetWidget extends StatefulWidget {
   final TotalAndReportingAssetWidgetConfig config;
@@ -70,5 +72,33 @@ class _TotalAndReportingAssetWidgetState
   @override
   void setup() {
     // TODO: implement setup
+  }
+}
+
+class TotalAndReportingAssetWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return TotalAndReportingAssetWidget(
+        config: TotalAndReportingAssetWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.pie_chart);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Reporting Assets";
+  }
+
+  @override
+  BaseConfig getDefaultConfig() {
+    return TotalAndReportingAssetWidgetConfig();
   }
 }

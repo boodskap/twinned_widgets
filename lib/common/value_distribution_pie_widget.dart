@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
@@ -25,6 +26,34 @@ class ChartData {
 class _ValueDistributionPieChartWidgetState
     extends BaseState<ValueDistributionPieChartWidget> {
   final List<ChartData> chartData = [];
+  late FontConfig headerFont;
+  late Color headerFontColor;
+  late FontConfig labelFont;
+  late Color labelFontColor;
+  late String field;
+  late List<String> modelIds;
+  bool isValidConfig = false;
+  int? value;
+
+  @override
+  void initState() {
+    //Copy all the config
+    var config = widget.config;
+    headerFont = FontConfig.fromJson(config.headerFont as Map<String, Object?>);
+    labelFont = FontConfig.fromJson(config.labelFont as Map<String, Object?>);
+    field = config.field;
+    modelIds = config.modelIds;
+
+    headerFontColor =
+        headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
+    labelFontColor =
+        labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
+
+    isValidConfig = field.isNotEmpty;
+    isValidConfig = isValidConfig && modelIds.isNotEmpty;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +66,10 @@ class _ValueDistributionPieChartWidgetState
           legend: Legend(
               isVisible: true,
               textStyle: TextStyle(
-                  fontWeight: widget.config.labelFont!.fontBold
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  fontSize: widget.config.labelFont!.fontSize,
-                  color: Color(widget.config.labelFont!.fontColor!))),
+                  fontWeight:
+                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  fontSize: labelFont.fontSize,
+                  color: labelFontColor)),
           series: PyramidSeries<ChartData, String>(
               dataLabelSettings: DataLabelSettings(
                   isVisible: true,
@@ -49,11 +77,11 @@ class _ValueDistributionPieChartWidgetState
                   overflowMode: OverflowMode.shift,
                   labelIntersectAction: LabelIntersectAction.none,
                   textStyle: TextStyle(
-                      fontWeight: widget.config.labelFont!.fontBold
+                      fontWeight: labelFont.fontBold
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      fontSize: widget.config.labelFont!.fontSize,
-                      color: Color(widget.config.labelFont!.fontColor!))),
+                      fontSize: labelFont.fontSize,
+                      color: labelFontColor)),
               explode: true,
               dataSource: chartData,
               pointColorMapper: (ChartData data, _) => data.color,
@@ -66,11 +94,10 @@ class _ValueDistributionPieChartWidgetState
           legend: Legend(
               isVisible: true,
               textStyle: TextStyle(
-                  fontWeight: widget.config.labelFont!.fontBold
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  fontSize: widget.config.labelFont!.fontSize,
-                  color: Color(widget.config.labelFont!.fontColor!))),
+                  fontWeight:
+                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  fontSize: labelFont.fontSize,
+                  color: labelFontColor)),
           series: FunnelSeries<ChartData, String>(
               dataLabelSettings: DataLabelSettings(
                   isVisible: true,
@@ -78,11 +105,11 @@ class _ValueDistributionPieChartWidgetState
                   overflowMode: OverflowMode.shift,
                   labelIntersectAction: LabelIntersectAction.none,
                   textStyle: TextStyle(
-                      fontWeight: widget.config.labelFont!.fontBold
+                      fontWeight: labelFont.fontBold
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      fontSize: widget.config.labelFont!.fontSize,
-                      color: Color(widget.config.labelFont!.fontColor!))),
+                      fontSize: labelFont.fontSize,
+                      color: labelFontColor)),
               explode: true,
               dataSource: chartData,
               pointColorMapper: (ChartData data, _) => data.color,
@@ -94,11 +121,10 @@ class _ValueDistributionPieChartWidgetState
         legend: Legend(
             isVisible: true,
             textStyle: TextStyle(
-                fontWeight: widget.config.labelFont!.fontBold
-                    ? FontWeight.bold
-                    : FontWeight.normal,
-                fontSize: widget.config.labelFont!.fontSize,
-                color: Color(widget.config.labelFont!.fontColor!))),
+                fontWeight:
+                    labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                fontSize: labelFont.fontSize,
+                color: labelFontColor)),
         series: <CircularSeries>[
           if (widget.config.type == DistributionChartType.pie)
             PieSeries<ChartData, String>(
@@ -109,11 +135,11 @@ class _ValueDistributionPieChartWidgetState
                     isVisible: true,
                     showZeroValue: false,
                     textStyle: TextStyle(
-                        fontWeight: widget.config.labelFont!.fontBold
+                        fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
-                        fontSize: widget.config.labelFont!.fontSize,
-                        color: Color(widget.config.labelFont!.fontColor!))),
+                        fontSize: labelFont.fontSize,
+                        color: labelFontColor)),
                 explode: true,
                 dataSource: chartData,
                 pointColorMapper: (ChartData data, _) => data.color,
@@ -128,11 +154,11 @@ class _ValueDistributionPieChartWidgetState
                     isVisible: true,
                     showZeroValue: false,
                     textStyle: TextStyle(
-                        fontWeight: widget.config.labelFont!.fontBold!
+                        fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
-                        fontSize: widget.config.labelFont!.fontSize,
-                        color: Color(widget.config.labelFont!.fontColor!))),
+                        fontSize: labelFont.fontSize,
+                        color: labelFontColor)),
                 explode: true,
                 dataSource: chartData,
                 pointColorMapper: (ChartData data, _) => data.color,
@@ -147,11 +173,11 @@ class _ValueDistributionPieChartWidgetState
                     showZeroValue: false,
                     isVisible: true,
                     textStyle: TextStyle(
-                        fontWeight: widget.config.labelFont!.fontBold!
+                        fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
-                        fontSize: widget.config.labelFont!.fontSize,
-                        color: Color(widget.config.labelFont!.fontColor!))),
+                        fontSize: labelFont.fontSize,
+                        color: labelFontColor)),
                 cornerStyle: CornerStyle.bothCurve,
                 dataSource: chartData,
                 trackOpacity: 0.3,
@@ -172,6 +198,7 @@ class _ValueDistributionPieChartWidgetState
         return Color(range.color!);
       }
     }
+    return null;
   }
 
   Future load() async {
@@ -236,5 +263,25 @@ class ValueDistributionPieChartWidgetBuilder extends TwinnedWidgetBuilder {
   Widget build(Map<String, dynamic> config) {
     return ValueDistributionPieChartWidget(
         config: ValueDistributionPieChartWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.pie_chart);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Distribution Chart";
+  }
+
+  @override
+  BaseConfig getDefaultConfig() {
+    return ValueDistributionPieChartWidgetConfig();
   }
 }
