@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_models/twinned_models.dart';
@@ -14,20 +15,67 @@ class TotalValueWidget extends StatefulWidget {
 }
 
 class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
+  late Color bgColor;
+  late Color borderColor;
+  late double borderWidth;
+  late double borderRadius;
+  late BorderStyle borderStyle;
+  late FontConfig headerFont;
+  late Color headerFontColor;
+  late FontConfig labelFont;
+  late Color labelFontColor;
+  late String field;
+  late List<String> modelIds;
+  bool isValidConfig = false;
   int? value;
 
   @override
+  void initState() {
+    //Copy all the config
+    var config = widget.config;
+    bgColor = config.bgColor <= 0 ? Colors.black : Color(config.bgColor);
+    borderColor = config.bgColor <= 0 ? Colors.black : Color(config.bgColor);
+    borderWidth = config.borderWidth;
+    borderRadius = config.borderRadius;
+    borderStyle = config.borderStyle;
+    headerFont = FontConfig.fromJson(config.headerFont);
+    labelFont = FontConfig.fromJson(config.labelFont);
+    field = config.field;
+    modelIds = config.modelIds;
+
+    headerFontColor =
+        headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
+    labelFontColor =
+        labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
+
+    isValidConfig = field.isNotEmpty;
+    isValidConfig = isValidConfig && modelIds.isNotEmpty;
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint('Value: $value');
+    if (!isValidConfig) {
+      return const Wrap(
+        spacing: 8.0,
+        children: [
+          Text(
+            'Not configured properly',
+            style:
+                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+          ),
+        ],
+      );
+    }
     return Container(
         decoration: BoxDecoration(
-          color: Color(widget.config.bgColor),
-          borderRadius:
-              BorderRadius.all(Radius.circular(widget.config.borderRadius)),
+          color: bgColor,
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
           border: Border.all(
-            width: widget.config.borderWidth,
-            color: Color(widget.config.borderColor),
-            style: widget.config.borderStyle,
+            width: borderWidth,
+            color: borderColor,
+            style: borderStyle,
           ),
         ),
         child: Column(
@@ -36,39 +84,41 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
             Text(
               widget.config.title,
               style: TextStyle(
-                  fontWeight: widget.config.headerFont!.fontBold!
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  fontSize: widget.config.headerFont!.fontSize,
-                  color: Color(widget.config.headerFont!.fontColor!)),
+                  fontWeight:
+                      headerFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  fontSize: headerFont.fontSize,
+                  color: headerFontColor),
             ),
             divider(),
             if (null != value)
               Text(
                 '${widget.config.fieldPrefix}$value${widget.config.fieldSuffix}',
                 style: TextStyle(
-                    fontWeight: widget.config.labelFont!.fontBold!
+                    fontWeight: labelFont.fontBold
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    fontSize: widget.config.labelFont!.fontSize,
-                    color: Color(widget.config.labelFont!.fontColor!)),
+                    fontSize: labelFont.fontSize,
+                    color: labelFontColor),
               ),
           ],
         ));
   }
 
   Future load() async {
+    if (!isValidConfig) return;
+
     if (loading) return;
+
     loading = true;
 
     EqlCondition stats = EqlCondition(name: 'aggs', condition: {
       "stats": {
         "filter": {
-          "terms": {"modelId": widget.config.modelIds}
+          "terms": {"modelId": modelIds}
         },
         "aggs": {
           "sum": {
-            "sum": {"field": "data.${widget.config.field}"}
+            "sum": {"field": "data.$field"}
           }
         }
       }
@@ -105,5 +155,25 @@ class TotalValueWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
     return TotalValueWidget(config: TotalValueWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.bar_chart);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Total Value";
+  }
+
+  @override
+  BaseConfig getDefaultConfig() {
+    return TotalValueWidgetConfig();
   }
 }
