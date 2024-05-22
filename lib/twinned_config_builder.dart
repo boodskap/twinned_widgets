@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/core/device_field_dropdown.dart';
+import 'package:twinned_widgets/core/font_field.dart';
 import 'package:twinned_widgets/core/model_field_dropdown.dart';
 import 'package:twinned_models/twinned_models.dart';
 
@@ -12,10 +13,10 @@ class TwinnedConfigBuilder extends StatefulWidget {
   final OnConfigSaved onConfigSaved;
 
   const TwinnedConfigBuilder(
-    {super.key,
-    required this.config,
-    required this.parameters,
-    required this.onConfigSaved});
+      {super.key,
+      required this.config,
+      required this.parameters,
+      required this.onConfigSaved});
 
   @override
   State<TwinnedConfigBuilder> createState() => _TwinnedConfigBuilderState();
@@ -163,7 +164,27 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildFontField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    switch (widget.config.getDataType(parameter)) {
+      case DataType.font:
+        return const FontField();
+      case DataType.numeric:
+      case DataType.decimal:
+      case DataType.yesno:
+      case DataType.enumerated:
+      case DataType.listOfTexts:
+      case DataType.listOfNumbers:
+      case DataType.listOfDecimals:
+      case DataType.listOfObjects:
+      default:
+        TextEditingController controller = TextEditingController();
+        _controllers.add(controller);
+        controller.addListener(() {
+          _parameters[parameter] = controller.text;
+        });
+        return TextField(
+          controller: controller,
+        );
+    }
   }
 
   Widget _buildListOfTextsField(String parameter) {
