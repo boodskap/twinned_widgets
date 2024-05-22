@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:twinned_widgets/core/device_field_dropdown.dart';
 import 'package:twinned_widgets/core/model_field_dropdown.dart';
 import 'package:twinned_models/twinned_models.dart';
 
@@ -9,11 +10,12 @@ class TwinnedConfigBuilder extends StatefulWidget {
   final BaseConfig config;
   final Map<String, dynamic> parameters;
   final OnConfigSaved onConfigSaved;
+
   const TwinnedConfigBuilder(
-      {super.key,
-      required this.config,
-      required this.parameters,
-      required this.onConfigSaved});
+    {super.key,
+    required this.config,
+    required this.parameters,
+    required this.onConfigSaved});
 
   @override
   State<TwinnedConfigBuilder> createState() => _TwinnedConfigBuilderState();
@@ -81,11 +83,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       _children.add(Row(
         children: [
           Expanded(
-              flex: 1,
-              child: Text(
-                key,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              )),
+            flex: 1,
+            child: Text(
+              key,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
           divider(horizontal: true),
           Expanded(flex: 4, child: value),
         ],
@@ -98,23 +101,26 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.cancel)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.cancel),
+        ),
         divider(horizontal: true),
         IconButton(
-            onPressed: () async {
-              await _save();
-            },
-            icon: const Icon(Icons.save)),
+          onPressed: () async {
+            await _save();
+          },
+          icon: const Icon(Icons.save),
+        ),
       ],
     ));
 
     return SingleChildScrollView(
-        child: Column(
-      children: _children,
-    ));
+      child: Column(
+        children: _children,
+      ),
+    );
   }
 
   Widget _buildNumberField(String parameter) {
@@ -131,11 +137,11 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       case HintType.modelId:
       case HintType.assetModelId:
         return ModelFieldDropdown(
-            selectedField: _parameters[parameter],
-            onModelFieldSelected: (param) {
-              _parameters[parameter] = param?.name ?? '';
-            });
-        break;
+          selectedField: _parameters[parameter],
+          onModelFieldSelected: (param) {
+            _parameters[parameter] = param?.name ?? '';
+          },
+        );
       default:
         TextEditingController controller = TextEditingController();
         _controllers.add(controller);
@@ -161,7 +167,38 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildListOfTextsField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    var paramValue = _parameters[parameter];
+    List<String> selectedDevices = [];
+
+    if (paramValue is List<String>) {
+      selectedDevices = paramValue;
+    } else if (paramValue is String) {
+      selectedDevices = [paramValue];
+    }
+
+    switch (widget.config.getHintType(parameter)) {
+      case HintType.field:
+      case HintType.modelId:
+        return DeviceFieldDropdown(
+          selectedDevices: selectedDevices,
+          onDevicesSelected: (devices) {
+            setState(() {
+              _parameters[parameter] =
+                  devices.map((device) => device.name).toList();
+            });
+          },
+        );
+      case HintType.assetModelId:
+      default:
+        TextEditingController controller = TextEditingController();
+        _controllers.add(controller);
+        controller.addListener(() {
+          _parameters[parameter] = controller.text;
+        });
+        return TextField(
+          controller: controller,
+        );
+    }
   }
 
   Widget _buildListOfNumbersField(String parameter) {
