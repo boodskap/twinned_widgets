@@ -5,21 +5,21 @@ import 'package:twinned_widgets/twinned_session.dart';
 
 typedef OnDevicesSelected = void Function(List<twin.Device> devices);
 
-class DeviceFieldDropdown extends StatefulWidget {
+class MultiDeviceDropdown extends StatefulWidget {
   final List<String> selectedDevices;
   final OnDevicesSelected onDevicesSelected;
 
-  const DeviceFieldDropdown({
+  const MultiDeviceDropdown({
     super.key,
     required this.selectedDevices,
     required this.onDevicesSelected,
   });
 
   @override
-  State<DeviceFieldDropdown> createState() => _DeviceFieldDropdownState();
+  State<MultiDeviceDropdown> createState() => _MultiDeviceDropdownState();
 }
 
-class _DeviceFieldDropdownState extends BaseState<DeviceFieldDropdown> {
+class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
   final List<DropdownMenuEntry<twin.Device>> _dropdownMenuEntries = [];
   final List<twin.Device> _selectedDevices = [];
 
