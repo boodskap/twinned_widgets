@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nocode_commons/core/base_state.dart';
 
-class DecimalField extends StatefulWidget {
+class NumberField extends StatefulWidget {
   final Map<String, dynamic> parameters;
   final String parameter;
-  const DecimalField({
+  const NumberField({
     super.key,
     required this.parameters,
     required this.parameter,
   });
 
   @override
-  State<DecimalField> createState() => _DecimalFieldState();
+  State<NumberField> createState() => _NumberFieldState();
 }
 
-class _DecimalFieldState extends BaseState<DecimalField> {
+class _NumberFieldState extends BaseState<NumberField> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -23,7 +23,7 @@ class _DecimalFieldState extends BaseState<DecimalField> {
     String value;
 
     if (null == widget.parameters[widget.parameter]) {
-      value = '0.0';
+      value = '0';
     } else {
       value = '${widget.parameters[widget.parameter]}';
     }
@@ -43,15 +43,16 @@ class _DecimalFieldState extends BaseState<DecimalField> {
         child: TextField(
           controller: _controller,
           decoration: const InputDecoration(border: OutlineInputBorder()),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          keyboardType: const TextInputType.numberWithOptions(
+              decimal: false, signed: true),
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+            FilteringTextInputFormatter.allow(RegExp(r'^\s*-?[0-9]{1,10}\s*$')),
           ],
           onChanged: (value) {
             if (value.isEmpty) {
               widget.parameters[widget.parameter] = null;
             } else {
-              widget.parameters[widget.parameter] = double.parse(value);
+              widget.parameters[widget.parameter] = int.parse(value);
             }
           },
         ),

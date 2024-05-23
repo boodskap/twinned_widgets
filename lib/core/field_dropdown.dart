@@ -3,22 +3,20 @@ import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/twinned_session.dart';
 
-typedef OnModelFieldSelected = void Function(twin.Parameter? field);
+typedef OnFieldSelected = void Function(twin.Parameter? field);
 
-class ModelFieldDropdown extends StatefulWidget {
+class FieldDropdown extends StatefulWidget {
   final String? selectedField;
-  final OnModelFieldSelected onModelFieldSelected;
+  final OnFieldSelected onFieldSelected;
 
-  ModelFieldDropdown(
-      {super.key,
-      required this.selectedField,
-      required this.onModelFieldSelected});
+  const FieldDropdown(
+      {super.key, required this.selectedField, required this.onFieldSelected});
 
   @override
-  State<ModelFieldDropdown> createState() => _ModelFieldDropdownState();
+  State<FieldDropdown> createState() => _FieldDropdownState();
 }
 
-class _ModelFieldDropdownState extends BaseState<ModelFieldDropdown> {
+class _FieldDropdownState extends BaseState<FieldDropdown> {
   final List<DropdownMenuEntry<twin.Parameter>> _dropdownMenuEntries = [];
   twin.Parameter? _selectedParameter;
 
@@ -30,7 +28,7 @@ class _ModelFieldDropdownState extends BaseState<ModelFieldDropdown> {
 
     return DropdownMenu<twin.Parameter>(
         onSelected: (param) {
-          widget.onModelFieldSelected(param);
+          widget.onFieldSelected(param);
         },
         initialSelection: _selectedParameter,
         dropdownMenuEntries: _dropdownMenuEntries);
