@@ -153,7 +153,10 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   Widget _buildNumberField(String parameter) {
     switch (widget.config.getHintType(parameter)) {
       case HintType.color:
-        return const ColorPickerField();
+        return ColorPickerField(
+          config: _parameters,
+          parameter: parameter,
+        );
       default:
         return NumberField(
           parameters: _parameters,
@@ -245,7 +248,10 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildFontField(String parameter) {
-    return const FontField();
+    return FontField(
+      config: _parameters,
+      parameter: parameter,
+    );
   }
 
   Widget _buildListOfTextsField(String parameter) {
