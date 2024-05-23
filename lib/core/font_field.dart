@@ -4,8 +4,12 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:nocode_commons/core/base_state.dart';
 
 class FontField extends StatefulWidget {
+  final Map<String, dynamic> config;
+  final String parameter;
   const FontField({
     super.key,
+    required this.config,
+    required this.parameter,
   });
 
   @override
@@ -13,9 +17,22 @@ class FontField extends StatefulWidget {
 }
 
 class _FontFieldState extends BaseState<FontField> {
-  Color selectedColor = Colors.black;
-  bool isBold = false;
-  double fontSize = 12;
+  final Map<String, dynamic> _values = <String, dynamic>{};
+
+  @override
+  void initState() {
+    _values.addAll(widget.config[widget.parameter]);
+    super.initState();
+  }
+
+  Color getColor() {
+    return Color(_values['fontColor'] ?? Colors.black.value);
+  }
+
+  void setColor(Color color) {
+    _values['fontColor'] = color.value;
+    widget.config[widget.parameter] = _values;
+  }
 
   void _showColorPickerDialog() {
     showDialog(
@@ -25,13 +42,13 @@ class _FontFieldState extends BaseState<FontField> {
           title: const Text('Pick a color'),
           content: SingleChildScrollView(
             child: ColorPicker(
-              pickerColor: selectedColor,
+              pickerColor: getColor(),
               onColorChanged: (color) {
                 setState(() {
-                  selectedColor = color;
+                  setColor(color);
                 });
               },
-              enableAlpha: false,
+              enableAlpha: true,
               displayThumbColor: true,
               showLabel: true,
               pickerAreaHeightPercent: 0.8,
@@ -50,15 +67,26 @@ class _FontFieldState extends BaseState<FontField> {
     );
   }
 
+  bool isBold() {
+    return _values['fontBold'] ?? false;
+  }
+
   void _toggleBold() {
     setState(() {
-      isBold = !isBold;
+      bool isBold = _values['fontBold'] ?? false;
+      _values['fontBold'] = !isBold;
+      widget.config[widget.parameter] = _values;
     });
+  }
+
+  double getFontSize() {
+    return _values['fontSize'] ?? 12;
   }
 
   void _updateFontSize(double value) {
     setState(() {
-      fontSize = value;
+      _values['fontSize'] = value;
+      widget.config[widget.parameter] = _values;
     });
   }
 
@@ -74,7 +102,7 @@ class _FontFieldState extends BaseState<FontField> {
               child: ElevatedButton(
                 onPressed: _showColorPickerDialog,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedColor,
+                  backgroundColor: getColor(),
                 ),
                 child: const Text(
                   'Pick Color',
@@ -89,7 +117,7 @@ class _FontFieldState extends BaseState<FontField> {
                 child: SpinBox(
                   min: 4,
                   max: 50,
-                  value: fontSize,
+                  value: getFontSize(),
                   showCursor: true,
                   autofocus: true,
                   onChanged: _updateFontSize,
@@ -99,7 +127,9 @@ class _FontFieldState extends BaseState<FontField> {
             const SizedBox(width: 10),
             IntrinsicWidth(
               child: IconButton(
-                icon: const Icon(Icons.font_download),
+                icon: Icon(isBold()
+                    ? Icons.font_download_sharp
+                    : Icons.font_download_outlined),
                 onPressed: _toggleBold,
               ),
             ),

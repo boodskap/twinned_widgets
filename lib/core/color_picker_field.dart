@@ -1,18 +1,17 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ColorPickerField extends StatefulWidget {
-  const ColorPickerField({super.key});
+  final Map<String, dynamic> config;
+  final String parameter;
+  const ColorPickerField(
+      {super.key, required this.config, required this.parameter});
 
   @override
   State<ColorPickerField> createState() => _ColorPickerFieldState();
 }
 
 class _ColorPickerFieldState extends State<ColorPickerField> {
-  Color selectedColor = Colors.indigo;
-
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -20,7 +19,7 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
       child: ElevatedButton(
         onPressed: _showColorPickerDialog,
         style: ElevatedButton.styleFrom(
-          backgroundColor: selectedColor,
+          backgroundColor: getColor(),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10))),
         ),
@@ -32,6 +31,14 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
     );
   }
 
+  Color getColor() {
+    return Color(widget.config[widget.parameter] ?? Colors.transparent);
+  }
+
+  void setColor(Color color) {
+    widget.config[widget.parameter] = color.value;
+  }
+
   void _showColorPickerDialog() {
     showDialog(
       context: context,
@@ -40,13 +47,13 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
           title: const Text('Pick a color'),
           content: SingleChildScrollView(
             child: ColorPicker(
-              pickerColor: selectedColor,
+              pickerColor: getColor(),
               onColorChanged: (color) {
                 setState(() {
-                  selectedColor = color;
+                  setColor(color);
                 });
               },
-              enableAlpha: false,
+              enableAlpha: true,
               displayThumbColor: true,
               showLabel: true,
               pickerAreaHeightPercent: 0.8,
