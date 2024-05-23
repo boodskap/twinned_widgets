@@ -14,13 +14,15 @@ dependencies:
   nocode_commons:
     git:
       url: https://github.com/boodskap/nocode_commons.git
-  #    path:
-  #      nocode_commons
+    #  path:
+    #    nocode_commons
 
   twinned_models:
     git:
       url: https://github.com/boodskap/twinned_models.git
-      ref: main
+      ref: development
+    #  path:
+    #    twinned_models
 
 
 dev_dependencies:
@@ -30,6 +32,7 @@ dev_dependencies:
   build_runner: ^2.4.9
   freezed: ^2.5.2
   json_serializable: ^6.8.0
+  intl: ^0.18.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

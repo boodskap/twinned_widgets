@@ -9,7 +9,7 @@ class DeviceFieldDropdown extends StatefulWidget {
   final List<String> selectedDevices;
   final OnDevicesSelected onDevicesSelected;
 
-  DeviceFieldDropdown({
+  const DeviceFieldDropdown({
     super.key,
     required this.selectedDevices,
     required this.onDevicesSelected,
@@ -29,28 +29,34 @@ class _DeviceFieldDropdownState extends BaseState<DeviceFieldDropdown> {
       return const Icon(Icons.hourglass_bottom);
     }
 
-    return DropdownButtonFormField<twin.Device>(
-      items: _dropdownMenuEntries.map((entry) {
-        return DropdownMenuItem<twin.Device>(
-          value: entry.value,
-          child: CheckboxListTile(
-            title: Text(entry.label),
-            value: _selectedDevices.contains(entry.value),
-            onChanged: (isSelected) {
-              setState(() {
-                if (isSelected == true) {
-                  _selectedDevices.add(entry.value!);
-                } else {
-                  _selectedDevices.remove(entry.value);
-                }
-                widget.onDevicesSelected(_selectedDevices);
-              });
-            },
-          ),
-        );
-      }).toList(),
-      onChanged: (value) {},
-      isExpanded: true,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.black38),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: DropdownButtonFormField<twin.Device>(
+        items: _dropdownMenuEntries.map((entry) {
+          return DropdownMenuItem<twin.Device>(
+            value: entry.value,
+            child: CheckboxListTile(
+              title: Text(entry.label),
+              value: _selectedDevices.contains(entry.value),
+              onChanged: (isSelected) {
+                setState(() {
+                  if (isSelected == true) {
+                    _selectedDevices.add(entry.value!);
+                  } else {
+                    _selectedDevices.remove(entry.value);
+                  }
+                  widget.onDevicesSelected(_selectedDevices);
+                });
+              },
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {},
+        isExpanded: true,
+      ),
     );
   }
 

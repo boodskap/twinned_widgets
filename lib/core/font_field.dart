@@ -5,8 +5,8 @@ import 'package:nocode_commons/core/base_state.dart';
 
 class FontField extends StatefulWidget {
   const FontField({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<FontField> createState() => _FontFieldState();
@@ -14,13 +14,15 @@ class FontField extends StatefulWidget {
 
 class _FontFieldState extends BaseState<FontField> {
   Color selectedColor = Colors.black;
+  bool isBold = false;
+  double fontSize = 12;
 
   void _showColorPickerDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Pick a color'),
+          title: const Text('Pick a color'),
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: selectedColor,
@@ -37,7 +39,7 @@ class _FontFieldState extends BaseState<FontField> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Done'),
+              child: const Text('Done'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -46,6 +48,18 @@ class _FontFieldState extends BaseState<FontField> {
         );
       },
     );
+  }
+
+  void _toggleBold() {
+    setState(() {
+      isBold = !isBold;
+    });
+  }
+
+  void _updateFontSize(double value) {
+    setState(() {
+      fontSize = value;
+    });
   }
 
   @override
@@ -59,25 +73,34 @@ class _FontFieldState extends BaseState<FontField> {
             IntrinsicWidth(
               child: ElevatedButton(
                 onPressed: _showColorPickerDialog,
-                child: Text('Pick Color'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedColor,
+                ),
+                child: const Text(
+                  'Pick Color',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
-            SizedBox(width: 10),
-            IntrinsicWidth(
-              child: SpinBox(
-                min: 4,
-                max: 50,
-                value: 12,
-                showCursor: true,
-                autofocus: true,
-                onChanged: (value) {},
+            const SizedBox(width: 10),
+            SizedBox(
+              height: 35,
+              child: IntrinsicWidth(
+                child: SpinBox(
+                  min: 4,
+                  max: 50,
+                  value: fontSize,
+                  showCursor: true,
+                  autofocus: true,
+                  onChanged: _updateFontSize,
+                ),
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             IntrinsicWidth(
               child: IconButton(
-                icon: Icon(Icons.font_download),
-                onPressed: () {},
+                icon: const Icon(Icons.font_download),
+                onPressed: _toggleBold,
               ),
             ),
           ],
