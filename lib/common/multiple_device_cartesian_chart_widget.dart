@@ -193,8 +193,17 @@ class MultipleDeviceCartesianChartWidgetBuilder extends TwinnedWidgetBuilder {
     return "Multiple Line Chart";
   }
 
-  @override
-  BaseConfig getDefaultConfig() {
+   @override
+  BaseConfig getDefaultConfig({Map<String,dynamic>? config}) {
+    if(null!=config){
+      return MultipleDeviceCartesianChartWidgetConfig.fromJson(config);
+    }
     return MultipleDeviceCartesianChartWidgetConfig();
+  }
+  
+  @override
+  String getPaletteTooltip() {
+    // TODO: implement getPaletteTooltip
+    throw UnimplementedError();
   }
 }

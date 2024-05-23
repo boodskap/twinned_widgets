@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:twinned_widgets/core/asset_dropdown.dart';
+import 'package:twinned_widgets/core/asset_model_dropdown.dart';
 import 'package:twinned_widgets/core/color_picker_field.dart';
 import 'package:twinned_widgets/core/decimal_field.dart';
-import 'package:twinned_widgets/core/device_field_dropdown.dart';
+import 'package:twinned_widgets/core/device_dropdown.dart';
+import 'package:twinned_widgets/core/device_model_dropdown.dart';
+import 'package:twinned_widgets/core/facility_dropdown.dart';
+import 'package:twinned_widgets/core/floor_dropdown.dart';
+import 'package:twinned_widgets/core/multi_device_dropdown.dart';
+import 'package:twinned_widgets/core/enumerated_field.dart';
 import 'package:twinned_widgets/core/font_field.dart';
-import 'package:twinned_widgets/core/model_field_dropdown.dart';
+import 'package:twinned_widgets/core/field_dropdown.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:twinned_widgets/core/number_field.dart';
+import 'package:twinned_widgets/core/parameter_text_field.dart';
+import 'package:twinned_widgets/core/premise_dropdown.dart';
 
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
@@ -76,8 +86,11 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         case DataType.listOfDecimals:
           _fields[parameter] = _buildListOfDecimalsField(parameter);
           break;
-        case DataType.listOfObjects:
-          _fields[parameter] = _buildListOfObjectsField(parameter);
+        case DataType.listOfRanges:
+          _fields[parameter] = _buildListOfRangesField(parameter);
+          break;
+        case DataType.none:
+          // We ignore unknown data types (may be a hidden parameter)
           break;
       }
     }
@@ -139,70 +152,77 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
   Widget _buildNumberField(String parameter) {
     switch (widget.config.getHintType(parameter)) {
-      case HintType.field:
-      case HintType.modelId:
-      case HintType.assetModelId:
       case HintType.color:
         return const ColorPickerField();
       default:
-        TextEditingController controller = TextEditingController();
-        _controllers.add(controller);
-        controller.addListener(() {
-          _parameters[parameter] = controller.text;
-        });
-        return TextField(
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          controller: controller,
+        return NumberField(
+          parameters: _parameters,
+          parameter: parameter,
         );
     }
   }
 
   Widget _buildDecimalField(String parameter) {
-    switch (widget.config.getDataType(parameter)) {
-      case DataType.decimal:
-        return const DecimalField();
-      case DataType.numeric:
-      case DataType.font:
-      case DataType.yesno:
-      case DataType.enumerated:
-      case DataType.listOfTexts:
-      case DataType.listOfNumbers:
-      case DataType.listOfDecimals:
-      case DataType.listOfObjects:
-      default:
-        TextEditingController controller = TextEditingController();
-        _controllers.add(controller);
-        controller.addListener(() {
-          _parameters[parameter] = controller.text;
-        });
-        return TextField(
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          controller: controller,
-        );
-    }
+    return DecimalField(
+      parameters: _parameters,
+      parameter: parameter,
+    );
   }
 
   Widget _buildTextField(String parameter) {
     switch (widget.config.getHintType(parameter)) {
       case HintType.field:
-      case HintType.modelId:
-      case HintType.assetModelId:
-        return ModelFieldDropdown(
+        return FieldDropdown(
           selectedField: _parameters[parameter],
-          onModelFieldSelected: (param) {
+          onFieldSelected: (param) {
             _parameters[parameter] = param?.name ?? '';
           },
         );
+      case HintType.deviceId:
+        return DeviceDropdown(
+            selectedDevice: _parameters[parameter],
+            onDeviceSelected: (device) {
+              _parameters[parameter] = device?.id ?? '';
+            });
+      case HintType.deviceModelId:
+        return DeviceModelDropdown(
+            selectedDeviceModel: _parameters[parameter],
+            onDeviceModelSelected: (deviceModel) {
+              _parameters[parameter] = deviceModel?.id ?? '';
+            });
+      case HintType.assetModelId:
+        return AssetModelDropdown(
+            selectedAssetModel: _parameters[parameter],
+            onAssetModelSelected: (assetModel) {
+              _parameters[parameter] = assetModel?.id ?? '';
+            });
+      case HintType.assetId:
+        return AssetDropdown(
+            selectedAsset: _parameters[parameter],
+            onAssetSelected: (asset) {
+              _parameters[parameter] = asset?.id ?? '';
+            });
+      case HintType.premiseId:
+        return PremiseDropdown(
+            selectedPremise: _parameters[parameter],
+            onPremiseSelected: (premise) {
+              _parameters[parameter] = premise?.id ?? '';
+            });
+      case HintType.facilityId:
+        return FacilityDropdown(
+            selectedFacility: _parameters[parameter],
+            onFacilitySelected: (facility) {
+              _parameters[parameter] = facility?.id ?? '';
+            });
+      case HintType.floorId:
+        return FloorDropdown(
+            selectedFloor: _parameters[parameter],
+            onFloorSelected: (floor) {
+              _parameters[parameter] = floor?.id ?? '';
+            });
       default:
-        TextEditingController controller = TextEditingController();
-        _controllers.add(controller);
-        controller.addListener(() {
-          _parameters[parameter] = controller.text;
-        });
-        return TextField(
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          controller: controller,
-        );
+        return ParameterTextField(
+            parameters: _parameters, parameter: parameter);
     }
   }
 
@@ -211,80 +231,130 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildEnumeratedField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    List<String> enumeratedValues =
+        widget.config.getEnumeratedValues(parameter);
+    return EnumeratedDropdown(
+      enumeratedValues: enumeratedValues,
+      selectedValue: _parameters[parameter] ?? enumeratedValues.first,
+      onChanged: (String? value) {
+        setState(() {
+          _parameters[parameter] = value!;
+        });
+      },
+    );
   }
 
   Widget _buildFontField(String parameter) {
-    switch (widget.config.getDataType(parameter)) {
-      case DataType.font:
-        return const FontField();
-      case DataType.numeric:
-      case DataType.decimal:
-      case DataType.yesno:
-      case DataType.enumerated:
-      case DataType.listOfTexts:
-      case DataType.listOfNumbers:
-      case DataType.listOfDecimals:
-      case DataType.listOfObjects:
-      default:
-        TextEditingController controller = TextEditingController();
-        _controllers.add(controller);
-        controller.addListener(() {
-          _parameters[parameter] = controller.text;
-        });
-        return TextField(
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          controller: controller,
-        );
-    }
+    return const FontField();
   }
 
   Widget _buildListOfTextsField(String parameter) {
     var paramValue = _parameters[parameter];
-    List<String> selectedDevices = [];
+    List<String> selectedTexts = [];
 
-    if (paramValue is List<String>) {
-      selectedDevices = paramValue;
+    if (null == paramValue) {
+      selectedTexts = [];
+    } else if (paramValue is List<String>) {
+      selectedTexts = paramValue;
     } else if (paramValue is String) {
-      selectedDevices = [paramValue];
+      selectedTexts = [paramValue];
     }
 
     switch (widget.config.getHintType(parameter)) {
-      case HintType.field:
-      case HintType.modelId:
-        return DeviceFieldDropdown(
-          selectedDevices: selectedDevices,
+      case HintType.deviceId:
+        return MultiDeviceDropdown(
+          selectedDevices: selectedTexts,
           onDevicesSelected: (devices) {
             setState(() {
               _parameters[parameter] =
-                  devices.map((device) => device.name).toList();
+                  devices.map((device) => device.id).toList();
             });
           },
         );
+      case HintType.field:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Field List'),
+            ));
+      case HintType.deviceModelId:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Model List'),
+            ));
+      case HintType.assetId:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Asset List'),
+            ));
       case HintType.assetModelId:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Asset Model List'),
+            ));
+      case HintType.premiseId:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Premise List'),
+            ));
+      case HintType.facilityId:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Facility List'),
+            ));
+      case HintType.floorId:
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('Floor List'),
+            ));
       default:
-        TextEditingController controller = TextEditingController();
-        _controllers.add(controller);
-        controller.addListener(() {
-          _parameters[parameter] = controller.text;
-        });
-        return TextField(
-          decoration: const InputDecoration(border: OutlineInputBorder()),
-          controller: controller,
-        );
+        return const SizedBox(
+            height: 48,
+            child: Placeholder(
+              color: Colors.red,
+              child: Text('String List'),
+            ));
     }
   }
 
   Widget _buildListOfNumbersField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    return const SizedBox(
+        height: 48,
+        child: Placeholder(
+          color: Colors.red,
+          child: Text('Number List'),
+        ));
   }
 
   Widget _buildListOfDecimalsField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    return const SizedBox(
+        height: 48,
+        child: Placeholder(
+          color: Colors.red,
+          child: Text('Decimal List'),
+        ));
   }
 
-  Widget _buildListOfObjectsField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+  Widget _buildListOfRangesField(String parameter) {
+    return const SizedBox(
+        height: 48,
+        child: Placeholder(
+          color: Colors.red,
+          child: Text('Range List'),
+        ));
   }
 
   @override
@@ -295,32 +365,38 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
     _parameters.forEach((parameter, value) {
       bool required = widget.config.isRequired(parameter);
+      dynamic value = _parameters[parameter];
+
+      if (required && null == value) {
+        alert('Missing', '$parameter is required');
+        return;
+      }
+
       if (required) {
         switch (widget.config.getDataType(parameter)) {
           case DataType.text:
             String sValue = value;
-            if (null == sValue || sValue.isEmpty) {
+            if (sValue.isEmpty) {
               valid = false;
-              alert('Missing', '$parameter is required');
+              alert('Invalid', '$parameter can not be empty');
             }
             break;
           case DataType.numeric:
-            break;
           case DataType.decimal:
-            break;
           case DataType.yesno:
-            break;
-          case DataType.enumerated:
-            break;
           case DataType.font:
             break;
+          case DataType.enumerated:
           case DataType.listOfTexts:
-            break;
           case DataType.listOfNumbers:
-            break;
           case DataType.listOfDecimals:
+          case DataType.listOfRanges:
+            List<dynamic> values = value;
+            if (values.isEmpty) {
+              alert('Invalid', '$parameter can not be an empty array');
+            }
             break;
-          case DataType.listOfObjects:
+          case DataType.none:
             break;
         }
       }
