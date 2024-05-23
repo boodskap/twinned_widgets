@@ -25,7 +25,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWValueDistributionPieChartWidget': ValueDistributionPieChartWidgetBuilder(),
   'TWTotalAndReportingAssetWidget': TotalAndReportingAssetWidgetBuilder(),
   'TWDeviceCartesianChartWidget': DeviceCartesianChartWidgetBuilder(),
-  'TWMultipleDeviceCartesianChartWidget': MultipleDeviceCartesianChartWidgetBuilder(),
+  'TWMultipleDeviceCartesianChartWidget':
+      MultipleDeviceCartesianChartWidgetBuilder(),
   'TWDeviceMultiFieldChartWidget': DeviceMultiFieldChartWidgetBuilder(),
 };
 
@@ -61,5 +62,17 @@ class TwinnedWidgets {
     });
 
     return list;
+  }
+
+  static void register(String widgetId, TwinnedWidgetBuilder builder) {
+    if (widgetId.startsWith('TW')) {
+      throw UnsupportedError(
+          'Invalid widget id: $widgetId, custom widget ids should not start with TW');
+    }
+    _builders[widgetId] = builder;
+  }
+
+  static TwinnedWidgetBuilder? builder(String widgetId) {
+    return _builders[widgetId];
   }
 }
