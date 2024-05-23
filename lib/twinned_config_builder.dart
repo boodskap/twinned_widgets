@@ -256,27 +256,18 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
   Widget _buildListOfTextsField(String parameter) {
     var paramValue = _parameters[parameter];
-    List<String> selectedTexts = [];
 
     if (null == paramValue) {
-      selectedTexts = [];
     } else if (paramValue is List<String>) {
-      selectedTexts = paramValue;
-    } else if (paramValue is String) {
-      selectedTexts = [paramValue];
-    }
+    } else if (paramValue is String) {}
 
     switch (widget.config.getHintType(parameter)) {
       case HintType.deviceId:
         return MultiDeviceDropdown(
-          selectedDevices: selectedTexts,
-          onDevicesSelected: (devices) {
-            setState(() {
-              _parameters[parameter] =
-                  devices.map((device) => device.id).toList();
+            selectedDevice: _parameters[parameter],
+            onDevicesSelected: (device) {
+              _parameters[parameter] = device?.id ?? '';
             });
-          },
-        );
       case HintType.field:
         return const SizedBox(
             height: 48,
