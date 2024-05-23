@@ -5,32 +5,35 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnDevicesSelected<Device> = void Function(List<Device> device);
+typedef OnDeviceModelsSelected<DeviceModel> = void Function(
+    List<DeviceModel> device);
 
-class MultiDeviceDropdown extends StatefulWidget {
+class MultiDeviceModelDropdown extends StatefulWidget {
   final List<String> selectedItems;
-  final OnDevicesSelected onDevicesSelected;
+  final OnDeviceModelsSelected onDeviceModelsSelected;
 
-  const MultiDeviceDropdown({
+  const MultiDeviceModelDropdown({
     super.key,
     required this.selectedItems,
-    required this.onDevicesSelected,
+    required this.onDeviceModelsSelected,
   });
 
   @override
-  State<MultiDeviceDropdown> createState() => _MultiDeviceDropdownState();
+  State<MultiDeviceModelDropdown> createState() =>
+      _MultiDeviceModelDropdownState();
 }
 
-class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
-  final List<twin.Device> _selectedItems = [];
+class _MultiDeviceModelDropdownState
+    extends BaseState<MultiDeviceModelDropdown> {
+  final List<twin.DeviceModel> _selectedItems = [];
 
   @override
   Widget build(BuildContext context) {
-    return MultiDropdownSearchable<twin.Device>(
+    return MultiDropdownSearchable<twin.DeviceModel>(
         key: Key(Uuid().v4()),
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onDevicesSelected(selectedItems);
+          widget.onDeviceModelsSelected(selectedItems);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
@@ -41,11 +44,11 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
         });
   }
 
-  Future<List<twin.Device>> _search(String keyword, int page) async {
-    List<twin.Device> items = [];
+  Future<List<twin.DeviceModel>> _search(String keyword, int page) async {
+    List<twin.DeviceModel> items = [];
 
     try {
-      var pRes = await TwinnedSession.instance.twin.searchDevices(
+      var pRes = await TwinnedSession.instance.twin.searchDeviceModels(
         apikey: TwinnedSession.instance.authToken,
         body: twin.SearchReq(search: keyword, page: page, size: 25),
       );
@@ -60,10 +63,11 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
 
   Future<void> _load() async {
     if (widget.selectedItems!.isEmpty) {
+      debugPrint('no device model items');
       return;
     }
     try {
-      var eRes = await TwinnedSession.instance.twin.getDevices(
+      var eRes = await TwinnedSession.instance.twin.getDeviceModels(
         apikey: TwinnedSession.instance.authToken,
         body: twin.GetReq(ids: widget.selectedItems),
       );

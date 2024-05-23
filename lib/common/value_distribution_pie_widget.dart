@@ -233,13 +233,9 @@ class _ValueDistributionPieChartWidgetState
     };
 
     for (Map<String, dynamic> obj in widget.config.segments) {
-      segments.add(Range(
-          from: obj['from'],
-          to: obj['to'],
-          color: obj['color'],
-          label: obj['label']));
-      segmentsEql
-          .add({'from': obj['from'], 'to': obj['to'], 'key': obj['label']});
+      Range range = Range.fromJson(obj);
+      segments.add(range);
+      segmentsEql.add({'from': range.from, 'to': range.to, 'key': range.label});
     }
 
     EqlCondition aggs = EqlCondition(name: 'aggs', condition: {
