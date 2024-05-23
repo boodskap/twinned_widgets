@@ -11,16 +11,20 @@ dependencies:
   flutter:
     sdk: flutter
 
+  multi_dropdown: ^2.1.4
   nocode_commons:
     git:
       url: https://github.com/boodskap/nocode_commons.git
-  #    path:
-  #      nocode_commons
+    #  path:
+    #    nocode_commons
 
+  search_choices: ^2.2.7
   twinned_models:
     git:
       url: https://github.com/boodskap/twinned_models.git
       ref: main
+    #  path:
+    #    twinned_models
 
 
 dev_dependencies:
@@ -30,6 +34,7 @@ dev_dependencies:
   build_runner: ^2.4.9
   freezed: ^2.5.2
   json_serializable: ^6.8.0
+  intl: ^0.18.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

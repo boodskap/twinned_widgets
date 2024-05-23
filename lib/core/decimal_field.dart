@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:nocode_commons/core/base_state.dart';
+
+class DecimalField extends StatefulWidget {
+  final Map<String, dynamic> parameters;
+  final String parameter;
+  const DecimalField({
+    super.key,
+    required this.parameters,
+    required this.parameter,
+  });
+
+  @override
+  State<DecimalField> createState() => _DecimalFieldState();
+}
+
+class _DecimalFieldState extends BaseState<DecimalField> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    String value;
+
+    if (null == widget.parameters[widget.parameter]) {
+      value = '0.0';
+    } else {
+      value = '${widget.parameters[widget.parameter]}';
+    }
+
+    _controller.text = value;
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: SizedBox(
+        height: 45,
+        width: 100,
+        child: TextField(
+          controller: _controller,
+          decoration: const InputDecoration(border: OutlineInputBorder()),
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+          ],
+          onChanged: (value) {
+            if (value.isEmpty) {
+              widget.parameters[widget.parameter] = null;
+            } else {
+              widget.parameters[widget.parameter] = double.parse(value);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  void setup() {
+    // Implement setup if needed
+  }
+}
