@@ -22,7 +22,7 @@ dependencies:
   twinned_models:
     git:
       url: https://github.com/boodskap/twinned_models.git
-      ref: priya
+      ref: main
     #  path:
     #    twinned_models
 
