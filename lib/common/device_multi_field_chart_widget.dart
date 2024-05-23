@@ -154,7 +154,15 @@ class DeviceMultiFieldChartWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig() {
+  BaseConfig getDefaultConfig({Map<String,dynamic>? config}) {
+    if(null!=config){
+      return DeviceMultiFieldChartWidgetConfig.fromJson(config);
+    }
     return DeviceMultiFieldChartWidgetConfig();
+  }
+  
+  @override
+  String getPaletteTooltip() {
+    return 'Graph based on device multi field';
   }
 }
