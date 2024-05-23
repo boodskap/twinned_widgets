@@ -8,6 +8,7 @@ import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:intl/intl.dart';
 
 class MultipleDeviceCartesianChartWidget extends StatefulWidget {
   final MultipleDeviceCartesianChartWidgetConfig config;
@@ -55,11 +56,16 @@ class _MultipleDeviceCartesianChartWidgetState
         child: SfCartesianChart(
       title: ChartTitle(text: widget.config.title),
       legend: const Legend(isVisible: true),
+      primaryXAxis: DateTimeAxis(
+        dateFormat: DateFormat.yMd(), // Change to desired date format
+      ),
       series: [
-        LineSeries<SeriesData, num>(
+        LineSeries<SeriesData, DateTime>(
+            name: 'Device 1',
             enableTooltip: true,
             dataSource: _chatSeries,
-            xValueMapper: (SeriesData sales, _) => sales.stamp,
+            xValueMapper: (SeriesData sales, _) =>
+                DateTime.fromMillisecondsSinceEpoch(sales.stamp),
             yValueMapper: (SeriesData sales, _) => sales.value1,
             width: 2,
             markerSettings: const MarkerSettings(
@@ -71,10 +77,12 @@ class _MultipleDeviceCartesianChartWidgetState
                 borderColor: Colors.blue),
             dataLabelSettings: const DataLabelSettings(
                 isVisible: true, labelAlignment: ChartDataLabelAlignment.auto)),
-        LineSeries<SeriesData, num>(
+        LineSeries<SeriesData, DateTime>(
+            name: 'Device 2',
             enableTooltip: true,
             dataSource: _chatSeries,
-            xValueMapper: (SeriesData sales, _) => sales.stamp,
+            xValueMapper: (SeriesData sales, _) =>
+                DateTime.fromMillisecondsSinceEpoch(sales.stamp),
             yValueMapper: (SeriesData sales, _) => sales.value2,
             width: 2,
             markerSettings: const MarkerSettings(
@@ -103,6 +111,7 @@ class _MultipleDeviceCartesianChartWidgetState
         "date_histogram": {
           "field": "updatedStamp",
           "calendar_interval": "month",
+          "format": "MM/dd/yy",
           "min_doc_count": 1
         },
         "aggs": {
@@ -121,7 +130,7 @@ class _MultipleDeviceCartesianChartWidgetState
     await execute(() async {
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
           apikey: TwinnedSession.instance.authToken,
-          body: EqlSearch(page: 0, size: 0, conditions: [
+          body: EqlSearch(page: 0, size: 10, conditions: [
             deviceStats
           ], boolConditions: [], queryConditions: [], mustConditions: [
             {
@@ -138,16 +147,13 @@ class _MultipleDeviceCartesianChartWidgetState
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
 
         List<dynamic> values = json['aggregations']['by_time']['buckets'];
-
         for (Map<String, dynamic> obj in values) {
-          int millis = obj['key'];
+          dynamic millis = obj['key'];
           List<dynamic> deviceValues = obj['by_device_id']['buckets'];
-
           dynamic value1 = deviceValues[0]['by_field']['value'] ?? 0;
           dynamic value2 = deviceValues.length > 1
               ? deviceValues[1]['by_field']['value']
               : 0;
-
           _chatSeries
               .add(SeriesData(stamp: millis, value1: value1, value2: value2));
         }
@@ -165,7 +171,7 @@ class _MultipleDeviceCartesianChartWidgetState
 }
 
 class SeriesData {
-  final num stamp;
+  final dynamic stamp;
   final dynamic value1;
   final dynamic value2;
   SeriesData({required this.stamp, required this.value1, required this.value2});
@@ -193,7 +199,8 @@ class MultipleDeviceCartesianChartWidgetBuilder extends TwinnedWidgetBuilder {
     return "Multiple Line Chart";
   }
 
-   @override
+  
+  @override
   BaseConfig getDefaultConfig({Map<String,dynamic>? config}) {
     if(null!=config){
       return MultipleDeviceCartesianChartWidgetConfig.fromJson(config);
