@@ -10,6 +10,7 @@ import 'package:twinned_widgets/core/device_dropdown.dart';
 import 'package:twinned_widgets/core/device_model_dropdown.dart';
 import 'package:twinned_widgets/core/facility_dropdown.dart';
 import 'package:twinned_widgets/core/floor_dropdown.dart';
+import 'package:twinned_widgets/core/image_upload_field.dart';
 import 'package:twinned_widgets/core/multi_asset_dropdown.dart';
 import 'package:twinned_widgets/core/multi_assetmodel_dropdown.dart';
 import 'package:twinned_widgets/core/multi_device_dropdown.dart';
@@ -102,6 +103,9 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           break;
         case DataType.listOfRanges:
           _fields[parameter] = _buildListOfRangesField(parameter);
+          break;
+        case DataType.image:
+          _fields[parameter] = _buildImageUploadField(parameter);
           break;
         case DataType.none:
           // We ignore unknown data types (may be a hidden parameter)
@@ -261,6 +265,13 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     );
   }
 
+  Widget _buildImageUploadField(String parameter) {
+    return ImageUploadField(
+      config: _parameters,
+      parameter: parameter,
+    );
+  }
+
   Widget _buildFontField(String parameter) {
     return FontField(
       config: _parameters,
@@ -390,6 +401,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       if (required) {
         switch (widget.config.getDataType(parameter)) {
           case DataType.text:
+          case DataType.image:
             String sValue = value;
             if (sValue.isEmpty) {
               valid = false;
