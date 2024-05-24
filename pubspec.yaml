@@ -12,13 +12,15 @@ dependencies:
     sdk: flutter
 
   multi_dropdown: ^2.1.4
+  select2dot1: ^2.0.9
+  search_choices: ^2.2.7
+
   nocode_commons:
     git:
       url: https://github.com/boodskap/nocode_commons.git
     #  path:
     #    nocode_commons
 
-  search_choices: ^2.2.7
   twinned_models:
     git:
       url: https://github.com/boodskap/twinned_models.git

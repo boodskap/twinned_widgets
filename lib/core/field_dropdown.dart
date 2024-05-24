@@ -44,16 +44,21 @@ class _FieldDropdownState extends BaseState<FieldDropdown> {
       if (validateResponse(pRes)) {
         List<String> names = [];
         for (var param in pRes.body!.values!) {
-          if (param.name == widget.selectedField) {
-            _selectedParameter = param;
-          }
           if (names.contains(param.name)) continue;
           _dropdownMenuEntries.add(DropdownMenuEntry<twin.Parameter>(
               label: param.name, value: param));
+          if (param.name == widget.selectedField) {
+            _selectedParameter = param;
+            debugPrint('Selected param: ${param.name}');
+          }
           names.add(param.name);
         }
       }
     });
+
+    if (null == _selectedParameter) {
+      debugPrint('No default parameter set');
+    }
 
     loading = false;
     refresh();

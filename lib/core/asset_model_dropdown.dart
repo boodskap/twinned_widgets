@@ -7,12 +7,12 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnAssetModelSelected = void Function(twin.AssetModel? assetModel);
 
 class AssetModelDropdown extends StatefulWidget {
-  final String? selectedAssetModel;
+  final String? selectedItem;
   final OnAssetModelSelected onAssetModelSelected;
 
   const AssetModelDropdown(
       {super.key,
-      required this.selectedAssetModel,
+      required this.selectedItem,
       required this.onAssetModelSelected});
 
   @override
@@ -20,14 +20,14 @@ class AssetModelDropdown extends StatefulWidget {
 }
 
 class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
-  twin.AssetModel? _selectedAssetModel;
+  twin.AssetModel? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
     return SearchChoices<twin.AssetModel>.single(
-      value: _selectedAssetModel,
-      hint: 'Select One',
-      searchHint: 'Select One',
+      value: _selectedItem,
+      hint: 'Select Asset Model',
+      searchHint: 'Select Asset Model',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -43,9 +43,9 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
       },
       onChanged: (selected) {
         setState(() {
-          _selectedAssetModel = selected;
+          _selectedItem = selected;
         });
-        widget.onAssetModelSelected(_selectedAssetModel);
+        widget.onAssetModelSelected(_selectedItem);
       },
     );
   }
@@ -62,8 +62,8 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {
-          if (entity.id == widget.selectedAssetModel) {
-            _selectedAssetModel = entity;
+          if (entity.id == widget.selectedItem) {
+            _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.AssetModel>(
               value: entity, child: Text(entity.name)));
@@ -80,21 +80,22 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
   }
 
   Future _load() async {
-    if (loading) return;
-    loading = true;
-    if (null == widget.selectedAssetModel || widget.selectedAssetModel!.isEmpty)
+    if (widget.selectedItem?.isEmpty ?? true) {
       return;
-    await execute(() async {
+    }
+    try {
       var eRes = await TwinnedSession.instance.twin.getAssetModel(
-          apikey: TwinnedSession.instance.authToken,
-          assetModelId: widget.selectedAssetModel);
-      if (validateResponse(eRes, shouldAlert: false)) {
-        refresh(sync: () {
-          _selectedAssetModel = eRes.body!.entity;
+        apikey: TwinnedSession.instance.authToken,
+        assetModelId: widget.selectedItem,
+      );
+      if (eRes != null && eRes.body != null) {
+        setState(() {
+          _selectedItem = eRes.body!.entity;
         });
       }
-    });
-    loading = false;
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
   }
 
   @override

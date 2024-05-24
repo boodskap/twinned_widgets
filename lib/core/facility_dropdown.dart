@@ -7,12 +7,12 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnFacilitySelected = void Function(twin.Facility? facility);
 
 class FacilityDropdown extends StatefulWidget {
-  final String? selectedFacility;
+  final String? selectedItem;
   final OnFacilitySelected onFacilitySelected;
 
   const FacilityDropdown(
       {super.key,
-      required this.selectedFacility,
+      required this.selectedItem,
       required this.onFacilitySelected});
 
   @override
@@ -20,14 +20,14 @@ class FacilityDropdown extends StatefulWidget {
 }
 
 class _FacilityDropdownState extends BaseState<FacilityDropdown> {
-  twin.Facility? _selectedFacility;
+  twin.Facility? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
     return SearchChoices<twin.Facility>.single(
-      value: _selectedFacility,
-      hint: 'Select One',
-      searchHint: 'Select One',
+      value: _selectedItem,
+      hint: 'Select Facility',
+      searchHint: 'Select Facility',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -42,9 +42,9 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
       },
       onChanged: (selected) {
         setState(() {
-          _selectedFacility = selected;
+          _selectedItem = selected;
         });
-        widget.onFacilitySelected(_selectedFacility);
+        widget.onFacilitySelected(_selectedItem);
       },
     );
   }
@@ -61,8 +61,8 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {
-          if (entity.id == widget.selectedFacility) {
-            _selectedFacility = entity;
+          if (entity.id == widget.selectedItem) {
+            _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.Facility>(
               value: entity,
@@ -84,21 +84,22 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
   }
 
   Future _load() async {
-    if (loading) return;
-    loading = true;
-    if (null == widget.selectedFacility || widget.selectedFacility!.isEmpty)
+    if (widget.selectedItem?.isEmpty ?? true) {
       return;
-    await execute(() async {
+    }
+    try {
       var eRes = await TwinnedSession.instance.twin.getFacility(
-          apikey: TwinnedSession.instance.authToken,
-          facilityId: widget.selectedFacility);
-      if (validateResponse(eRes, shouldAlert: false)) {
-        refresh(sync: () {
-          _selectedFacility = eRes.body!.entity;
+        apikey: TwinnedSession.instance.authToken,
+        facilityId: widget.selectedItem,
+      );
+      if (eRes != null && eRes.body != null) {
+        setState(() {
+          _selectedItem = eRes.body!.entity;
         });
       }
-    });
-    loading = false;
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
   }
 
   @override
