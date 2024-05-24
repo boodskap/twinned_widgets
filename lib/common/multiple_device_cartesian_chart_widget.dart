@@ -132,7 +132,7 @@ class _MultipleDeviceCartesianChartWidgetState
           apikey: TwinnedSession.instance.authToken,
           body: EqlSearch(page: 0, size: 10, conditions: [
             deviceStats
-          ], boolConditions: [], queryConditions: [], mustConditions: [
+          ], source: [], mustConditions: [
             {
               "exists": {"field": "data.volume"}
             },
