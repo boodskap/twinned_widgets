@@ -6,7 +6,7 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnAssetsSelected<Asset> = void Function(List<Asset> item);
 
 class MultiAssetDropdown extends StatefulWidget {
-  final List<twin.Asset> selectedItems;
+  final List<String> selectedItems;
   final OnAssetsSelected onAssetsSelected;
 
   const MultiAssetDropdown({
@@ -25,6 +25,7 @@ class _MultiAssetDropdownState extends State<MultiAssetDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Asset>(
+        searchHint: 'Select Assets',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onAssetsSelected(selectedItems);
@@ -62,17 +63,13 @@ class _MultiAssetDropdownState extends State<MultiAssetDropdown> {
   }
 
   Future<void> _load() async {
-    if (null == widget.selectedItems || widget.selectedItems!.isEmpty) {
+    if (widget.selectedItems.isEmpty) {
       return;
     }
     try {
-      List<String> ids = [];
-      for (var dm in widget.selectedItems) {
-        ids.add(dm.id);
-      }
       var eRes = await TwinnedSession.instance.twin.getAssets(
         apikey: TwinnedSession.instance.authToken,
-        body: twin.GetReq(ids: ids),
+        body: twin.GetReq(ids: widget.selectedItems),
       );
       if (eRes != null && eRes.body != null) {
         setState(() {

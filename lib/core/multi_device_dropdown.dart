@@ -28,6 +28,7 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Device>(
         key: Key(Uuid().v4()),
+        searchHint: 'Select Devices',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onDevicesSelected(selectedItems);

@@ -31,6 +31,7 @@ class _MultiDeviceModelDropdownState
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.DeviceModel>(
         key: Key(Uuid().v4()),
+        searchHint: 'Select Device Models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onDeviceModelsSelected(selectedItems);

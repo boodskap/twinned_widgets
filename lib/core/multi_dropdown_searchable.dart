@@ -10,6 +10,7 @@ typedef ItemLabelFunc<T> = Widget Function(T item);
 typedef ItemIdFunc<T> = String Function(T item);
 
 class MultiDropdownSearchable<T> extends StatefulWidget {
+  final String searchHint;
   final List<T> selectedItems;
   final OnItemsSelected onItemsSelected;
   final ItemSearchFunc itemSearchFunc;
@@ -18,6 +19,7 @@ class MultiDropdownSearchable<T> extends StatefulWidget {
 
   const MultiDropdownSearchable(
       {super.key,
+      required this.searchHint,
       required this.selectedItems,
       required this.onItemsSelected,
       required this.itemSearchFunc,
@@ -69,8 +71,8 @@ class _MultiDropdownSearchableState<T>
       children: [
         SearchChoices<T>.single(
           value: _selectedItem,
-          hint: 'Select One',
-          searchHint: 'Select One',
+          hint: widget.searchHint,
+          searchHint: widget.searchHint,
           isExpanded: true,
           futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
               List<Tuple2<String, String>>? filters, int? pageNb) async {

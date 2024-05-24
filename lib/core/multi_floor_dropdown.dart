@@ -6,7 +6,7 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnFloorsSelected<Floor> = void Function(List<Floor> item);
 
 class MultiFloorDropdown extends StatefulWidget {
-  final List<twin.Floor> selectedItems;
+  final List<String> selectedItems;
   final OnFloorsSelected onFloorsSelected;
 
   const MultiFloorDropdown({
@@ -25,6 +25,7 @@ class _MultiFloorDropdownState extends State<MultiFloorDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Floor>(
+        searchHint: 'Select Floors',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onFloorsSelected(selectedItems);
@@ -66,13 +67,9 @@ class _MultiFloorDropdownState extends State<MultiFloorDropdown> {
       return;
     }
     try {
-      List<String> ids = [];
-      for (var dm in widget.selectedItems) {
-        ids.add(dm.id);
-      }
       var eRes = await TwinnedSession.instance.twin.getFloors(
         apikey: TwinnedSession.instance.authToken,
-        body: twin.GetReq(ids: ids),
+        body: twin.GetReq(ids: widget.selectedItems),
       );
       if (eRes != null && eRes.body != null) {
         setState(() {

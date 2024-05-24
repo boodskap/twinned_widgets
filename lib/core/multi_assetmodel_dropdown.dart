@@ -7,7 +7,7 @@ typedef OnAssetModelsSelected<AssetModel> = void Function(
     List<AssetModel> item);
 
 class MultiAssetModelDropdown extends StatefulWidget {
-  final List<twin.AssetModel> selectedItems;
+  final List<String> selectedItems;
   final OnAssetModelsSelected onAssetModelsSelected;
 
   const MultiAssetModelDropdown({
@@ -27,6 +27,7 @@ class _MultiAssetModelDropdownState extends State<MultiAssetModelDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.AssetModel>(
+        searchHint: 'Select Asset Models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onAssetModelsSelected(selectedItems);
@@ -64,17 +65,13 @@ class _MultiAssetModelDropdownState extends State<MultiAssetModelDropdown> {
   }
 
   Future<void> _load() async {
-    if (null == widget.selectedItems || widget.selectedItems!.isEmpty) {
+    if (widget.selectedItems.isEmpty) {
       return;
     }
     try {
-      List<String> ids = [];
-      for (var dm in widget.selectedItems) {
-        ids.add(dm.id);
-      }
       var eRes = await TwinnedSession.instance.twin.getAssetModels(
         apikey: TwinnedSession.instance.authToken,
-        body: twin.GetReq(ids: ids),
+        body: twin.GetReq(ids: widget.selectedItems),
       );
       if (eRes != null && eRes.body != null) {
         setState(() {

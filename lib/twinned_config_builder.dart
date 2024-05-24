@@ -24,6 +24,7 @@ import 'package:twinned_widgets/core/multi_premise_dropdown.dart';
 import 'package:twinned_widgets/core/number_field.dart';
 import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
+import 'package:twinned_widgets/core/range_list.dart';
 
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
@@ -66,7 +67,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     final List<Widget> _children = [];
 
     for (var parameter in widget.parameters.keys) {
-      switch (widget.config.getDataType(parameter)) {
+      DataType dataType = widget.config.getDataType(parameter);
+      HintType hintType = widget.config.getHintType(parameter);
+
+      debugPrint('Building type:$dataType hint:$hintType');
+
+      switch (dataType) {
         case DataType.numeric:
           _fields[parameter] = _buildNumberField(parameter);
           break;
@@ -191,43 +197,43 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         );
       case HintType.deviceId:
         return DeviceDropdown(
-            selectedDevice: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onDeviceSelected: (device) {
               _parameters[parameter] = device?.id ?? '';
             });
       case HintType.deviceModelId:
         return DeviceModelDropdown(
-            selectedDeviceModel: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onDeviceModelSelected: (deviceModel) {
               _parameters[parameter] = deviceModel?.id ?? '';
             });
       case HintType.assetModelId:
         return AssetModelDropdown(
-            selectedAssetModel: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onAssetModelSelected: (assetModel) {
               _parameters[parameter] = assetModel?.id ?? '';
             });
       case HintType.assetId:
         return AssetDropdown(
-            selectedAsset: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onAssetSelected: (asset) {
               _parameters[parameter] = asset?.id ?? '';
             });
       case HintType.premiseId:
         return PremiseDropdown(
-            selectedPremise: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onPremiseSelected: (premise) {
               _parameters[parameter] = premise?.id ?? '';
             });
       case HintType.facilityId:
         return FacilityDropdown(
-            selectedFacility: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onFacilitySelected: (facility) {
               _parameters[parameter] = facility?.id ?? '';
             });
       case HintType.floorId:
         return FloorDropdown(
-            selectedFloor: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onFloorSelected: (floor) {
               _parameters[parameter] = floor?.id ?? '';
             });
@@ -301,31 +307,31 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.assetId:
         return MultiAssetDropdown(
-            selectedItems: _parameters[parameter],
+            selectedItems: toList(_parameters[parameter]),
             onAssetsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.assetModelId:
         return MultiAssetModelDropdown(
-            selectedItems: _parameters[parameter],
+            selectedItems: toList(_parameters[parameter]),
             onAssetModelsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.premiseId:
         return MultiPremiseDropdown(
-            selectedItems: _parameters[parameter],
+            selectedItems: toList(_parameters[parameter]),
             onPremisesSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.facilityId:
         return MultiFacilityDropdown(
-            selectedItems: _parameters[parameter],
+            selectedItems: toList(_parameters[parameter]),
             onFacilitiesSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.floorId:
         return MultiFloorDropdown(
-            selectedItems: _parameters[parameter],
+            selectedItems: toList(_parameters[parameter]),
             onFloorsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
@@ -358,12 +364,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildListOfRangesField(String parameter) {
-    return const SizedBox(
-        height: 48,
-        child: Placeholder(
-          color: Colors.red,
-          child: Text('Range List'),
-        ));
+    List<dynamic> list = _parameters[parameter];
+    List<Map<String, dynamic>> values = [];
+    for (Map<String, dynamic> map in list) {
+      values.add(map);
+    }
+    return RangeList(parameters: values);
   }
 
   @override

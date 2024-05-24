@@ -6,7 +6,7 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnPremisesSelected<Premise> = void Function(List<Premise> item);
 
 class MultiPremiseDropdown extends StatefulWidget {
-  final List<twin.Premise> selectedItems;
+  final List<String> selectedItems;
   final OnPremisesSelected onPremisesSelected;
 
   const MultiPremiseDropdown({
@@ -25,6 +25,7 @@ class _MultiPremiseDropdownState extends State<MultiPremiseDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Premise>(
+        searchHint: 'Select Premises',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onPremisesSelected(selectedItems);
@@ -66,13 +67,9 @@ class _MultiPremiseDropdownState extends State<MultiPremiseDropdown> {
       return;
     }
     try {
-      List<String> ids = [];
-      for (var dm in widget.selectedItems) {
-        ids.add(dm.id);
-      }
       var eRes = await TwinnedSession.instance.twin.getPremises(
         apikey: TwinnedSession.instance.authToken,
-        body: twin.GetReq(ids: ids),
+        body: twin.GetReq(ids: widget.selectedItems),
       );
       if (eRes != null && eRes.body != null) {
         setState(() {

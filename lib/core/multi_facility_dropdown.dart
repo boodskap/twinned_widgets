@@ -6,7 +6,7 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnFacilitiesSelected<Facility> = void Function(List<Facility> item);
 
 class MultiFacilityDropdown extends StatefulWidget {
-  final List<twin.Facility> selectedItems;
+  final List<String> selectedItems;
   final OnFacilitiesSelected onFacilitiesSelected;
 
   const MultiFacilityDropdown({
@@ -25,6 +25,7 @@ class _MultiFacilityDropdownState extends State<MultiFacilityDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Facility>(
+        searchHint: 'Select Facilities',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onFacilitiesSelected(selectedItems);
@@ -66,13 +67,9 @@ class _MultiFacilityDropdownState extends State<MultiFacilityDropdown> {
       return;
     }
     try {
-      List<String> ids = [];
-      for (var dm in widget.selectedItems) {
-        ids.add(dm.id);
-      }
       var eRes = await TwinnedSession.instance.twin.getFacilities(
         apikey: TwinnedSession.instance.authToken,
-        body: twin.GetReq(ids: ids),
+        body: twin.GetReq(ids: widget.selectedItems),
       );
       if (eRes != null && eRes.body != null) {
         setState(() {
