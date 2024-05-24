@@ -15,6 +15,7 @@ dependencies:
   select2dot1: ^2.0.9
   search_choices: ^2.2.7
   liquid_progress_indicator_v2: ^0.5.0
+  intl: ^0.18.1
 
   nocode_commons:
     git:
@@ -23,12 +24,11 @@ dependencies:
     #    nocode_commons
 
   twinned_models:
-    # git:
-    #   url: https://github.com/boodskap/twinned_models.git
-    #   ref: main
-     path:
-       twinned_models
-
+    git:
+      url: https://github.com/boodskap/twinned_models.git
+      ref: main
+    #  path:
+    #    twinned_models
 
 dev_dependencies:
   flutter_test:
@@ -37,7 +37,7 @@ dev_dependencies:
   build_runner: ^2.4.9
   freezed: ^2.5.2
   json_serializable: ^6.8.0
-  intl: ^0.18.0
+ 
   select2dot1: ^2.0.9
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
