@@ -132,12 +132,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
 
       var sRes = await session.twin.queryDeviceData(
           apikey: session.authToken,
-          body: EqlSearch(
-              conditions: [stats],
-              queryConditions: [],
-              mustConditions: [],
-              boolConditions: [],
-              size: 0));
+          body: EqlSearch(source: [], conditions: [stats], size: 0));
 
       if (validateResponse(sRes)) {
         debugPrint(sRes.body!.toString());

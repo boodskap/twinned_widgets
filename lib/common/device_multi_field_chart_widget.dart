@@ -30,92 +30,97 @@ class _DeviceMultiFieldChartWidgetState
   }
 
   @override
-Widget build(BuildContext context) {
-  if (!isValidConfig) {
-    return const Wrap(
-      spacing: 8.0,
-      children: [
-        Text(
-          'Not configured properly',
-          style: TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
-        ),
-      ],
+  Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Wrap(
+        spacing: 8.0,
+        children: [
+          Text(
+            'Not configured properly',
+            style:
+                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+          ),
+        ],
+      );
+    }
+
+    return Center(
+      child: SfCartesianChart(
+        title: ChartTitle(text: widget.config.title),
+        legend: const Legend(isVisible: true),
+        series: widget.config.field.map((field) {
+          return LineSeries<SeriesData, num>(
+            name: field,
+            enableTooltip: true,
+            dataSource: _chatSeries,
+            xValueMapper: (SeriesData data, _) => data.stamp,
+            yValueMapper: (SeriesData data, _) => data.values[field],
+            width: 2,
+            markerSettings: const MarkerSettings(
+              isVisible: true,
+              height: 4,
+              width: 4,
+              shape: DataMarkerType.circle,
+              borderWidth: 3,
+              borderColor: Colors.red,
+            ),
+            dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              labelAlignment: ChartDataLabelAlignment.auto,
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  return Center(
-    child: SfCartesianChart(
-      title: ChartTitle(text: widget.config.title),
-      legend: const Legend(isVisible: true),
-      series: widget.config.field.map((field) {
-        return LineSeries<SeriesData, num>(
-          name: field,
-          enableTooltip: true,
-          dataSource: _chatSeries,
-          xValueMapper: (SeriesData data, _) => data.stamp,
-          yValueMapper: (SeriesData data, _) => data.values[field],
-          width: 2,
-          markerSettings: const MarkerSettings(
-            isVisible: true,
-            height: 4,
-            width: 4,
-            shape: DataMarkerType.circle,
-            borderWidth: 3,
-            borderColor: Colors.red,
-          ),
-          dataLabelSettings: const DataLabelSettings(
-            isVisible: true,
-            labelAlignment: ChartDataLabelAlignment.auto,
-          ),
-        );
-      }).toList(),
-    ),
-  );
-}
+  Future load({String? filter, String search = '*'}) async {
+    if (!isValidConfig) return;
 
-Future load({String? filter, String search = '*'}) async {
-  if (!isValidConfig) return;
+    if (loading) return;
+    loading = true;
 
-  if (loading) return;
-  loading = true;
+    _chatSeries.clear();
 
-  _chatSeries.clear();
+    await execute(() async {
+      var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
+        apikey: TwinnedSession.instance.authToken,
+        body: EqlSearch(
+          page: 0,
+          size: 100,
+          source: [],
+          mustConditions: [
+            {
+              "exists": {"field": "data.volume"}
+            },
+            {
+              "exists": {"field": "data.temperature_value"}
+            },
+            {
+              "match_phrase": {"deviceId": widget.config.deviceId}
+            },
+          ],
+          sort: {'updatedStamp': 'desc'},
+        ),
+      );
 
-  await execute(() async {
-    var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
-      apikey: TwinnedSession.instance.authToken,
-      body: EqlSearch(
-        page: 0,
-        size: 100,
-        conditions: [],
-        boolConditions: [],
-        queryConditions: [],
-        mustConditions: [
-          {"exists": {"field": "data.volume"}},
-          {"exists": {"field": "data.temperature_value"}},
-          {"match_phrase": {"deviceId": widget.config.deviceId}},
-        ],
-        sort: {'updatedStamp': 'desc'},
-      ),
-    );
-
-    if (validateResponse(qRes)) {
-      Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
-      List<dynamic> values = json['hits']['hits'];
-      for (Map<String, dynamic> obj in values) {
-        int millis = obj['p_source']['updatedStamp'];
-        Map<String, dynamic> dataValues = {};
-        for (String field in widget.config.field) {
-          dataValues[field] = obj['p_source']['data'][field];
+      if (validateResponse(qRes)) {
+        Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
+        List<dynamic> values = json['hits']['hits'];
+        for (Map<String, dynamic> obj in values) {
+          int millis = obj['p_source']['updatedStamp'];
+          Map<String, dynamic> dataValues = {};
+          for (String field in widget.config.field) {
+            dataValues[field] = obj['p_source']['data'][field];
+          }
+          _chatSeries.add(SeriesData(stamp: millis, values: dataValues));
         }
-        _chatSeries.add(SeriesData(stamp: millis, values: dataValues));
       }
-    }
-  });
+    });
 
-  loading = false;
-  refresh();
-}
+    loading = false;
+    refresh();
+  }
 
   @override
   void setup() {
@@ -129,7 +134,6 @@ class SeriesData {
 
   SeriesData({required this.stamp, required this.values});
 }
-
 
 class DeviceMultiFieldChartWidgetBuilder extends TwinnedWidgetBuilder {
   @override
@@ -154,13 +158,13 @@ class DeviceMultiFieldChartWidgetBuilder extends TwinnedWidgetBuilder {
   }
 
   @override
-  BaseConfig getDefaultConfig({Map<String,dynamic>? config}) {
-    if(null!=config){
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
       return DeviceMultiFieldChartWidgetConfig.fromJson(config);
     }
     return DeviceMultiFieldChartWidgetConfig();
   }
-  
+
   @override
   String getPaletteTooltip() {
     return 'Graph based on device multi field';
