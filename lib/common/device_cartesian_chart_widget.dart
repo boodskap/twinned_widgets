@@ -86,23 +86,16 @@ class _DeviceCartesianChartWidgetState
     await execute(() async {
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
           apikey: TwinnedSession.instance.authToken,
-          body: EqlSearch(
-              page: 0,
-              size: 100,
-              conditions: [],
-              boolConditions: [],
-              queryConditions: [],
-              mustConditions: [
-                {
-                  "exists": {"field": "data.volume"}
-                },
-                {
-                  "match_phrase": {"deviceId": widget.config.deviceId}
-                },
-              ],
-              sort: {
-                'updatedStamp': 'desc'
-              }));
+          body: EqlSearch(page: 0, size: 100, source: [], mustConditions: [
+            {
+              "exists": {"field": "data.volume"}
+            },
+            {
+              "match_phrase": {"deviceId": widget.config.deviceId}
+            },
+          ], sort: {
+            'updatedStamp': 'desc'
+          }, conditions: [], queryConditions: [], boolConditions: []));
       debugPrint(qRes.toString());
       if (validateResponse(qRes)) {
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
