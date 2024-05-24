@@ -42,8 +42,7 @@ class _TotalAndReportingAssetWidgetState
       var sRes = await session.twin.queryCountAsset(
           apikey: session.authToken,
           body: EqlSearch(
-              conditions: [],
-              queryConditions: [],
+              source: [],
               mustConditions: [terms],
               boolConditions: [],
               size: 0));
@@ -54,12 +53,7 @@ class _TotalAndReportingAssetWidgetState
 
       sRes = await session.twin.queryCountAsset(
           apikey: session.authToken,
-          body: EqlSearch(
-              conditions: [],
-              queryConditions: [],
-              mustConditions: [terms],
-              boolConditions: [],
-              size: 0));
+          body: EqlSearch(source: [], mustConditions: [terms], size: 0));
 
       if (validateResponse(sRes)) {
         reportingAssets = sRes.body!.total;

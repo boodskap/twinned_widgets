@@ -252,10 +252,9 @@ class _ValueDistributionPieChartWidgetState
       var sRes = await session.twin.queryDeviceData(
           apikey: session.authToken,
           body: EqlSearch(
+              source: [],
               conditions: [aggs],
-              queryConditions: [],
               mustConditions: [terms],
-              boolConditions: [],
               size: 0));
 
       if (validateResponse(sRes)) {
