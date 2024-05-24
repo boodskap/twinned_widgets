@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FontField extends StatefulWidget {
   final Map<String, dynamic> config;
@@ -18,10 +19,14 @@ class FontField extends StatefulWidget {
 
 class _FontFieldState extends BaseState<FontField> {
   final Map<String, dynamic> _values = <String, dynamic>{};
+  late String _selectedFontFamily;
+  late List<String> _googleFonts;
 
   @override
   void initState() {
     _values.addAll(widget.config[widget.parameter]);
+    _googleFonts = _loadGoogleFonts();
+    _selectedFontFamily = _googleFonts.isNotEmpty ? _googleFonts.first : '';
     super.initState();
   }
 
@@ -32,6 +37,10 @@ class _FontFieldState extends BaseState<FontField> {
   void setColor(Color color) {
     _values['fontColor'] = color.value;
     widget.config[widget.parameter] = _values;
+  }
+
+  List<String> _loadGoogleFonts() {
+    return GoogleFonts.asMap().keys.toList();
   }
 
   void _showColorPickerDialog() {
@@ -131,6 +140,34 @@ class _FontFieldState extends BaseState<FontField> {
                     ? Icons.font_download_sharp
                     : Icons.font_download_outlined),
                 onPressed: _toggleBold,
+              ),
+            ),
+            const SizedBox(width: 10),
+            IntrinsicWidth(
+              child: Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.black)),
+                child: DropdownButton<String>(
+                  value: _selectedFontFamily,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedFontFamily = newValue!;
+                    });
+                  },
+                  items: _googleFonts
+                      .map<DropdownMenuItem<String>>((String fontFamily) {
+                    return DropdownMenuItem<String>(
+                      value: fontFamily,
+                      child: Text(
+                        fontFamily,
+                        style: GoogleFonts.getFont(
+                          fontFamily,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ],
