@@ -4,30 +4,31 @@ import 'package:search_choices/search_choices.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/twinned_session.dart';
 
-typedef OnDeviceModelSelected = void Function(twin.DeviceModel? deviceModel);
+typedef OnDashboardScreenSelected = void Function(twin.DashboardScreen? device);
 
-class DeviceModelDropdown extends StatefulWidget {
+class DashboardScreenDropdown extends StatefulWidget {
   final String? selectedItem;
-  final OnDeviceModelSelected onDeviceModelSelected;
+  final OnDashboardScreenSelected onDashboardScreenSelected;
 
-  const DeviceModelDropdown(
+  const DashboardScreenDropdown(
       {super.key,
       required this.selectedItem,
-      required this.onDeviceModelSelected});
+      required this.onDashboardScreenSelected});
 
   @override
-  State<DeviceModelDropdown> createState() => _DeviceModelDropdownState();
+  State<DashboardScreenDropdown> createState() =>
+      _DashboardScreenDropdownState();
 }
 
-class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
-  twin.DeviceModel? _selectedItem;
+class _DashboardScreenDropdownState extends BaseState<DashboardScreenDropdown> {
+  twin.DashboardScreen? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
-    return SearchChoices<twin.DeviceModel>.single(
+    return SearchChoices<twin.DashboardScreen>.single(
       value: _selectedItem,
-      hint: 'Select Device Model',
-      searchHint: 'Select Device Model',
+      hint: 'Select Screen',
+      searchHint: 'Select Screen',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -39,27 +40,27 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       dialogBox: true,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
-        twin.DeviceModel entity = value;
-        return Text(
-            '${entity.name} ${entity.description} (${entity.parameters.length} parameters)');
+        twin.DashboardScreen device = value;
+        return Text(device.name);
       },
       onChanged: (selected) {
         setState(() {
           _selectedItem = selected;
         });
-        widget.onDeviceModelSelected(_selectedItem);
+        widget.onDashboardScreenSelected(_selectedItem);
       },
     );
   }
 
-  Future<Tuple2<List<DropdownMenuItem<twin.DeviceModel>>, int>> _search(
+  Future<Tuple2<List<DropdownMenuItem<twin.DashboardScreen>>, int>> _search(
       {String search = "*", int? page = 0}) async {
     if (loading) return Tuple2([], 0);
     loading = true;
-    List<DropdownMenuItem<twin.DeviceModel>> items = [];
+    List<DropdownMenuItem<twin.DashboardScreen>> items = [];
     int total = 0;
+
     try {
-      var pRes = await TwinnedSession.instance.twin.searchDeviceModels(
+      var pRes = await TwinnedSession.instance.twin.searchDashboardScreens(
           apikey: TwinnedSession.instance.authToken,
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
@@ -67,8 +68,12 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
           if (entity.id == widget.selectedItem) {
             _selectedItem = entity;
           }
-          items.add(DropdownMenuItem<twin.DeviceModel>(
-              value: entity, child: Text(entity.name)));
+          items.add(DropdownMenuItem<twin.DashboardScreen>(
+              value: entity,
+              child: Text(
+                entity.name,
+                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              )));
         }
 
         total = pRes.body!.total;
@@ -77,7 +82,6 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       debugPrint('$e\n$s');
     }
     loading = false;
-
     return Tuple2(items, total);
   }
 
@@ -86,9 +90,9 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       return;
     }
     try {
-      var eRes = await TwinnedSession.instance.twin.getDeviceModel(
+      var eRes = await TwinnedSession.instance.twin.getDashboardScreen(
         apikey: TwinnedSession.instance.authToken,
-        modelId: widget.selectedItem,
+        screenId: widget.selectedItem,
       );
       if (eRes != null && eRes.body != null) {
         setState(() {
