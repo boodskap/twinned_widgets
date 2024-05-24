@@ -31,6 +31,8 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
+        pageNb = pageNb ?? 1;
+        --pageNb;
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },

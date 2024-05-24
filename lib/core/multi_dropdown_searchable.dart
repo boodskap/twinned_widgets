@@ -76,6 +76,8 @@ class _MultiDropdownSearchableState<T>
           isExpanded: true,
           futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
               List<Tuple2<String, String>>? filters, int? pageNb) async {
+            pageNb = pageNb ?? 1;
+            --pageNb;
             _items.clear();
             var result =
                 await widget.itemSearchFunc(keyword ?? '*', pageNb ?? 0);

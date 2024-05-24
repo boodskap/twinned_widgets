@@ -255,7 +255,7 @@ class _ValueDistributionPieChartWidgetState
               source: [],
               conditions: [aggs],
               mustConditions: [terms],
-              size: 0));
+              size: 0, queryConditions: [], boolConditions: []));
 
       if (validateResponse(sRes)) {
         debugPrint(sRes.body!.toString());

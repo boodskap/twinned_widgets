@@ -33,6 +33,7 @@ class TwinnedSession {
   static final TwinnedSession _instance = TwinnedSession._privateConstructor();
 
   String authToken = '';
+  String domainKey = '';
   bool _debug = true;
   String _host = '';
   digital.Twinned _twinned = digital.Twinned.create(

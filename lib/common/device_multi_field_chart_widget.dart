@@ -100,7 +100,7 @@ class _DeviceMultiFieldChartWidgetState
               "match_phrase": {"deviceId": widget.config.deviceId}
             },
           ],
-          sort: {'updatedStamp': 'desc'},
+          sort: {'updatedStamp': 'desc'}, conditions: [], queryConditions: [], boolConditions: [],
         ),
       );
 
