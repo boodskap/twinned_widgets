@@ -7,25 +7,25 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnFloorSelected = void Function(twin.Floor? floor);
 
 class FloorDropdown extends StatefulWidget {
-  final String? selectedFloor;
+  final String? selectedItem;
   final OnFloorSelected onFloorSelected;
 
   const FloorDropdown(
-      {super.key, this.selectedFloor, required this.onFloorSelected});
+      {super.key, this.selectedItem, required this.onFloorSelected});
 
   @override
   State<FloorDropdown> createState() => _FloorDropdownState();
 }
 
 class _FloorDropdownState extends BaseState<FloorDropdown> {
-  twin.Floor? _selectedFloor;
+  twin.Floor? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
     return SearchChoices<twin.Floor>.single(
-      value: _selectedFloor,
-      hint: 'Select One',
-      searchHint: 'Select One',
+      value: _selectedItem,
+      hint: 'Select Floor',
+      searchHint: 'Select Floor',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -40,9 +40,9 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
       },
       onChanged: (selected) {
         setState(() {
-          _selectedFloor = selected;
+          _selectedItem = selected;
         });
-        widget.onFloorSelected(_selectedFloor);
+        widget.onFloorSelected(_selectedItem);
       },
     );
   }
@@ -59,8 +59,8 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {
-          if (entity.id == widget.selectedFloor) {
-            _selectedFloor = entity;
+          if (entity.id == widget.selectedItem) {
+            _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.Floor>(
               value: entity,
@@ -82,20 +82,22 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
   }
 
   Future _load() async {
-    if (loading) return;
-    loading = true;
-    if (null == widget.selectedFloor || widget.selectedFloor!.isEmpty) return;
-    await execute(() async {
+    if (widget.selectedItem?.isEmpty ?? true) {
+      return;
+    }
+    try {
       var eRes = await TwinnedSession.instance.twin.getFloor(
-          apikey: TwinnedSession.instance.authToken,
-          floorId: widget.selectedFloor);
-      if (validateResponse(eRes, shouldAlert: false)) {
-        refresh(sync: () {
-          _selectedFloor = eRes.body!.entity;
+        apikey: TwinnedSession.instance.authToken,
+        floorId: widget.selectedItem,
+      );
+      if (eRes != null && eRes.body != null) {
+        setState(() {
+          _selectedItem = eRes.body!.entity;
         });
       }
-    });
-    loading = false;
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
   }
 
   @override

@@ -7,27 +7,25 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnDeviceSelected = void Function(twin.Device? device);
 
 class DeviceDropdown extends StatefulWidget {
-  final String? selectedDevice;
+  final String? selectedItem;
   final OnDeviceSelected onDeviceSelected;
 
   const DeviceDropdown(
-      {super.key,
-      required this.selectedDevice,
-      required this.onDeviceSelected});
+      {super.key, required this.selectedItem, required this.onDeviceSelected});
 
   @override
   State<DeviceDropdown> createState() => _DeviceDropdownState();
 }
 
 class _DeviceDropdownState extends BaseState<DeviceDropdown> {
-  twin.Device? _selectedDevice;
+  twin.Device? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
     return SearchChoices<twin.Device>.single(
-      value: _selectedDevice,
-      hint: 'Select One',
-      searchHint: 'Select One',
+      value: _selectedItem,
+      hint: 'Select Device',
+      searchHint: 'Select Device',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -42,9 +40,9 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
       },
       onChanged: (selected) {
         setState(() {
-          _selectedDevice = selected;
+          _selectedItem = selected;
         });
-        widget.onDeviceSelected(_selectedDevice);
+        widget.onDeviceSelected(_selectedItem);
       },
     );
   }
@@ -62,8 +60,8 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {
-          if (entity.id == widget.selectedDevice) {
-            _selectedDevice = entity;
+          if (entity.id == widget.selectedItem) {
+            _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.Device>(
               value: entity,
@@ -83,20 +81,22 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
   }
 
   Future _load() async {
-    if (loading) return;
-    loading = true;
-    if (null == widget.selectedDevice || widget.selectedDevice!.isEmpty) return;
-    await execute(() async {
+    if (widget.selectedItem?.isEmpty ?? true) {
+      return;
+    }
+    try {
       var eRes = await TwinnedSession.instance.twin.getDevice(
-          apikey: TwinnedSession.instance.authToken,
-          deviceId: widget.selectedDevice);
-      if (validateResponse(eRes, shouldAlert: false)) {
-        refresh(sync: () {
-          _selectedDevice = eRes.body!.entity;
+        apikey: TwinnedSession.instance.authToken,
+        deviceId: widget.selectedItem,
+      );
+      if (eRes != null && eRes.body != null) {
+        setState(() {
+          _selectedItem = eRes.body!.entity;
         });
       }
-    });
-    loading = false;
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
   }
 
   @override

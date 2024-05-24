@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/core/asset_dropdown.dart';
@@ -8,14 +10,21 @@ import 'package:twinned_widgets/core/device_dropdown.dart';
 import 'package:twinned_widgets/core/device_model_dropdown.dart';
 import 'package:twinned_widgets/core/facility_dropdown.dart';
 import 'package:twinned_widgets/core/floor_dropdown.dart';
+import 'package:twinned_widgets/core/multi_asset_dropdown.dart';
+import 'package:twinned_widgets/core/multi_assetmodel_dropdown.dart';
 import 'package:twinned_widgets/core/multi_device_dropdown.dart';
 import 'package:twinned_widgets/core/enumerated_field.dart';
 import 'package:twinned_widgets/core/font_field.dart';
 import 'package:twinned_widgets/core/field_dropdown.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:twinned_widgets/core/multi_devicemodel_dropdown.dart';
+import 'package:twinned_widgets/core/multi_facility_dropdown.dart';
+import 'package:twinned_widgets/core/multi_floor_dropdown.dart';
+import 'package:twinned_widgets/core/multi_premise_dropdown.dart';
 import 'package:twinned_widgets/core/number_field.dart';
 import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
+import 'package:twinned_widgets/core/range_list.dart';
 
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
@@ -58,7 +67,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     final List<Widget> _children = [];
 
     for (var parameter in widget.parameters.keys) {
-      switch (widget.config.getDataType(parameter)) {
+      DataType dataType = widget.config.getDataType(parameter);
+      HintType hintType = widget.config.getHintType(parameter);
+
+      debugPrint('Building type:$dataType hint:$hintType');
+
+      switch (dataType) {
         case DataType.numeric:
           _fields[parameter] = _buildNumberField(parameter);
           break;
@@ -183,43 +197,43 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         );
       case HintType.deviceId:
         return DeviceDropdown(
-            selectedDevice: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onDeviceSelected: (device) {
               _parameters[parameter] = device?.id ?? '';
             });
       case HintType.deviceModelId:
         return DeviceModelDropdown(
-            selectedDeviceModel: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onDeviceModelSelected: (deviceModel) {
               _parameters[parameter] = deviceModel?.id ?? '';
             });
       case HintType.assetModelId:
         return AssetModelDropdown(
-            selectedAssetModel: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onAssetModelSelected: (assetModel) {
               _parameters[parameter] = assetModel?.id ?? '';
             });
       case HintType.assetId:
         return AssetDropdown(
-            selectedAsset: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onAssetSelected: (asset) {
               _parameters[parameter] = asset?.id ?? '';
             });
       case HintType.premiseId:
         return PremiseDropdown(
-            selectedPremise: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onPremiseSelected: (premise) {
               _parameters[parameter] = premise?.id ?? '';
             });
       case HintType.facilityId:
         return FacilityDropdown(
-            selectedFacility: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onFacilitySelected: (facility) {
               _parameters[parameter] = facility?.id ?? '';
             });
       case HintType.floorId:
         return FloorDropdown(
-            selectedFloor: _parameters[parameter],
+            selectedItem: _parameters[parameter],
             onFloorSelected: (floor) {
               _parameters[parameter] = floor?.id ?? '';
             });
@@ -254,6 +268,14 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     );
   }
 
+  List<String> toList(List<dynamic> list) {
+    List<String> values = [];
+    for (dynamic item in list) {
+      values.add(item);
+    }
+    return values;
+  }
+
   Widget _buildListOfTextsField(String parameter) {
     var paramValue = _parameters[parameter];
 
@@ -264,9 +286,10 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     switch (widget.config.getHintType(parameter)) {
       case HintType.deviceId:
         return MultiDeviceDropdown(
-            selectedDevice: _parameters[parameter],
-            onDevicesSelected: (device) {
-              _parameters[parameter] = device?.id ?? '';
+            selectedItems: toList(_parameters[parameter]),
+            onDevicesSelected: (items) {
+              _parameters[parameter] = items.map((i) => i.id).toList();
+              debugPrint(jsonEncode(_parameters));
             });
       case HintType.field:
         return const SizedBox(
@@ -276,47 +299,42 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
               child: Text('Field List'),
             ));
       case HintType.deviceModelId:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Model List'),
-            ));
+        return MultiDeviceModelDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onDeviceModelsSelected: (models) {
+              _parameters[parameter] = models.map((i) => i.id).toList();
+              debugPrint(jsonEncode(_parameters));
+            });
       case HintType.assetId:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Asset List'),
-            ));
+        return MultiAssetDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onAssetsSelected: (models) {
+              _parameters[parameter] = models.map((i) => i.id).toList();
+            });
       case HintType.assetModelId:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Asset Model List'),
-            ));
+        return MultiAssetModelDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onAssetModelsSelected: (models) {
+              _parameters[parameter] = models.map((i) => i.id).toList();
+            });
       case HintType.premiseId:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Premise List'),
-            ));
+        return MultiPremiseDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onPremisesSelected: (models) {
+              _parameters[parameter] = models.map((i) => i.id).toList();
+            });
       case HintType.facilityId:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Facility List'),
-            ));
+        return MultiFacilityDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onFacilitiesSelected: (models) {
+              _parameters[parameter] = models.map((i) => i.id).toList();
+            });
       case HintType.floorId:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Floor List'),
-            ));
+        return MultiFloorDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onFloorsSelected: (models) {
+              _parameters[parameter] = models.map((i) => i.id).toList();
+            });
       default:
         return const SizedBox(
             height: 48,
@@ -346,12 +364,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildListOfRangesField(String parameter) {
-    return const SizedBox(
-        height: 48,
-        child: Placeholder(
-          color: Colors.red,
-          child: Text('Range List'),
-        ));
+    List<dynamic> list = _parameters[parameter];
+    List<Map<String, dynamic>> values = [];
+    for (Map<String, dynamic> map in list) {
+      values.add(map);
+    }
+    return RangeList(parameters: values);
   }
 
   @override

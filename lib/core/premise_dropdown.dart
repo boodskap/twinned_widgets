@@ -7,27 +7,25 @@ import 'package:twinned_widgets/twinned_session.dart';
 typedef OnPremiseSelected = void Function(twin.Premise? premise);
 
 class PremiseDropdown extends StatefulWidget {
-  final String? selectedPremise;
+  final String? selectedItem;
   final OnPremiseSelected onPremiseSelected;
 
   const PremiseDropdown(
-      {super.key,
-      required this.selectedPremise,
-      required this.onPremiseSelected});
+      {super.key, required this.selectedItem, required this.onPremiseSelected});
 
   @override
   State<PremiseDropdown> createState() => _PremiseDropdownState();
 }
 
 class _PremiseDropdownState extends BaseState<PremiseDropdown> {
-  twin.Premise? _selectedPremise;
+  twin.Premise? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
     return SearchChoices<twin.Premise>.single(
-      value: _selectedPremise,
-      hint: 'Select One',
-      searchHint: 'Select One',
+      value: _selectedItem,
+      hint: 'Select Premise',
+      searchHint: 'Select Premise',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -42,9 +40,9 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
       },
       onChanged: (selected) {
         setState(() {
-          _selectedPremise = selected;
+          _selectedItem = selected;
         });
-        widget.onPremiseSelected(_selectedPremise);
+        widget.onPremiseSelected(_selectedItem);
       },
     );
   }
@@ -61,8 +59,8 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {
-          if (entity.id == widget.selectedPremise) {
-            _selectedPremise = entity;
+          if (entity.id == widget.selectedItem) {
+            _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.Premise>(
               value: entity,
@@ -84,21 +82,22 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
   }
 
   Future _load() async {
-    if (loading) return;
-    loading = true;
-    if (null == widget.selectedPremise || widget.selectedPremise!.isEmpty)
+    if (widget.selectedItem?.isEmpty ?? true) {
       return;
-    await execute(() async {
+    }
+    try {
       var eRes = await TwinnedSession.instance.twin.getPremise(
-          apikey: TwinnedSession.instance.authToken,
-          premiseId: widget.selectedPremise);
-      if (validateResponse(eRes, shouldAlert: false)) {
-        refresh(sync: () {
-          _selectedPremise = eRes.body!.entity;
+        apikey: TwinnedSession.instance.authToken,
+        premiseId: widget.selectedItem,
+      );
+      if (eRes != null && eRes.body != null) {
+        setState(() {
+          _selectedItem = eRes.body!.entity;
         });
       }
-    });
-    loading = false;
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
   }
 
   @override

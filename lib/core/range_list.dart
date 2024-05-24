@@ -1,0 +1,155 @@
+import 'package:flutter/material.dart';
+import 'package:twinned_widgets/core/color_picker_field.dart';
+import 'package:twinned_widgets/core/decimal_field.dart';
+import 'package:twinned_widgets/core/parameter_text_field.dart';
+import 'package:uuid/uuid.dart';
+
+typedef OnRangeDelete = void Function(int index);
+
+class RangeList extends StatefulWidget {
+  final List<Map<String, dynamic>> parameters;
+  const RangeList({super.key, required this.parameters});
+
+  @override
+  State<RangeList> createState() => _RangeListState();
+}
+
+class _RangeListState extends State<RangeList> {
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (int i = 0; i < widget.parameters.length; i++) {
+      var map = widget.parameters[i];
+      children.add(Range(
+        index: i,
+        parameters: map,
+        onRangeDelete: (index) {
+          setState(() {
+            widget.parameters.removeAt(index);
+          });
+        },
+      ));
+    }
+    return Expanded(
+      child: Column(
+        key: Key(Uuid().v4()),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.parameters.add(<String, dynamic>{
+                        'from': null,
+                        'to': null,
+                        'label': 'New Segment',
+                        'color': Colors.red.value
+                      });
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.green,
+                  ))
+            ],
+          ),
+          ...children
+        ],
+      ),
+    );
+  }
+}
+
+class Range extends StatefulWidget {
+  final int index;
+  final Map<String, dynamic> parameters;
+  final OnRangeDelete onRangeDelete;
+  const Range(
+      {super.key,
+      required this.index,
+      required this.parameters,
+      required this.onRangeDelete});
+
+  @override
+  State<Range> createState() => _RangeState();
+}
+
+class _RangeState extends State<Range> {
+  final TextStyle labelStyle =
+      const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Row(
+        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Text(
+                'From',
+                style: labelStyle,
+              ),
+              const SizedBox(
+                width: 5.0,
+              ),
+              DecimalField(parameters: widget.parameters, parameter: 'from'),
+            ],
+          ),
+          const SizedBox(
+            width: 5.0,
+          ),
+          Row(
+            children: [
+              Text(
+                'To',
+                style: labelStyle,
+              ),
+              const SizedBox(
+                width: 5.0,
+              ),
+              DecimalField(parameters: widget.parameters, parameter: 'to'),
+            ],
+          ),
+          const SizedBox(
+            width: 5.0,
+          ),
+          Row(
+            children: [
+              Text(
+                'Label',
+                style: labelStyle,
+              ),
+              const SizedBox(
+                width: 5.0,
+              ),
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                    minWidth: 50, maxWidth: 225, maxHeight: 40),
+                child: ParameterTextField(
+                    parameters: widget.parameters, parameter: 'label'),
+              ),
+            ],
+          ),
+          const SizedBox(
+            width: 5.0,
+          ),
+          ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 100, maxHeight: 40),
+              child: ColorPickerField(
+                  config: widget.parameters, parameter: 'color')),
+          const SizedBox(
+            width: 5.0,
+          ),
+          IconButton(
+              onPressed: () {
+                widget.onRangeDelete(widget.index);
+              },
+              icon: const Icon(Icons.delete_forever))
+        ],
+      ),
+    );
+  }
+}
