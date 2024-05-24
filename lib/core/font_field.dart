@@ -142,34 +142,34 @@ class _FontFieldState extends BaseState<FontField> {
                 onPressed: _toggleBold,
               ),
             ),
-            const SizedBox(width: 10),
-            IntrinsicWidth(
-              child: Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.black)),
-                child: DropdownButton<String>(
-                  value: _selectedFontFamily,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedFontFamily = newValue!;
-                    });
-                  },
-                  items: _googleFonts
-                      .map<DropdownMenuItem<String>>((String fontFamily) {
-                    return DropdownMenuItem<String>(
-                      value: fontFamily,
-                      child: Text(
-                        fontFamily,
-                        style: GoogleFonts.getFont(
-                          fontFamily,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
+            // const SizedBox(width: 10),
+            // IntrinsicWidth(
+            //   child: Container(
+            //     decoration:
+            //         BoxDecoration(border: Border.all(color: Colors.black)),
+            //     child: DropdownButton<String>(
+            //       value: _selectedFontFamily,
+            //       onChanged: (String? newValue) {
+            //         setState(() {
+            //           _selectedFontFamily = newValue!;
+            //         });
+            //       },
+            //       items: _googleFonts
+            //           .map<DropdownMenuItem<String>>((String fontFamily) {
+            //         return DropdownMenuItem<String>(
+            //           value: fontFamily,
+            //           child: Text(
+            //             fontFamily,
+            //             style: GoogleFonts.getFont(
+            //               fontFamily,
+            //               fontSize: 16.0,
+            //             ),
+            //           ),
+            //         );
+            //       }).toList(),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
