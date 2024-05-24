@@ -15,7 +15,7 @@ class StaticTextWidget extends StatefulWidget {
 
 class _StaticTextWidgetState extends BaseState<StaticTextWidget> {
   bool isValidConfig = false;
-  late final String value;
+  late String value;
   late int fontSize;
   late Color fontColor;
   late bool fontBold;
@@ -28,9 +28,12 @@ class _StaticTextWidgetState extends BaseState<StaticTextWidget> {
     isValidConfig = widget.config.value.isNotEmpty;
     isValidConfig = isValidConfig && widget.config.value.isNotEmpty;
     var config = widget.config;
-    value = config.value;
+    value = config.value.isNotEmpty ? config.value : "Default Text"; 
+    // value = config.value;
     font = FontConfig.fromJson(config.font);
     fontColor = font.fontColor <= 0 ? Colors.black : Color(font.fontColor);
+    _txtController.text = value;
+    fontBold = font.fontBold;
     super.initState();
   }
 
@@ -49,13 +52,13 @@ class _StaticTextWidgetState extends BaseState<StaticTextWidget> {
       );
     }
     return Center(
-      child: TextField(
-        controller: _txtController,
-        decoration: const InputDecoration(),
+      child: Text(
+        value,
         style: TextStyle(
           color: fontColor,
           fontSize: font.fontSize,
           fontFamily: font.fontFamily,
+          fontWeight: fontBold ? FontWeight.bold : FontWeight.normal,
         ),
       ),
     );
