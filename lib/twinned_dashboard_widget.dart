@@ -3,6 +3,7 @@ import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
 import 'package:twinned_widgets/twinned_widgets.dart';
+import 'package:uuid/uuid.dart';
 
 typedef OnRowClicked = void Function(int selectedRow, ScreenRow row);
 typedef OnComponentClicked = void Function(
@@ -537,6 +538,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     }
 
     return Scaffold(
+      key: Key(const Uuid().v4()),
       backgroundColor: backgroundColor,
       body: scrollable,
     );
