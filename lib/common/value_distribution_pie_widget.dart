@@ -244,8 +244,6 @@ class _ValueDistributionPieChartWidgetState
       }
     });
 
-    //debugPrint(aggs.toString());
-
     await execute(() async {
       TwinnedSession session = TwinnedSession.instance;
 
@@ -255,10 +253,11 @@ class _ValueDistributionPieChartWidgetState
               source: [],
               conditions: [aggs],
               mustConditions: [terms],
-              size: 0, queryConditions: [], boolConditions: []));
+              size: 0,
+              queryConditions: [],
+              boolConditions: []));
 
       if (validateResponse(sRes)) {
-        debugPrint(sRes.body!.toString());
         var json = sRes.body!.result! as Map<String, dynamic>;
 
         List<dynamic> buckets = json['aggregations']['distribution']['buckets'];
