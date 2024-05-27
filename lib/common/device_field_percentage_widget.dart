@@ -5,6 +5,8 @@ import 'package:twinned_models/models.dart';
 import 'package:twinned_models/progress/progress.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twinned_api/twinned_api.dart';
 
 class DeviceFieldPercentageWidget extends StatefulWidget {
   final DeviceFieldPercentageWidgetConfig config;
@@ -29,6 +31,7 @@ class _DeviceFieldPercentageWidgetState
   late FontConfig titleFont;
   late FontConfig labelFont;
   late bool animate;
+  double? value;
 
   bool isValidConfig = false;
 
@@ -74,7 +77,7 @@ class _DeviceFieldPercentageWidgetState
 
     if (widget.config.shape == PercentageWidgetShape.rectangle) {
       return LiquidLinearProgressIndicator(
-        value: 0.85,
+        value: value ?? 0.0,
         valueColor: AlwaysStoppedAnimation(fillColor),
         backgroundColor: bgColor,
         borderColor: borderColor,
@@ -87,7 +90,7 @@ class _DeviceFieldPercentageWidgetState
 
     if (widget.config.shape == PercentageWidgetShape.circle) {
       return LiquidCircularProgressIndicator(
-        value: 0.8,
+        value: value ?? 0.0,
         valueColor: AlwaysStoppedAnimation(fillColor),
         backgroundColor: bgColor,
         borderColor: borderColor,
@@ -99,51 +102,56 @@ class _DeviceFieldPercentageWidgetState
     return const SizedBox.shrink();
   }
 
-  // Future load({String? filter, String search = '*'}) async {
-  //   if (!isValidConfig) return;
+  Future load({String? filter, String search = '*'}) async {
+    if (!isValidConfig) return;
 
-  //   if (loading) return;
-  //   loading = true;
+    if (loading) return;
+    loading = true;
 
-  //   await execute(() async {
-  //     var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
-  //       apikey: TwinnedSession.instance.authToken,
-  //       body: EqlSearch(
-  //         page: 0,
-  //         size: 100,
-  //         source: [],
-  //         mustConditions: [
-  //           {
-  //             "exists": {"field": "data.volume"}
-  //           },
-  //           {
-  //             "match_phrase": {"deviceId": widget.config.deviceId}
-  //           },
-  //         ],
-  //         sort: {'updatedStamp': 'desc'},
-  //       ),
-  //     );
+    await execute(() async {
+      var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+        apikey: TwinnedSession.instance.authToken,
+        body: EqlSearch(
+          page: 0,
+          size: 100,
+          source: [],
+          mustConditions: [
+            {
+              "exists": {"field": "data.$field"}
+            },
+            {
+              "match_phrase": {"deviceId": widget.config.deviceId}
+            },
+          ],
+          sort: {'updatedStamp': 'desc'},
+        ),
+      );
 
-  //     if (validateResponse(qRes)) {
-  //       Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
-  //       List<dynamic> values = json['hits']['hits'];
-  //       for (Map<String, dynamic> obj in values) {
-  //         int millis = obj['p_source']['updatedStamp'];
-  //         Map<String, dynamic> dataValues = {};
-  //         // for (String field in widget.config.field) {
-  //         //   dataValues[field] = obj['p_source']['data'][field];
-  //         // }
-  //         // _chatSeries.add(SeriesData(stamp: millis, values: dataValues));
-  //       }
-  //     }
-  //   });
+      if (validateResponse(qRes)) {
+        Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
+        List<dynamic> values = json['hits']['hits'];
+        if (values.isNotEmpty) {
+          for (Map<String, dynamic> obj in values) {
+            dynamic rawValue = obj['p_source']['data'][widget.config.field];
+            if (rawValue is num) {
+              value = (rawValue / 100.0).clamp(0.0, 1.0);
+            }
+            debugPrint('rawvalue-----> ${rawValue.toString()}');
+            debugPrint('-----------------------------');
+            debugPrint('value-----> ${value.toString()}');
+          }
+        }
+      }
+    });
 
-  //   loading = false;
-  //   refresh();
-  // }
+    loading = false;
+    refresh();
+  }
 
   @override
-  void setup() {}
+  void setup() {
+    load();
+  }
 }
 
 class DeviceFieldPercentageWidgetBuilder extends TwinnedWidgetBuilder {
