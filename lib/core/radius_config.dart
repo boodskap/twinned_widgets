@@ -6,12 +6,10 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 typedef OnRadiusConfigured = void Function(RadiusConfig config);
 
 class RadiusConfigWidget extends StatefulWidget {
-  final String title;
   final RadiusConfig radiusConfig;
   final OnRadiusConfigured onRadiusConfigured;
   const RadiusConfigWidget(
       {super.key,
-      required this.title,
       required this.radiusConfig,
       required this.onRadiusConfigured});
 
@@ -25,6 +23,14 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String value = widget.radiusConfig.type.name;
+
+    switch (widget.radiusConfig.type) {
+      case RadiusConfigType.swaggerGeneratedUnknown:
+        value = RadiusConfigType.zero.name;
+      default:
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,31 +43,32 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
               'Radius Type',
               style: labelStyle,
             ),
-            DropdownButton<RadiusConfigType>(
-                value: widget.radiusConfig.type,
-                items: const [
-                  DropdownMenuItem<RadiusConfigType>(
-                      value: RadiusConfigType.zero,
-                      child: Text(
+            DropdownButton<String>(
+                value: value,
+                items: [
+                  DropdownMenuItem<String>(
+                      value: RadiusConfigType.zero.name,
+                      child: const Text(
                         'Zero',
                         style: labelStyle,
                       )),
-                  DropdownMenuItem<RadiusConfigType>(
-                      value: RadiusConfigType.circular,
-                      child: Text(
+                  DropdownMenuItem<String>(
+                      value: RadiusConfigType.circular.name,
+                      child: const Text(
                         'Circular',
                         style: labelStyle,
                       )),
-                  DropdownMenuItem<RadiusConfigType>(
-                      value: RadiusConfigType.elliptical,
-                      child: Text(
+                  DropdownMenuItem<String>(
+                      value: RadiusConfigType.elliptical.name,
+                      child: const Text(
                         'Elliptical',
                         style: labelStyle,
                       )),
                 ],
                 onChanged: (type) {
-                  widget.onRadiusConfigured(widget.radiusConfig
-                      .copyWith(type: type ?? RadiusConfigType.circular));
+                  widget.onRadiusConfigured(widget.radiusConfig.copyWith(
+                      type: RadiusConfigType.values
+                          .byName(type ?? RadiusConfigType.circular.name)));
                 }),
           ],
         ),
@@ -72,7 +79,7 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Radius',
+                'Border Radius',
                 style: labelStyle,
               ),
               SizedBox(
@@ -100,7 +107,7 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'X Radius',
+                'Border X Radius',
                 style: labelStyle,
               ),
               SizedBox(
@@ -127,7 +134,7 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Y Radius',
+                'Border Y Radius',
                 style: labelStyle,
               ),
               SizedBox(

@@ -138,50 +138,51 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                 style: labelStyle,
               ),
               divider(horizontal: true),
-              DropdownButton<BorderConfigType>(
-                  value: _borderConfig!.type,
-                  items: const [
-                    DropdownMenuItem<BorderConfigType>(
-                        value: BorderConfigType.zero,
-                        child: Text(
+              DropdownButton<String>(
+                  value: _borderConfig!.type.name,
+                  items: [
+                    DropdownMenuItem<String>(
+                        value: BorderConfigType.zero.name,
+                        child: const Text(
                           'Zero',
                           style: labelStyle,
                         )),
-                    DropdownMenuItem<BorderConfigType>(
-                        value: BorderConfigType.all,
-                        child: Text(
+                    DropdownMenuItem<String>(
+                        value: BorderConfigType.all.name,
+                        child: const Text(
                           'All',
                           style: labelStyle,
                         )),
-                    DropdownMenuItem<BorderConfigType>(
-                        value: BorderConfigType.circular,
-                        child: Text(
+                    DropdownMenuItem<String>(
+                        value: BorderConfigType.circular.name,
+                        child: const Text(
                           'Circular',
                           style: labelStyle,
                         )),
-                    DropdownMenuItem<BorderConfigType>(
-                        value: BorderConfigType.vertical,
-                        child: Text(
+                    DropdownMenuItem<String>(
+                        value: BorderConfigType.vertical.name,
+                        child: const Text(
                           'Vertical',
                           style: labelStyle,
                         )),
-                    DropdownMenuItem<BorderConfigType>(
-                        value: BorderConfigType.horizontal,
-                        child: Text(
+                    DropdownMenuItem<String>(
+                        value: BorderConfigType.horizontal.name,
+                        child: const Text(
                           'Horizontal',
                           style: labelStyle,
                         )),
-                    DropdownMenuItem<BorderConfigType>(
-                        value: BorderConfigType.only,
-                        child: Text(
+                    DropdownMenuItem<String>(
+                        value: BorderConfigType.only.name,
+                        child: const Text(
                           'Only',
                           style: labelStyle,
                         )),
                   ],
                   onChanged: (type) {
                     setState(() {
-                      _borderConfig = _borderConfig!
-                          .copyWith(type: type ?? BorderConfigType.all);
+                      _borderConfig = _borderConfig!.copyWith(
+                          type: BorderConfigType.values
+                              .byName(type ?? BorderConfigType.all.name));
                     });
                   }),
             ],
@@ -190,7 +191,6 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.all)
           RadiusConfigWidget(
-              title: 'All Sides',
               radiusConfig: _borderConfig!.allRadius ??
                   const RadiusConfig(
                       type: RadiusConfigType.circular, radius: 45),
@@ -198,11 +198,11 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                 setState(() {
                   _borderConfig = _borderConfig!.copyWith(allRadius: config);
                 });
+                widget.onBorderConfigured(_borderConfig);
               }),
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
-              title: 'Top Left',
               radiusConfig: _borderConfig!.topLeftRadius ??
                   const RadiusConfig(
                       type: RadiusConfigType.circular, radius: 45),
@@ -211,11 +211,11 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                   _borderConfig =
                       _borderConfig!.copyWith(topLeftRadius: config);
                 });
+                widget.onBorderConfigured(_borderConfig);
               }),
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
-              title: 'Top Right',
               radiusConfig: _borderConfig!.topRightRadius ??
                   const RadiusConfig(
                       type: RadiusConfigType.circular, radius: 45),
@@ -224,11 +224,11 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                   _borderConfig =
                       _borderConfig!.copyWith(topRightRadius: config);
                 });
+                widget.onBorderConfigured(_borderConfig);
               }),
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
-              title: 'Bottom Left',
               radiusConfig: _borderConfig!.bottomLeftRadius ??
                   const RadiusConfig(
                       type: RadiusConfigType.circular, radius: 45),
@@ -237,11 +237,11 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                   _borderConfig =
                       _borderConfig!.copyWith(bottomLeftRadius: config);
                 });
+                widget.onBorderConfigured(_borderConfig);
               }),
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
-              title: 'Bottom Right',
               radiusConfig: _borderConfig!.bottomRightRadius ??
                   const RadiusConfig(
                       type: RadiusConfigType.circular, radius: 45),
@@ -250,6 +250,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                   _borderConfig =
                       _borderConfig!.copyWith(bottomRightRadius: config);
                 });
+                widget.onBorderConfigured(_borderConfig);
               }),
       ],
     );
