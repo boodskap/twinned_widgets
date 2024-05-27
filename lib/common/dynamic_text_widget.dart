@@ -60,9 +60,6 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
   Future load({String? filter, String search = '*'}) async {
     if (!isValidConfig) return;
 
-    debugPrint(
-        'LOADING FIELD: ${widget.config.field}, DEVICE:${widget.config.deviceId}');
-
     if (loading) return;
     loading = true;
 
