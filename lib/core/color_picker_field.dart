@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:twinned_widgets/core/definitions.dart';
 
 class ColorPickerField extends StatefulWidget {
   final Map<String, dynamic> config;
   final String parameter;
+  final ValueChangeNotifier? changeNotifier;
   const ColorPickerField(
-      {super.key, required this.config, required this.parameter});
+      {super.key,
+      required this.config,
+      required this.parameter,
+      this.changeNotifier});
 
   @override
   State<ColorPickerField> createState() => _ColorPickerFieldState();
@@ -37,6 +42,9 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
 
   void setColor(Color color) {
     widget.config[widget.parameter] = color.value;
+    if (null != widget.changeNotifier) {
+      widget.changeNotifier!();
+    }
   }
 
   void _showColorPickerDialog() {
