@@ -17,26 +17,13 @@ class DynamicTextWidget extends StatefulWidget {
 
 class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
   bool isValidConfig = false;
-  late String field;
-  late String value;
-  late String deviceId;
-  late int fontSize;
-  late Color fontColor;
-  late bool fontBold;
+  String value = '';
   late FontConfig font;
-  late String fontFamily;
-  final TextEditingController _txtController = TextEditingController();
 
   @override
   void initState() {
     isValidConfig = widget.config.field.isNotEmpty;
-    // isValidConfig = isValidConfig && widget.config.field.isNotEmpty;
-    var config = widget.config;
-    field = widget.config.field;
-    font = FontConfig.fromJson(config.font);
-    fontColor = font.fontColor <= 0 ? Colors.black : Color(font.fontColor);
-    _txtController.text = field;
-    fontBold = font.fontBold;
+    isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
     super.initState();
   }
 
@@ -54,60 +41,59 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
         ],
       );
     }
+
+    font = FontConfig.fromJson(widget.config.font);
+
     return Center(
       child: Text(
         value,
         style: TextStyle(
-          color: fontColor,
+          color: Color(font.fontColor),
           fontSize: font.fontSize,
           fontFamily: font.fontFamily,
-          fontWeight: fontBold ? FontWeight.bold : FontWeight.normal,
+          fontWeight: font.fontBold ? FontWeight.bold : FontWeight.normal,
         ),
       ),
     );
   }
 
-Future load({String? filter, String search = '*'}) async {
+  Future load({String? filter, String search = '*'}) async {
     if (!isValidConfig) return;
+
+    debugPrint(
+        'LOADING FIELD: ${widget.config.field}, DEVICE:${widget.config.deviceId}');
 
     if (loading) return;
     loading = true;
 
     await execute(() async {
-      var deviceIds = widget.config.deviceId;
-      for (var i = 0; i < deviceIds.length; i++) {
-        var deviceId = deviceIds[i];
-        var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
-          apikey: TwinnedSession.instance.authToken,
-          body: EqlSearch(
-            source: ["data.$field"],
-            page: 0,
-            size: 100,
-            conditions: [],
-            boolConditions: [],
-            queryConditions: [],
-            mustConditions: [
-              {
-                "match_phrase": {"deviceId": deviceId}
-              },
-            ],
-          ),
-        );
+      var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+        apikey: TwinnedSession.instance.authToken,
+        body: EqlSearch(
+          source: ["data.${widget.config.field}"],
+          page: 0,
+          size: 1,
+          mustConditions: [
+            {
+              "match_phrase": {"deviceId": widget.config.deviceId}
+            },
+            {
+              "exists": {"field": "data.${widget.config.field}"}
+            },
+          ],
+        ),
+      );
 
-        if (validateResponse(qRes)) {
-          Map<String, dynamic> json =
-              qRes.body!.result! as Map<String, dynamic>;
+      if (validateResponse(qRes)) {
+        Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
 
-         List<dynamic> values = json['hits']['hits'];
-          if (values.isNotEmpty) {
-            for (Map<String, dynamic> obj in values) {
-              dynamic fetchedValue =
-                  obj['_source']['data'][widget.config.value];
-              print('Fetched Value: $fetchedValue');
-              setState(() {
-                value = fetchedValue.toString();
-              });
-            }
+        List<dynamic> values = json['hits']['hits'];
+        if (values.isNotEmpty) {
+          for (Map<String, dynamic> obj in values) {
+            dynamic fetchedValue = obj['p_source']['data'][widget.config.field];
+            setState(() {
+              value = '$fetchedValue';
+            });
           }
         }
       }
