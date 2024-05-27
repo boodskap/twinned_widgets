@@ -96,7 +96,6 @@ class _DeviceCartesianChartWidgetState
           ], sort: {
             'updatedStamp': 'desc'
           }, conditions: [], queryConditions: [], boolConditions: []));
-      debugPrint(qRes.toString());
       if (validateResponse(qRes)) {
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
         List<dynamic> values = json['hits']['hits'];

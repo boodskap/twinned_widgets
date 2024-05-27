@@ -17,12 +17,10 @@ class _ParameterTextFieldState extends State<ParameterTextField> {
   @override
   void initState() {
     dynamic value = widget.parameters[widget.parameter] ?? '';
-    debugPrint('Parameter: ${widget.parameter}, Value: $value');
     try {
       _controller.text = widget.parameters[widget.parameter] ?? '';
     } catch (e, s) {
-      //debugPrint('$e\n$s');
-      debugPrint('ERROR');
+      debugPrint('$e\n$s');
     }
     super.initState();
   }
