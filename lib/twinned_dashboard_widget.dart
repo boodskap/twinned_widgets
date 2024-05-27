@@ -4,17 +4,34 @@ import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
 import 'package:twinned_widgets/twinned_widgets.dart';
 
+typedef OnRowClicked = void Function(int selectedRow, ScreenRow row);
+typedef OnComponentClicked = void Function(
+    int selectedRow, int selectedCol, ScreenRow row, ScreenChild component);
+
 class TwinnedDashboardWidget extends StatefulWidget {
   final DashboardScreen? screen;
   final String? screenId;
+  final bool editMode;
+  final OnRowClicked? onRowClicked;
+  final OnComponentClicked? onComponentClicked;
 
-  const TwinnedDashboardWidget({super.key, this.screen, this.screenId});
+  TwinnedDashboardWidget(
+      {super.key,
+      this.screen,
+      this.screenId,
+      this.editMode = false,
+      this.onRowClicked,
+      this.onComponentClicked}) {
+    if (editMode && (null == onComponentClicked || null == onRowClicked)) {
+      throw Error();
+    }
+  }
 
   @override
-  State<TwinnedDashboardWidget> createState() => _TwinnedDashboardWidgetState();
+  State<TwinnedDashboardWidget> createState() => TwinnedDashboardWidgetState();
 }
 
-class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
+class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
   DashboardScreen? _screen;
 
   final List<Widget> _children = [];
@@ -24,13 +41,12 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
   MainAxisSize mainAxisSize = MainAxisSize.max;
   Axis? scrollDirection = Axis.vertical;
   Decoration? decoration;
+  int? selectedRow;
+  int? selectedCol;
 
   @override
   void initState() {
     _screen = widget.screen;
-    debugPrint(
-        'HOST: ${TwinnedSession.instance.host}, DomainKey: ${TwinnedSession.instance.domainKey}, ApiKey: ${TwinnedSession.instance.authToken}');
-
     super.initState();
   }
 
@@ -49,7 +65,11 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
   }
 
   void _initDefaults() {
+    if (null == _screen) return;
+
     DashboardScreen screen = _screen!;
+
+    _children.clear();
 
     backgroundColor = Color(screen.bgColor ?? Colors.white.value);
     mainAxisAlignment = MainAxisAlignment.values
@@ -67,14 +87,14 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     BorderRadiusGeometry? borderRadius;
     DecorationImage? image;
 
-    if (null != screen.border) {
-      BorderConfig config = screen.border!;
+    if (null != screen.borderConfig) {
+      BorderConfig config = screen.borderConfig!;
       border = Border.all(
         color: Color(config.color ?? Colors.black.value),
         width: config.width ?? 1.0,
       );
 
-      switch (screen.border!.type) {
+      switch (screen.borderConfig!.type) {
         case BorderConfigType.swaggerGeneratedUnknown:
         case BorderConfigType.zero:
           borderRadius = BorderRadius.zero;
@@ -148,21 +168,34 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       borderRadius: borderRadius,
     );
 
+    int index = 0;
     for (ScreenRow row in screen.rows) {
-      _children.add(_buildScreenRow(row));
+      _children.add(_buildScreenRow(index, row));
+      ++index;
+      if ((screen.spacing ?? 0) > 0) {
+        _children.add(divider(height: screen.spacing!));
+      }
     }
 
-    setState(() {});
+    refresh();
   }
 
-  Widget _buildScreenRow(ScreenRow row) {
+  Widget _buildScreenRow(int rowIndex, ScreenRow row) {
     List<Widget> rowChildren = [];
 
+    int colIndex = 0;
     for (ScreenChild child in row.children) {
-      rowChildren.add(_buildScreenChild(child));
+      rowChildren.add(_buildScreenChild(rowIndex, colIndex, row, child));
+      ++colIndex;
     }
 
-    Color backgroundColor = Color(row.bgColor ?? Colors.white.value);
+    int bgColor = row.bgColor ?? Colors.transparent.value;
+
+    if (bgColor <= 0) {
+      bgColor = Colors.transparent.value;
+    }
+
+    Color backgroundColor = Color(bgColor);
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.values
         .byName(row.mainAxisAlignment ?? this.mainAxisAlignment.name);
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.values
@@ -180,14 +213,20 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     BorderRadiusGeometry? borderRadius;
     DecorationImage? image;
 
-    if (null != row.border) {
-      BorderConfig config = row.border!;
-      border = Border.all(
-        color: Color(config.color ?? Colors.black.value),
-        width: config.width ?? 1.0,
-      );
+    row = row.copyWith(
+        borderConfig: BorderConfig(
+            type: BorderConfigType.all,
+            allRadius:
+                RadiusConfig(type: RadiusConfigType.circular, radius: 45)));
 
-      switch (row.border!.type) {
+    border = Border.all(color: Colors.black, width: 2);
+
+    if (null != row.borderConfig) {
+      BorderConfig config = row.borderConfig!;
+
+      border = Border.all(color: Colors.black, width: config.width ?? 1.0);
+
+      switch (row.borderConfig!.type) {
         case BorderConfigType.swaggerGeneratedUnknown:
         case BorderConfigType.zero:
           borderRadius = BorderRadius.zero;
@@ -265,23 +304,24 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     EdgeInsetsGeometry? margin;
     EdgeInsetsGeometry? padding;
 
-    if (null != row.margin) {
+    if (null != row.marginConfig) {
       margin = EdgeInsets.only(
-          bottom: row.margin?.bottom ?? 0,
-          top: row.margin?.top ?? 0,
-          right: row.margin?.right ?? 0,
-          left: row.margin?.left ?? 0);
+          bottom: row.marginConfig?.bottom ?? 0,
+          top: row.marginConfig?.top ?? 0,
+          right: row.marginConfig?.right ?? 0,
+          left: row.marginConfig?.left ?? 0);
     }
 
-    if (null != row.padding) {
+    if (null != row.paddingConfig) {
       padding = EdgeInsets.only(
-          bottom: row.padding?.bottom ?? 0,
-          top: row.padding?.top ?? 0,
-          right: row.padding?.right ?? 0,
-          left: row.padding?.left ?? 0);
+          bottom: row.paddingConfig?.bottom ?? 0,
+          top: row.paddingConfig?.top ?? 0,
+          right: row.paddingConfig?.right ?? 0,
+          left: row.paddingConfig?.left ?? 0);
     }
 
-    return Container(
+    Container container = Container(
+      //color: backgroundColor,
       height: row.height,
       margin: margin,
       padding: padding,
@@ -290,23 +330,44 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
         children: rowChildren,
       ),
     );
+
+    if (widget.editMode) {
+      return InkWell(
+        onTap: () {
+          setState(() {
+            selectedRow = rowIndex;
+          });
+          widget.onRowClicked!(rowIndex, row);
+        },
+        child: container,
+      );
+    } else {
+      return container;
+    }
   }
 
-  Widget _buildScreenChild(ScreenChild child) {
+  Widget _buildScreenChild(
+      int rowIndex, int colIndex, ScreenRow row, ScreenChild child) {
     Color backgroundColor = Color(child.bgColor ?? Colors.white.value);
 
     BoxBorder? border;
     BorderRadiusGeometry? borderRadius;
     DecorationImage? image;
 
-    if (null != child.border) {
-      BorderConfig config = child.border!;
-      border = Border.all(
-        color: Color(config.color ?? Colors.black.value),
-        width: config.width ?? 1.0,
-      );
+    Color bgColor = Color(
+        null != child.bgColor ? child.bgColor! : Colors.transparent.value);
 
-      switch (child.border!.type) {
+    if (widget.editMode) {
+      bgColor = Colors.lime;
+    }
+
+    border = Border.all(
+      color: bgColor,
+    );
+
+    if (null != child.borderConfig) {
+      BorderConfig config = child.borderConfig!;
+      switch (child.borderConfig!.type) {
         case BorderConfigType.swaggerGeneratedUnknown:
         case BorderConfigType.zero:
           borderRadius = BorderRadius.zero;
@@ -385,45 +446,61 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     EdgeInsetsGeometry? padding;
     AlignmentGeometry? alignment;
 
-    if (null != child.margin) {
+    if (null != child.marginConfig) {
       margin = EdgeInsets.only(
-          bottom: child.margin?.bottom ?? 0,
-          top: child.margin?.top ?? 0,
-          right: child.margin?.right ?? 0,
-          left: child.margin?.left ?? 0);
+          bottom: child.marginConfig?.bottom ?? 0,
+          top: child.marginConfig?.top ?? 0,
+          right: child.marginConfig?.right ?? 0,
+          left: child.marginConfig?.left ?? 0);
     }
 
-    if (null != child.padding) {
+    if (null != child.paddingConfig) {
       padding = EdgeInsets.only(
-          bottom: child.padding?.bottom ?? 0,
-          top: child.padding?.top ?? 0,
-          right: child.padding?.right ?? 0,
-          left: child.padding?.left ?? 0);
+          bottom: child.paddingConfig?.bottom ?? 0,
+          top: child.paddingConfig?.top ?? 0,
+          right: child.paddingConfig?.right ?? 0,
+          left: child.paddingConfig?.left ?? 0);
     }
 
-    Widget widget = TwinnedWidgets.build(
+    Widget component = TwinnedWidgets.build(
         child.widgetId, child.config as Map<String, dynamic>);
 
-    Widget component = Container(
+    if (widget.editMode) {
+      Widget clickable = InkWell(
+        onTap: () {
+          setState(() {
+            selectedRow = rowIndex;
+            selectedCol = colIndex;
+          });
+          widget.onComponentClicked!(rowIndex, colIndex, row, child);
+        },
+        child: component,
+      );
+      component = clickable;
+    }
+
+    Widget container = Container(
       height: child.height,
       width: child.width,
       margin: margin,
       padding: padding,
       alignment: alignment,
       decoration: decoration,
-      child: widget,
+      child: component,
     );
 
     if (child.expanded ?? false) {
-      Widget expanded = Expanded(flex: child.flex ?? 1, child: component);
-      component = expanded;
+      Widget expanded = Expanded(flex: child.flex ?? 1, child: container);
+      container = expanded;
     }
 
-    return component;
+    return container;
   }
 
   @override
   Widget build(BuildContext context) {
+    _initDefaults();
+
     if (null == _screen) {
       return const Scaffold(
         body: Center(
@@ -432,18 +509,43 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      body: Container(
-        decoration: decoration,
-        child: Column(
-          mainAxisAlignment: mainAxisAlignment,
-          crossAxisAlignment: crossAxisAlignment,
-          mainAxisSize: mainAxisSize,
-          children: _children,
-        ),
+    Container child = Container(
+      decoration: decoration,
+      child: Column(
+        mainAxisAlignment: mainAxisAlignment,
+        crossAxisAlignment: crossAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        children: _children,
       ),
     );
+
+    Widget scrollable;
+
+    switch (
+        Axis.values.byName(_screen!.scrollDirection ?? Axis.vertical.name)) {
+      case Axis.horizontal:
+        scrollable = SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: child,
+        );
+        break;
+      case Axis.vertical:
+        scrollable = SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: child,
+        );
+    }
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: scrollable,
+    );
+  }
+
+  void apply(DashboardScreen screen) {
+    setState(() {
+      _screen = screen;
+    });
   }
 
   Future _load() async {
@@ -465,7 +567,6 @@ class _TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     });
 
     loading = false;
-    refresh();
   }
 
   @override
