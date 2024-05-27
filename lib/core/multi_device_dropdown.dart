@@ -72,7 +72,6 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
         setState(() {
           _selectedItems.addAll(eRes.body!.values!);
         });
-        debugPrint('Updated with ${_selectedItems.length} items');
       }
     } catch (e, s) {
       debugPrint('$e\n$s');

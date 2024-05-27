@@ -29,13 +29,9 @@ class TwinImageHelper {
       web.MultipartFile.fromBytes('file', file.bytes!, filename: file.name),
     );
 
-    //debugPrint("uploading... ${mpr.url}");
     var stream = await mpr.send();
-    //log("extracting...");
     var response = await stream.stream.bytesToString();
-    //debugPrint("decoding: $response...");
     var map = jsonDecode(response) as Map<String, dynamic>;
-    //log("converting...");
     return twin.ImageFileEntityRes.fromJson(map);
   }
 

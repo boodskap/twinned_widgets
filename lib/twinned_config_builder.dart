@@ -300,7 +300,6 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             selectedItems: toList(_parameters[parameter]),
             onDevicesSelected: (items) {
               _parameters[parameter] = items.map((i) => i.id).toList();
-              debugPrint(jsonEncode(_parameters));
             });
       case HintType.field:
         return const SizedBox(
@@ -314,7 +313,6 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             selectedItems: toList(_parameters[parameter]),
             onDeviceModelsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
-              debugPrint(jsonEncode(_parameters));
             });
       case HintType.assetId:
         return MultiAssetDropdown(

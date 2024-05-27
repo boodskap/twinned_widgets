@@ -20,7 +20,6 @@ class _ImageUploadFieldState extends BaseState<ImageUploadField> {
   @override
   void initState() {
     imageId = widget.config[widget.parameter];
-    debugPrint('${widget.parameter}: $imageId');
     super.initState();
   }
 

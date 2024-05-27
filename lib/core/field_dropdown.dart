@@ -49,16 +49,11 @@ class _FieldDropdownState extends BaseState<FieldDropdown> {
               label: param.name, value: param));
           if (param.name == widget.selectedField) {
             _selectedParameter = param;
-            debugPrint('Selected param: ${param.name}');
           }
           names.add(param.name);
         }
       }
     });
-
-    if (null == _selectedParameter) {
-      debugPrint('No default parameter set');
-    }
 
     loading = false;
     refresh();

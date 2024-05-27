@@ -64,7 +64,6 @@ class _MultiDeviceModelDropdownState
 
   Future<void> _load() async {
     if (widget.selectedItems!.isEmpty) {
-      debugPrint('no device model items');
       return;
     }
     try {
@@ -76,7 +75,6 @@ class _MultiDeviceModelDropdownState
         setState(() {
           _selectedItems.addAll(eRes.body!.values!);
         });
-        debugPrint('Updated with ${_selectedItems.length} items');
       }
     } catch (e, s) {
       debugPrint('$e\n$s');

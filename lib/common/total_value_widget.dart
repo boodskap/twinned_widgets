@@ -70,8 +70,6 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
       );
     }
 
-    debugPrint('Value: $value');
-
     return Container(
         decoration: BoxDecoration(
           color: bgColor,
@@ -132,10 +130,15 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
 
       var sRes = await session.twin.queryDeviceData(
           apikey: session.authToken,
-          body: EqlSearch(source: [], conditions: [stats], size: 0, queryConditions: [], boolConditions: [], mustConditions: []));
+          body: EqlSearch(
+              source: [],
+              conditions: [stats],
+              size: 0,
+              queryConditions: [],
+              boolConditions: [],
+              mustConditions: []));
 
       if (validateResponse(sRes)) {
-        debugPrint(sRes.body!.toString());
         var json = sRes.body!.result! as Map<String, dynamic>;
         value = json['aggregations']['stats']['sum']["value"];
       }
