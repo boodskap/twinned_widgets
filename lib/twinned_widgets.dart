@@ -7,6 +7,7 @@ import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
+import 'package:twinned_widgets/common/dynamic_text_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
 import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
@@ -34,6 +35,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldPercentageWidget': DeviceFieldPercentageWidgetBuilder(),
   'TWStaticTextWidget': StaticTextWidgetBuilder(),
   'TWDeviceMinMaxAvgWidget': DeviceMinMaxAvgWidgetBuilder(),
+  'TWDynamicTextWidget': DynamicTextWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
