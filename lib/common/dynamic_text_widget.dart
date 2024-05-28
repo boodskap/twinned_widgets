@@ -16,12 +16,17 @@ class DynamicTextWidget extends StatefulWidget {
 }
 
 class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
+  late String title;
   bool isValidConfig = false;
   String value = '';
   late FontConfig font;
+  late Color fontColor;
+  late FontConfig titleFont;
+  late Color titleFontColor;
 
   @override
   void initState() {
+    title = widget.config.title;
     isValidConfig = widget.config.field.isNotEmpty;
     isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
     super.initState();
@@ -43,17 +48,41 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
     }
 
     font = FontConfig.fromJson(widget.config.font);
+    titleFont = FontConfig.fromJson(widget.config.titleFont);
 
-    return Center(
-      child: Text(
-        value,
-        style: TextStyle(
-          color: Color(font.fontColor),
-          fontSize: font.fontSize,
-          fontFamily: font.fontFamily,
-          fontWeight: font.fontBold ? FontWeight.bold : FontWeight.normal,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            widget.config.title,
+            style: TextStyle(
+              color: Color(titleFont.fontColor),
+              fontSize: titleFont.fontSize,
+              fontFamily: titleFont.fontFamily,
+              fontWeight:
+                  titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
         ),
-      ),
+        const SizedBox(
+          height: 10,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            value,
+            style: TextStyle(
+              color: Color(font.fontColor),
+              fontSize: font.fontSize,
+              fontFamily: font.fontFamily,
+              fontWeight: font.fontBold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
