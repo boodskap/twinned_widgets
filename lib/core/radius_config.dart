@@ -115,11 +115,11 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                 child: IntrinsicWidth(
                   child: SpinBox(
                     min: 0,
-                    max: 180,
+                    max: 360,
                     value: widget.radiusConfig.rad ?? 45,
                     showCursor: true,
-                    autofocus: true,
-                    onChanged: (value) {
+                    autofocus: false,
+                    onSubmitted: (value) {
                       widget.onRadiusConfigured(
                           widget.radiusConfig.copyWith(rad: value));
                     },
@@ -143,11 +143,11 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                 child: IntrinsicWidth(
                   child: SpinBox(
                     min: 0,
-                    max: 180,
+                    max: 360,
                     value: widget.radiusConfig.xRad ?? 45,
                     showCursor: true,
-                    autofocus: true,
-                    onChanged: (value) {
+                    autofocus: false,
+                    onSubmitted: (value) {
                       widget.onRadiusConfigured(
                           widget.radiusConfig.copyWith(xRad: value));
                     },
@@ -170,11 +170,11 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                 child: IntrinsicWidth(
                   child: SpinBox(
                     min: 0,
-                    max: 180,
+                    max: 360,
                     value: widget.radiusConfig.yRad ?? 45,
                     showCursor: true,
-                    autofocus: true,
-                    onChanged: (value) {
+                    autofocus: false,
+                    onSubmitted: (value) {
                       widget.onRadiusConfigured(
                           widget.radiusConfig.copyWith(yRad: value));
                     },

@@ -66,7 +66,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     }
   }
 
-  BoxDecoration _buildDecoration(String tag,
+  BoxDecoration? _buildDecoration(String tag,
       {BorderConfig? config,
       int? bgColor,
       String? bgImage,
@@ -74,6 +74,8 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     BoxBorder? border;
     BorderRadiusGeometry? borderRadius;
     DecorationImage? image;
+
+    if (null == config) return null;
 
     if (null != config) {
       Color borderColor = Color((config?.color ?? Colors.transparent.value));
@@ -163,13 +165,11 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     Color backgroundColor = Color(bgColor ?? Colors.transparent.value);
 
-    debugPrint('$tag BG Color: ${backgroundColor.value}');
-
     return BoxDecoration(
       color: backgroundColor,
       image: image,
-      //border: border,
-      //borderRadius: borderRadius,
+      border: border,
+      borderRadius: borderRadius,
     );
   }
 
@@ -214,7 +214,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       bgColor = Colors.black26.value;
     }
 
-    Decoration decoration = _buildDecoration('ROW-$rowIndex',
+    Decoration? decoration = _buildDecoration('ROW-$rowIndex',
         config: row.rowBorderConfig,
         bgColor: bgColor,
         bgImage: row.bgImage,
@@ -239,15 +239,49 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
           left: row.paddingConfig?.left ?? 0);
     }
 
+    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center;
+    MainAxisSize mainAxisSize = MainAxisSize.max;
+
+    mainAxisAlignment = MainAxisAlignment.values
+        .byName(row.mainAxisAlignment ?? mainAxisAlignment.name);
+    crossAxisAlignment = CrossAxisAlignment.values
+        .byName(row.crossAxisAlignment ?? crossAxisAlignment.name);
+    mainAxisSize =
+        MainAxisSize.values.byName(row.mainAxisSize ?? mainAxisSize.name);
+
+    Color? backgroundColor;
+
+    if (null == decoration) {
+      backgroundColor = Color(bgColor);
+    }
+
+    Widget child = Row(
+      mainAxisSize: mainAxisSize,
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
+      children: rowChildren,
+    );
+
+    if (null != row.scrollDirection && row.scrollDirection != 'none') {
+      Axis scrollDirection =
+          Axis.values.byName(_screen!.scrollDirection ?? Axis.vertical.name);
+
+      Widget scrollable = SingleChildScrollView(
+        scrollDirection: scrollDirection,
+        child: child,
+      );
+
+      child = scrollable;
+    }
+
     Widget container = Container(
-      //color: backgroundColor,
+      color: backgroundColor,
       height: row.height,
       margin: margin,
       padding: padding,
       decoration: decoration,
-      child: Row(
-        children: rowChildren,
-      ),
+      child: child,
     );
 
     if (null != row.scrollDirection && row.scrollDirection != 'none') {
@@ -313,7 +347,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       bgColor = Colors.black45.value;
     }
 
-    Decoration decoration = _buildDecoration('COL-[$rowIndex, $colIndex]',
+    Decoration? decoration = _buildDecoration('COL-[$rowIndex, $colIndex]',
         config: child.childBorderConfig,
         bgColor: bgColor,
         bgImage: child.bgImage,
@@ -339,6 +373,39 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
           left: child.paddingConfig?.left ?? 0);
     }
 
+    if (null != child.alignment) {
+      switch (child.alignment!.alignment) {
+        case AlignmentConfigAlignment.swaggerGeneratedUnknown:
+        case AlignmentConfigAlignment.center:
+          alignment = Alignment.center;
+          break;
+        case AlignmentConfigAlignment.bottomRight:
+          alignment = Alignment.bottomRight;
+          break;
+        case AlignmentConfigAlignment.bottomLeft:
+          alignment = Alignment.bottomLeft;
+          break;
+        case AlignmentConfigAlignment.centerLeft:
+          alignment = Alignment.centerLeft;
+          break;
+        case AlignmentConfigAlignment.centerRight:
+          alignment = Alignment.centerRight;
+          break;
+        case AlignmentConfigAlignment.topRight:
+          alignment = Alignment.topRight;
+          break;
+        case AlignmentConfigAlignment.topLeft:
+          alignment = Alignment.topCenter;
+          break;
+        case AlignmentConfigAlignment.topCenter:
+          alignment = Alignment.topCenter;
+          break;
+        case AlignmentConfigAlignment.bottomCenter:
+          alignment = Alignment.bottomCenter;
+          break;
+      }
+    }
+
     Widget component = TwinnedWidgets.build(
         child.widgetId, child.config as Map<String, dynamic>);
 
@@ -356,7 +423,14 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       component = clickable;
     }
 
+    Color? backgroundColor;
+
+    if (null == decoration) {
+      backgroundColor = Color(bgColor);
+    }
+
     Widget container = Container(
+      color: backgroundColor,
       height: child.height,
       width: child.width,
       margin: margin,
@@ -407,10 +481,10 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     DashboardScreen screen = _screen!;
 
-    int backgroundColor = screen.bgColor ?? Colors.transparent.value;
+    int bgColor = screen.bgColor ?? Colors.transparent.value;
 
-    if (backgroundColor <= 0) {
-      backgroundColor = Colors.transparent.value;
+    if (bgColor <= 0) {
+      bgColor = Colors.transparent.value;
     }
 
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
@@ -424,14 +498,42 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     mainAxisSize =
         MainAxisSize.values.byName(screen.mainAxisSize ?? mainAxisSize.name);
 
-    BoxDecoration decoration = _buildDecoration('SCREEN',
+    BoxDecoration? decoration = _buildDecoration('SCREEN',
         config: screen.screenBorderConfig,
         bgColor: screen.bgColor,
         bgImage: screen.bgImage,
         bgImageFit: screen.bgImageFit);
 
+    EdgeInsetsGeometry? margin;
+    EdgeInsetsGeometry? padding;
+
+    if (null != screen.marginConfig) {
+      margin = EdgeInsets.only(
+          bottom: screen.marginConfig?.bottom ?? 0,
+          top: screen.marginConfig?.top ?? 0,
+          right: screen.marginConfig?.right ?? 0,
+          left: screen.marginConfig?.left ?? 0);
+    }
+
+    if (null != screen.paddingConfig) {
+      padding = EdgeInsets.only(
+          bottom: screen.paddingConfig?.bottom ?? 0,
+          top: screen.paddingConfig?.top ?? 0,
+          right: screen.paddingConfig?.right ?? 0,
+          left: screen.paddingConfig?.left ?? 0);
+    }
+
+    Color? backgroundColor;
+
+    if (null == decoration) {
+      backgroundColor = Color(bgColor);
+    }
+
     Widget child = Container(
+      color: backgroundColor,
       decoration: decoration,
+      margin: margin,
+      padding: padding,
       child: Column(
         mainAxisAlignment: mainAxisAlignment,
         crossAxisAlignment: crossAxisAlignment,
@@ -454,7 +556,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     return Scaffold(
       key: Key(const Uuid().v4()),
-      backgroundColor: Color(backgroundColor),
+      backgroundColor: Color(bgColor),
       body: child,
     );
   }
