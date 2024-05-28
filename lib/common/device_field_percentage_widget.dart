@@ -24,6 +24,7 @@ class _DeviceFieldPercentageWidgetState
   late Color bgColor;
   late Color fillColor;
   late Color borderColor;
+  late Color titleBgColor;
   late double borderRadius;
   late double borderWidth;
   late PercentageWidgetShape widgetShape;
@@ -44,6 +45,7 @@ class _DeviceFieldPercentageWidgetState
     bgColor = Color(config.bgColor);
     fillColor = Color(config.fillColor);
     borderColor = Color(config.borderColor);
+    titleBgColor =Color(config.titleBgColor);
     borderRadius = config.borderRadius;
     borderWidth = config.borderWidth;
     titleFont = FontConfig.fromJson(config.titleFont);
@@ -82,7 +84,7 @@ class _DeviceFieldPercentageWidgetState
               Expanded(
                 child: Container(
                   alignment: Alignment.center,
-                  color: Colors.teal,
+                  color: titleBgColor,
                   child: Text(
                     widget.config.title,
                     style: TextStyle(
@@ -131,7 +133,7 @@ class _DeviceFieldPercentageWidgetState
               Expanded(
                 child: Container(
                   alignment: Alignment.center,
-                  color: Colors.teal,
+                  color: titleBgColor,
                   child: Text(
                     widget.config.title,
                     style: TextStyle(
