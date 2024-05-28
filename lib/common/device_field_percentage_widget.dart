@@ -24,6 +24,7 @@ class _DeviceFieldPercentageWidgetState
   late Color bgColor;
   late Color fillColor;
   late Color borderColor;
+  late Color titleBgColor;
   late double borderRadius;
   late double borderWidth;
   late PercentageWidgetShape widgetShape;
@@ -32,19 +33,19 @@ class _DeviceFieldPercentageWidgetState
   late FontConfig labelFont;
   late bool animate;
   double? value;
+  double? rawValue;
 
   bool isValidConfig = false;
 
   @override
   void initState() {
     var config = widget.config;
-    // bgColor = config.bgColor <=0 ? Colors.white : Color(config.bgColor);
-    // fillColor = config.fillColor <=0? Colors.red : Color(config.fillColor);
     field = config.field;
     deviceId = config.deviceId;
     bgColor = Color(config.bgColor);
     fillColor = Color(config.fillColor);
     borderColor = Color(config.borderColor);
+    titleBgColor =Color(config.titleBgColor);
     borderRadius = config.borderRadius;
     borderWidth = config.borderWidth;
     titleFont = FontConfig.fromJson(config.titleFont);
@@ -76,26 +77,99 @@ class _DeviceFieldPercentageWidgetState
     }
 
     if (widget.config.shape == PercentageWidgetShape.rectangle) {
-      return LiquidLinearProgressIndicator(
-        value: value ?? 0.0,
-        valueColor: AlwaysStoppedAnimation(fillColor),
-        backgroundColor: bgColor,
-        borderColor: borderColor,
-        borderWidth: borderWidth,
-        borderRadius: borderRadius,
-        direction: waveDirection,
-        // center: const Text("Loading..."),
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: titleBgColor,
+                  child: Text(
+                    widget.config.title,
+                    style: TextStyle(
+                      fontFamily: titleFont.fontFamily,
+                      fontSize: titleFont.fontSize,
+                      fontWeight: titleFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(titleFont.fontColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: LiquidLinearProgressIndicator(
+              value: value ?? 0.0,
+              valueColor: AlwaysStoppedAnimation(fillColor),
+              backgroundColor: bgColor,
+              borderColor: borderColor,
+              borderWidth: borderWidth,
+              borderRadius: borderRadius,
+              direction: waveDirection,
+              center: Text(
+                value != null ? '$rawValue%' : '',
+                style: TextStyle(
+                  fontFamily: labelFont.fontFamily,
+                  fontSize: labelFont.fontSize,
+                  fontWeight:
+                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  color: Color(labelFont.fontColor)
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
     if (widget.config.shape == PercentageWidgetShape.circle) {
-      return LiquidCircularProgressIndicator(
-        value: value ?? 0.0,
-        valueColor: AlwaysStoppedAnimation(fillColor),
-        backgroundColor: bgColor,
-        borderColor: borderColor,
-        borderWidth: borderWidth,
-        direction: waveDirection,
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: titleBgColor,
+                  child: Text(
+                    widget.config.title,
+                    style: TextStyle(
+                      fontFamily: titleFont.fontFamily,
+                      fontSize: titleFont.fontSize,
+                      fontWeight: titleFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(titleFont.fontColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: LiquidCircularProgressIndicator(
+              value: value ?? 0.0,
+              valueColor: AlwaysStoppedAnimation(fillColor),
+              backgroundColor: bgColor,
+              borderColor: borderColor,
+              borderWidth: borderWidth,
+              direction: waveDirection,
+               center: Text(
+                value != null ? '$rawValue%' : '',
+                style: TextStyle(
+                  fontFamily: labelFont.fontFamily,
+                  fontSize: labelFont.fontSize,
+                  fontWeight:
+                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  color: Color(labelFont.fontColor)
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
@@ -114,7 +188,7 @@ class _DeviceFieldPercentageWidgetState
         body: EqlSearch(
           page: 0,
           size: 100,
-          source: [],
+          source: ["data.$field"],
           mustConditions: [
             {
               "exists": {"field": "data.$field"}
@@ -123,7 +197,6 @@ class _DeviceFieldPercentageWidgetState
               "match_phrase": {"deviceId": widget.config.deviceId}
             },
           ],
-          sort: {'updatedStamp': 'desc'},
         ),
       );
 
@@ -132,10 +205,8 @@ class _DeviceFieldPercentageWidgetState
         List<dynamic> values = json['hits']['hits'];
         if (values.isNotEmpty) {
           for (Map<String, dynamic> obj in values) {
-            dynamic rawValue = obj['p_source']['data'][widget.config.field];
-            if (rawValue is num) {
-              value = (rawValue / 100.0).clamp(0.0, 1.0);
-            }
+            rawValue = obj['p_source']['data'][widget.config.field];
+            value = (rawValue! / 100.0).clamp(0.0, 1.0);
             debugPrint('rawvalue-----> ${rawValue.toString()}');
             debugPrint('-----------------------------');
             debugPrint('value-----> ${value.toString()}');
