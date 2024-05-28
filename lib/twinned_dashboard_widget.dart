@@ -13,6 +13,8 @@ class TwinnedDashboardWidget extends StatefulWidget {
   final DashboardScreen? screen;
   final String? screenId;
   final bool editMode;
+  final int? selectedRow;
+  final int? selectedCol;
   final OnRowClicked? onRowClicked;
   final OnComponentClicked? onComponentClicked;
 
@@ -21,6 +23,8 @@ class TwinnedDashboardWidget extends StatefulWidget {
       this.screen,
       this.screenId,
       this.editMode = false,
+      this.selectedRow,
+      this.selectedCol,
       this.onRowClicked,
       this.onComponentClicked}) {
     if (editMode && (null == onComponentClicked || null == onRowClicked)) {
@@ -36,69 +40,53 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
   DashboardScreen? _screen;
 
   final List<Widget> _children = [];
-  Color backgroundColor = Colors.white;
-  MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
-  CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center;
-  MainAxisSize mainAxisSize = MainAxisSize.max;
-  Axis? scrollDirection = Axis.vertical;
-  Decoration? decoration;
   int? selectedRow;
   int? selectedCol;
 
   @override
   void initState() {
     _screen = widget.screen;
+    selectedRow = widget.selectedRow;
+    selectedCol = widget.selectedCol;
     super.initState();
   }
 
   Radius _getRadius(RadiusConfig? config) {
     if (null == config) return Radius.zero;
 
-    switch (config.type) {
-      case RadiusConfigType.swaggerGeneratedUnknown:
-      case RadiusConfigType.zero:
+    switch (config.radType) {
+      case null:
+      case RadiusConfigRadType.swaggerGeneratedUnknown:
+      case RadiusConfigRadType.zero:
         return Radius.zero;
-      case RadiusConfigType.circular:
-        return Radius.circular(config.radius ?? 0);
-      case RadiusConfigType.elliptical:
-        return Radius.elliptical(config.xRadius ?? 0, config.yRadius ?? 0);
+      case RadiusConfigRadType.circular:
+        return Radius.circular(config.rad ?? 45.0);
+      case RadiusConfigRadType.elliptical:
+        return Radius.elliptical(config.xRad ?? 45, config.yRad ?? 45);
     }
   }
 
-  void _initDefaults() {
-    if (null == _screen) return;
-
-    DashboardScreen screen = _screen!;
-
-    _children.clear();
-
-    backgroundColor = Color(screen.bgColor ?? Colors.white.value);
-    mainAxisAlignment = MainAxisAlignment.values
-        .byName(screen.mainAxisAlignment ?? mainAxisAlignment.name);
-    crossAxisAlignment = CrossAxisAlignment.values
-        .byName(screen.crossAxisAlignment ?? crossAxisAlignment.name);
-    mainAxisSize =
-        MainAxisSize.values.byName(screen.mainAxisSize ?? mainAxisSize.name);
-    if (null != screen.scrollDirection && screen.scrollDirection != 'none') {
-      scrollDirection =
-          Axis.values.byName(screen.scrollDirection ?? scrollDirection!.name);
-    }
-
+  BoxDecoration _buildDecoration(String tag,
+      {BorderConfig? config,
+      int? bgColor,
+      String? bgImage,
+      ImageFitConfig? bgImageFit}) {
     BoxBorder? border;
     BorderRadiusGeometry? borderRadius;
     DecorationImage? image;
 
-    if (null != screen.borderConfig) {
-      BorderConfig config = screen.borderConfig!;
-      border = Border.all(
-        color: Color(config.color ?? Colors.black.value),
-        width: config.width ?? 1.0,
-      );
+    if (null != config) {
+      Color borderColor = Color((config?.color ?? Colors.transparent.value));
+      double borderWidth = config?.width ?? 0.0;
+      border = Border.all(color: borderColor, width: borderWidth);
 
-      switch (screen.borderConfig!.type) {
+      debugPrint('$tag Border: Color:${borderColor.value} Width:$borderWidth');
+
+      switch (config!.type) {
         case BorderConfigType.swaggerGeneratedUnknown:
         case BorderConfigType.zero:
           borderRadius = BorderRadius.zero;
+          debugPrint('$tag BorderRadius: ZERO');
           break;
         case BorderConfigType.all:
           borderRadius = BorderRadius.all(_getRadius(config.allRadius));
@@ -110,28 +98,32 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
             bottomLeft: _getRadius(config.bottomLeftRadius),
             bottomRight: _getRadius(config.bottomRightRadius),
           );
+          debugPrint('$tag BorderRadius: ONLY');
           break;
         case BorderConfigType.horizontal:
           borderRadius = BorderRadius.horizontal(
               left: _getRadius(config.leftRadius),
               right: _getRadius(config.rightRadius));
+          debugPrint('$tag BorderRadius: HORIZONTAL');
           break;
         case BorderConfigType.vertical:
           borderRadius = BorderRadius.vertical(
               top: _getRadius(config.topRadius),
               bottom: _getRadius(config.bottomRadius));
+          debugPrint('$tag BorderRadius: VERTICAL');
           break;
         case BorderConfigType.circular:
           borderRadius = BorderRadius.circular(config.circularRadius ?? 0);
+          debugPrint('$tag BorderRadius: CIRCULAR');
           break;
       }
     }
 
-    if (null != screen.bgImage && screen.bgImage!.isNotEmpty) {
+    if (null != bgImage && bgImage!.isNotEmpty) {
       BoxFit fit = BoxFit.contain;
 
-      if (null != screen.bgImageFit) {
-        switch (screen.bgImageFit!.fit) {
+      if (null != bgImageFit) {
+        switch (bgImageFit!.fit) {
           case ImageFitConfigFit.swaggerGeneratedUnknown:
           case ImageFitConfigFit.none:
             fit = BoxFit.none;
@@ -157,17 +149,36 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
         }
       }
 
+      debugPrint('$tag BG Image: $bgImage, Fit: $fit');
+
       image = DecorationImage(
-        image: TwinImageHelper.getDomainImage(screen.bgImage!).image,
+        image: TwinImageHelper.getDomainImage(bgImage!).image,
         fit: fit,
       );
     }
 
-    decoration = BoxDecoration(
+    if (null != bgColor && bgColor <= 0) {
+      bgColor = Colors.transparent.value;
+    }
+
+    Color backgroundColor = Color(bgColor ?? Colors.transparent.value);
+
+    debugPrint('$tag BG Color: ${backgroundColor.value}');
+
+    return BoxDecoration(
+      color: backgroundColor,
       image: image,
-      border: border,
-      borderRadius: borderRadius,
+      //border: border,
+      //borderRadius: borderRadius,
     );
+  }
+
+  void _initDefaults() {
+    if (null == _screen) return;
+
+    DashboardScreen screen = _screen!;
+
+    _children.clear();
 
     int index = 0;
     for (ScreenRow row in screen.rows) {
@@ -188,6 +199,9 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     for (ScreenChild child in row.children) {
       rowChildren.add(_buildScreenChild(rowIndex, colIndex, row, child));
       ++colIndex;
+      if ((row.spacing ?? 0) > 0) {
+        rowChildren.add(divider(horizontal: true, width: row.spacing!));
+      }
     }
 
     int bgColor = row.bgColor ?? Colors.transparent.value;
@@ -196,111 +210,15 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       bgColor = Colors.transparent.value;
     }
 
-    Color backgroundColor = Color(bgColor);
-    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.values
-        .byName(row.mainAxisAlignment ?? this.mainAxisAlignment.name);
-    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.values
-        .byName(row.crossAxisAlignment ?? this.crossAxisAlignment.name);
-    MainAxisSize mainAxisSize =
-        MainAxisSize.values.byName(row.mainAxisSize ?? this.mainAxisSize.name);
-    Axis? scrollDirection;
-
-    if (null != row.scrollDirection && row.scrollDirection != 'none') {
-      scrollDirection =
-          Axis.values.byName(row.scrollDirection ?? Axis.vertical.name);
+    if (widget.editMode && selectedRow == rowIndex) {
+      bgColor = Colors.black26.value;
     }
 
-    BoxBorder? border;
-    BorderRadiusGeometry? borderRadius;
-    DecorationImage? image;
-
-    row = row.copyWith(
-        borderConfig: BorderConfig(
-            type: BorderConfigType.all,
-            allRadius:
-                RadiusConfig(type: RadiusConfigType.circular, radius: 45)));
-
-    border = Border.all(color: Colors.black, width: 2);
-
-    if (null != row.borderConfig) {
-      BorderConfig config = row.borderConfig!;
-
-      border = Border.all(color: Colors.black, width: config.width ?? 1.0);
-
-      switch (row.borderConfig!.type) {
-        case BorderConfigType.swaggerGeneratedUnknown:
-        case BorderConfigType.zero:
-          borderRadius = BorderRadius.zero;
-          break;
-        case BorderConfigType.all:
-          borderRadius = BorderRadius.all(_getRadius(config.allRadius));
-          break;
-        case BorderConfigType.only:
-          borderRadius = BorderRadius.only(
-            topLeft: _getRadius(config.topLeftRadius),
-            topRight: _getRadius(config.topRightRadius),
-            bottomLeft: _getRadius(config.bottomLeftRadius),
-            bottomRight: _getRadius(config.bottomRightRadius),
-          );
-          break;
-        case BorderConfigType.horizontal:
-          borderRadius = BorderRadius.horizontal(
-              left: _getRadius(config.leftRadius),
-              right: _getRadius(config.rightRadius));
-          break;
-        case BorderConfigType.vertical:
-          borderRadius = BorderRadius.vertical(
-              top: _getRadius(config.topRadius),
-              bottom: _getRadius(config.bottomRadius));
-          break;
-        case BorderConfigType.circular:
-          borderRadius = BorderRadius.circular(config.circularRadius ?? 0);
-          break;
-      }
-    }
-
-    if (null != row.bgImage && row.bgImage!.isNotEmpty) {
-      BoxFit fit = BoxFit.contain;
-
-      if (null != row.bgImageFit) {
-        switch (row.bgImageFit!.fit) {
-          case ImageFitConfigFit.swaggerGeneratedUnknown:
-          case ImageFitConfigFit.none:
-            fit = BoxFit.none;
-            break;
-          case ImageFitConfigFit.contain:
-            fit = BoxFit.contain;
-            break;
-          case ImageFitConfigFit.cover:
-            fit = BoxFit.cover;
-            break;
-          case ImageFitConfigFit.fill:
-            fit = BoxFit.fill;
-            break;
-          case ImageFitConfigFit.fitheight:
-            fit = BoxFit.fitHeight;
-            break;
-          case ImageFitConfigFit.fitwidth:
-            fit = BoxFit.fitWidth;
-            break;
-          case ImageFitConfigFit.scaledown:
-            fit = BoxFit.scaleDown;
-            break;
-        }
-      }
-
-      image = DecorationImage(
-        image: TwinImageHelper.getDomainImage(row.bgImage!).image,
-        fit: fit,
-      );
-    }
-
-    Decoration decoration = BoxDecoration(
-      color: backgroundColor,
-      image: image,
-      border: border,
-      borderRadius: borderRadius,
-    );
+    Decoration decoration = _buildDecoration('ROW-$rowIndex',
+        config: row.rowBorderConfig,
+        bgColor: bgColor,
+        bgImage: row.bgImage,
+        bgImageFit: row.bgImageFit);
 
     EdgeInsetsGeometry? margin;
     EdgeInsetsGeometry? padding;
@@ -321,7 +239,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
           left: row.paddingConfig?.left ?? 0);
     }
 
-    Container container = Container(
+    Widget container = Container(
       //color: backgroundColor,
       height: row.height,
       margin: margin,
@@ -332,8 +250,18 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       ),
     );
 
+    if (null != row.scrollDirection && row.scrollDirection != 'none') {
+      Axis scrollDirection =
+          Axis.values.byName(row.scrollDirection ?? Axis.vertical.name);
+      SingleChildScrollView scrollable = SingleChildScrollView(
+        scrollDirection: scrollDirection,
+        child: container,
+      );
+      container = scrollable;
+    }
+
     if (widget.editMode) {
-      return InkWell(
+      Widget clickable = InkWell(
         onTap: () {
           setState(() {
             selectedRow = rowIndex;
@@ -342,106 +270,54 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
         },
         child: container,
       );
-    } else {
-      return container;
+      container = clickable;
     }
+
+    if (widget.editMode && selectedRow != rowIndex) {
+      Widget stacked = Stack(
+        alignment: Alignment.center,
+        children: [
+          container,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: () {
+                  widget.onRowClicked!(rowIndex, row);
+                },
+                child: const Icon(
+                  Icons.edit,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+      container = stacked;
+    }
+
+    return container;
   }
 
   Widget _buildScreenChild(
       int rowIndex, int colIndex, ScreenRow row, ScreenChild child) {
-    Color backgroundColor = Color(child.bgColor ?? Colors.white.value);
+    int bgColor = child.bgColor ?? Colors.transparent.value;
 
-    BoxBorder? border;
-    BorderRadiusGeometry? borderRadius;
-    DecorationImage? image;
-
-    Color bgColor = Color(
-        null != child.bgColor ? child.bgColor! : Colors.transparent.value);
-
-    if (widget.editMode) {
-      bgColor = Colors.lime;
+    if (bgColor <= 0) {
+      bgColor = Colors.transparent.value;
     }
 
-    border = Border.all(
-      color: bgColor,
-    );
-
-    if (null != child.borderConfig) {
-      BorderConfig config = child.borderConfig!;
-      switch (child.borderConfig!.type) {
-        case BorderConfigType.swaggerGeneratedUnknown:
-        case BorderConfigType.zero:
-          borderRadius = BorderRadius.zero;
-          break;
-        case BorderConfigType.all:
-          borderRadius = BorderRadius.all(_getRadius(config.allRadius));
-          break;
-        case BorderConfigType.only:
-          borderRadius = BorderRadius.only(
-            topLeft: _getRadius(config.topLeftRadius),
-            topRight: _getRadius(config.topRightRadius),
-            bottomLeft: _getRadius(config.bottomLeftRadius),
-            bottomRight: _getRadius(config.bottomRightRadius),
-          );
-          break;
-        case BorderConfigType.horizontal:
-          borderRadius = BorderRadius.horizontal(
-              left: _getRadius(config.leftRadius),
-              right: _getRadius(config.rightRadius));
-          break;
-        case BorderConfigType.vertical:
-          borderRadius = BorderRadius.vertical(
-              top: _getRadius(config.topRadius),
-              bottom: _getRadius(config.bottomRadius));
-          break;
-        case BorderConfigType.circular:
-          borderRadius = BorderRadius.circular(config.circularRadius ?? 0);
-          break;
-      }
+    if (widget.editMode && selectedRow == rowIndex && selectedCol == colIndex) {
+      bgColor = Colors.black45.value;
     }
 
-    if (null != child.bgImage && child.bgImage!.isNotEmpty) {
-      BoxFit fit = BoxFit.contain;
-
-      if (null != child.bgImageFit) {
-        switch (child.bgImageFit!.fit) {
-          case ImageFitConfigFit.swaggerGeneratedUnknown:
-          case ImageFitConfigFit.none:
-            fit = BoxFit.none;
-            break;
-          case ImageFitConfigFit.contain:
-            fit = BoxFit.contain;
-            break;
-          case ImageFitConfigFit.cover:
-            fit = BoxFit.cover;
-            break;
-          case ImageFitConfigFit.fill:
-            fit = BoxFit.fill;
-            break;
-          case ImageFitConfigFit.fitheight:
-            fit = BoxFit.fitHeight;
-            break;
-          case ImageFitConfigFit.fitwidth:
-            fit = BoxFit.fitWidth;
-            break;
-          case ImageFitConfigFit.scaledown:
-            fit = BoxFit.scaleDown;
-            break;
-        }
-      }
-
-      image = DecorationImage(
-        image: TwinImageHelper.getDomainImage(child.bgImage!).image,
-        fit: fit,
-      );
-    }
-
-    Decoration decoration = BoxDecoration(
-      color: backgroundColor,
-      image: image,
-      border: border,
-      borderRadius: borderRadius,
-    );
+    Decoration decoration = _buildDecoration('COL-[$rowIndex, $colIndex]',
+        config: child.childBorderConfig,
+        bgColor: bgColor,
+        bgImage: child.bgImage,
+        bgImageFit: child.bgImageFit);
 
     EdgeInsetsGeometry? margin;
     EdgeInsetsGeometry? padding;
@@ -495,6 +371,25 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       container = expanded;
     }
 
+    if (widget.editMode && selectedRow != rowIndex && selectedCol != colIndex) {
+      Widget stacked = Stack(
+        alignment: Alignment.center,
+        children: [
+          container,
+          InkWell(
+            onTap: () {
+              widget.onComponentClicked!(rowIndex, colIndex, row, child);
+            },
+            child: const Icon(
+              Icons.edit,
+              color: Colors.red,
+            ),
+          ),
+        ],
+      );
+      container = stacked;
+    }
+
     return container;
   }
 
@@ -510,7 +405,32 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       );
     }
 
-    Container child = Container(
+    DashboardScreen screen = _screen!;
+
+    int backgroundColor = screen.bgColor ?? Colors.transparent.value;
+
+    if (backgroundColor <= 0) {
+      backgroundColor = Colors.transparent.value;
+    }
+
+    MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start;
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center;
+    MainAxisSize mainAxisSize = MainAxisSize.max;
+
+    mainAxisAlignment = MainAxisAlignment.values
+        .byName(screen.mainAxisAlignment ?? mainAxisAlignment.name);
+    crossAxisAlignment = CrossAxisAlignment.values
+        .byName(screen.crossAxisAlignment ?? crossAxisAlignment.name);
+    mainAxisSize =
+        MainAxisSize.values.byName(screen.mainAxisSize ?? mainAxisSize.name);
+
+    BoxDecoration decoration = _buildDecoration('SCREEN',
+        config: screen.screenBorderConfig,
+        bgColor: screen.bgColor,
+        bgImage: screen.bgImage,
+        bgImageFit: screen.bgImageFit);
+
+    Widget child = Container(
       decoration: decoration,
       child: Column(
         mainAxisAlignment: mainAxisAlignment,
@@ -520,27 +440,22 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       ),
     );
 
-    Widget scrollable;
+    if (null != screen.scrollDirection && screen.scrollDirection != 'none') {
+      Axis scrollDirection =
+          Axis.values.byName(_screen!.scrollDirection ?? Axis.vertical.name);
 
-    switch (
-        Axis.values.byName(_screen!.scrollDirection ?? Axis.vertical.name)) {
-      case Axis.horizontal:
-        scrollable = SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: child,
-        );
-        break;
-      case Axis.vertical:
-        scrollable = SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: child,
-        );
+      Widget scrollable = SingleChildScrollView(
+        scrollDirection: scrollDirection,
+        child: child,
+      );
+
+      child = scrollable;
     }
 
     return Scaffold(
       key: Key(const Uuid().v4()),
-      backgroundColor: backgroundColor,
-      body: scrollable,
+      backgroundColor: Color(backgroundColor),
+      body: child,
     );
   }
 

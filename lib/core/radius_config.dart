@@ -6,10 +6,12 @@ import 'package:flutter_spinbox/flutter_spinbox.dart';
 typedef OnRadiusConfigured = void Function(RadiusConfig config);
 
 class RadiusConfigWidget extends StatefulWidget {
+  final String? title;
   final RadiusConfig radiusConfig;
   final OnRadiusConfigured onRadiusConfigured;
   const RadiusConfigWidget(
       {super.key,
+      this.title,
       required this.radiusConfig,
       required this.onRadiusConfigured});
 
@@ -23,11 +25,11 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String value = widget.radiusConfig.type.name;
+    String value = widget.radiusConfig.radType.name;
 
-    switch (widget.radiusConfig.type) {
-      case RadiusConfigType.swaggerGeneratedUnknown:
-        value = RadiusConfigType.zero.name;
+    switch (widget.radiusConfig.radType) {
+      case RadiusConfigRadType.swaggerGeneratedUnknown:
+        value = RadiusConfigRadType.zero.name;
       default:
     }
 
@@ -35,6 +37,13 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (null != widget.title)
+          Align(
+              alignment: Alignment.topCenter,
+              child: Text(
+                widget.title!,
+                style: labelStyle,
+              )),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,33 +56,52 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                 value: value,
                 items: [
                   DropdownMenuItem<String>(
-                      value: RadiusConfigType.zero.name,
+                      value: RadiusConfigRadType.zero.name,
                       child: const Text(
                         'Zero',
                         style: labelStyle,
                       )),
                   DropdownMenuItem<String>(
-                      value: RadiusConfigType.circular.name,
+                      value: RadiusConfigRadType.circular.name,
                       child: const Text(
                         'Circular',
                         style: labelStyle,
                       )),
                   DropdownMenuItem<String>(
-                      value: RadiusConfigType.elliptical.name,
+                      value: RadiusConfigRadType.elliptical.name,
                       child: const Text(
                         'Elliptical',
                         style: labelStyle,
                       )),
                 ],
                 onChanged: (type) {
-                  widget.onRadiusConfigured(widget.radiusConfig.copyWith(
-                      type: RadiusConfigType.values
-                          .byName(type ?? RadiusConfigType.circular.name)));
+                  double? radius;
+                  double? xRadius;
+                  double? yRadius;
+                  RadiusConfigRadType radiusType = RadiusConfigRadType.values
+                      .byName(type ?? RadiusConfigRadType.circular.name);
+                  switch (radiusType) {
+                    case RadiusConfigRadType.swaggerGeneratedUnknown:
+                    case RadiusConfigRadType.zero:
+                      break;
+                    case RadiusConfigRadType.circular:
+                      radius = 45.0;
+                      break;
+                    case RadiusConfigRadType.elliptical:
+                      xRadius = 45.0;
+                      yRadius = 45.0;
+                      break;
+                  }
+                  widget.onRadiusConfigured(RadiusConfig(
+                      radType: radiusType,
+                      rad: radius,
+                      xRad: xRadius,
+                      yRad: yRadius));
                 }),
           ],
         ),
         divider(),
-        if (widget.radiusConfig.type == RadiusConfigType.circular)
+        if (widget.radiusConfig.radType == RadiusConfigRadType.circular)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,12 +116,12 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                   child: SpinBox(
                     min: 0,
                     max: 180,
-                    value: widget.radiusConfig.radius ?? 45,
+                    value: widget.radiusConfig.rad ?? 45,
                     showCursor: true,
                     autofocus: true,
                     onChanged: (value) {
                       widget.onRadiusConfigured(
-                          widget.radiusConfig.copyWith(radius: value));
+                          widget.radiusConfig.copyWith(rad: value));
                     },
                   ),
                 ),
@@ -101,7 +129,7 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             ],
           ),
         divider(),
-        if (widget.radiusConfig.type == RadiusConfigType.elliptical)
+        if (widget.radiusConfig.radType == RadiusConfigRadType.elliptical)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,19 +144,19 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                   child: SpinBox(
                     min: 0,
                     max: 180,
-                    value: widget.radiusConfig.xRadius ?? 45,
+                    value: widget.radiusConfig.xRad ?? 45,
                     showCursor: true,
                     autofocus: true,
                     onChanged: (value) {
                       widget.onRadiusConfigured(
-                          widget.radiusConfig.copyWith(xRadius: value));
+                          widget.radiusConfig.copyWith(xRad: value));
                     },
                   ),
                 ),
               ),
             ],
           ),
-        if (widget.radiusConfig.type == RadiusConfigType.elliptical)
+        if (widget.radiusConfig.radType == RadiusConfigRadType.elliptical)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,12 +171,12 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                   child: SpinBox(
                     min: 0,
                     max: 180,
-                    value: widget.radiusConfig.xRadius ?? 45,
+                    value: widget.radiusConfig.yRad ?? 45,
                     showCursor: true,
                     autofocus: true,
                     onChanged: (value) {
                       widget.onRadiusConfigured(
-                          widget.radiusConfig.copyWith(yRadius: value));
+                          widget.radiusConfig.copyWith(yRad: value));
                     },
                   ),
                 ),
