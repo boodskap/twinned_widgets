@@ -53,21 +53,20 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             Checkbox(
                 value: (null != _borderConfig),
                 onChanged: (value) {
-                  setState(() {
-                    if ((value ?? false)) {
-                      if (null != widget.borderConfig) {
-                        _borderConfig = widget.borderConfig;
-                      } else {
-                        _borderConfig = BorderConfig(
-                            type: BorderConfigType.all,
-                            color: Colors.black.value,
-                            allRadius: const RadiusConfig(
-                                type: RadiusConfigType.circular, radius: 45));
-                      }
+                  if ((value ?? false)) {
+                    if (null != widget.borderConfig) {
+                      _borderConfig = widget.borderConfig;
                     } else {
-                      _borderConfig = null;
+                      _borderConfig = BorderConfig(
+                          type: BorderConfigType.all,
+                          color: Colors.black.value,
+                          allRadius: const RadiusConfig(
+                              radType: RadiusConfigRadType.circular, rad: 45));
                     }
-                  });
+                  } else {
+                    _borderConfig = null;
+                  }
+                  setState(() {});
                   widget.onBorderConfigured(_borderConfig);
                 }),
           ],
@@ -179,11 +178,78 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                         )),
                   ],
                   onChanged: (type) {
+                    BorderConfigType borderConfigType = BorderConfigType.values
+                        .byName(type ?? BorderConfigType.all.name);
                     setState(() {
-                      _borderConfig = _borderConfig!.copyWith(
-                          type: BorderConfigType.values
-                              .byName(type ?? BorderConfigType.all.name));
+                      switch (borderConfigType) {
+                        case BorderConfigType.swaggerGeneratedUnknown:
+                        case BorderConfigType.zero:
+                          _borderConfig = BorderConfig(
+                              type: borderConfigType,
+                              width: _borderConfig!.width,
+                              color: _borderConfig!.color);
+                          break;
+                        case BorderConfigType.all:
+                          _borderConfig = BorderConfig(
+                              type: borderConfigType,
+                              allRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              width: _borderConfig!.width,
+                              color: _borderConfig!.color);
+                          break;
+                        case BorderConfigType.only:
+                          _borderConfig = BorderConfig(
+                              type: borderConfigType,
+                              topLeftRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              topRightRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              bottomLeftRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              bottomRightRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              width: _borderConfig!.width,
+                              color: _borderConfig!.color);
+                          break;
+                        case BorderConfigType.horizontal:
+                          _borderConfig = BorderConfig(
+                              type: borderConfigType,
+                              leftRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              rightRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              width: _borderConfig!.width,
+                              color: _borderConfig!.color);
+                          break;
+                        case BorderConfigType.vertical:
+                          _borderConfig = BorderConfig(
+                              type: borderConfigType,
+                              topRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              bottomRadius: const RadiusConfig(
+                                  radType: RadiusConfigRadType.circular,
+                                  rad: 45.0),
+                              width: _borderConfig!.width,
+                              color: _borderConfig!.color);
+                          break;
+                        case BorderConfigType.circular:
+                          _borderConfig = BorderConfig(
+                              type: borderConfigType,
+                              circularRadius: 45.0,
+                              width: _borderConfig!.width,
+                              color: _borderConfig!.color);
+                          break;
+                      }
                     });
+                    widget.onBorderConfigured(_borderConfig);
                   }),
             ],
           ),
@@ -193,7 +259,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
           RadiusConfigWidget(
               radiusConfig: _borderConfig!.allRadius ??
                   const RadiusConfig(
-                      type: RadiusConfigType.circular, radius: 45),
+                      radType: RadiusConfigRadType.circular, rad: 45),
               onRadiusConfigured: (config) {
                 setState(() {
                   _borderConfig = _borderConfig!.copyWith(allRadius: config);
@@ -203,9 +269,10 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
+              title: 'Top Left',
               radiusConfig: _borderConfig!.topLeftRadius ??
                   const RadiusConfig(
-                      type: RadiusConfigType.circular, radius: 45),
+                      radType: RadiusConfigRadType.circular, rad: 45),
               onRadiusConfigured: (config) {
                 setState(() {
                   _borderConfig =
@@ -216,9 +283,10 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
+              title: 'Top Right',
               radiusConfig: _borderConfig!.topRightRadius ??
                   const RadiusConfig(
-                      type: RadiusConfigType.circular, radius: 45),
+                      radType: RadiusConfigRadType.circular, rad: 45),
               onRadiusConfigured: (config) {
                 setState(() {
                   _borderConfig =
@@ -229,9 +297,10 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
+              title: 'Bottom Left',
               radiusConfig: _borderConfig!.bottomLeftRadius ??
                   const RadiusConfig(
-                      type: RadiusConfigType.circular, radius: 45),
+                      radType: RadiusConfigRadType.circular, rad: 45),
               onRadiusConfigured: (config) {
                 setState(() {
                   _borderConfig =
@@ -242,9 +311,10 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
+              title: 'Bottom Right',
               radiusConfig: _borderConfig!.bottomRightRadius ??
                   const RadiusConfig(
-                      type: RadiusConfigType.circular, radius: 45),
+                      radType: RadiusConfigRadType.circular, rad: 45),
               onRadiusConfigured: (config) {
                 setState(() {
                   _borderConfig =
@@ -252,6 +322,89 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                 });
                 widget.onBorderConfigured(_borderConfig);
               }),
+        if (null != _borderConfig &&
+            _borderConfig!.type == BorderConfigType.horizontal)
+          RadiusConfigWidget(
+              title: 'Left',
+              radiusConfig: _borderConfig!.leftRadius ??
+                  const RadiusConfig(
+                      radType: RadiusConfigRadType.circular, rad: 45),
+              onRadiusConfigured: (config) {
+                setState(() {
+                  _borderConfig = _borderConfig!.copyWith(leftRadius: config);
+                });
+                widget.onBorderConfigured(_borderConfig);
+              }),
+        if (null != _borderConfig &&
+            _borderConfig!.type == BorderConfigType.horizontal)
+          RadiusConfigWidget(
+              title: 'Right',
+              radiusConfig: _borderConfig!.rightRadius ??
+                  const RadiusConfig(
+                      radType: RadiusConfigRadType.circular, rad: 45),
+              onRadiusConfigured: (config) {
+                setState(() {
+                  _borderConfig = _borderConfig!.copyWith(rightRadius: config);
+                });
+                widget.onBorderConfigured(_borderConfig);
+              }),
+        if (null != _borderConfig &&
+            _borderConfig!.type == BorderConfigType.vertical)
+          RadiusConfigWidget(
+              title: 'Top',
+              radiusConfig: _borderConfig!.topRadius ??
+                  const RadiusConfig(
+                      radType: RadiusConfigRadType.circular, rad: 45),
+              onRadiusConfigured: (config) {
+                setState(() {
+                  _borderConfig = _borderConfig!.copyWith(topRadius: config);
+                });
+                widget.onBorderConfigured(_borderConfig);
+              }),
+        if (null != _borderConfig &&
+            _borderConfig!.type == BorderConfigType.vertical)
+          RadiusConfigWidget(
+              title: 'Bottom',
+              radiusConfig: _borderConfig!.bottomRadius ??
+                  const RadiusConfig(
+                      radType: RadiusConfigRadType.circular, rad: 45),
+              onRadiusConfigured: (config) {
+                setState(() {
+                  _borderConfig = _borderConfig!.copyWith(bottomRadius: config);
+                });
+                widget.onBorderConfigured(_borderConfig);
+              }),
+        if (null != _borderConfig &&
+            _borderConfig!.type == BorderConfigType.circular)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Radius',
+                style: labelStyle,
+              ),
+              SizedBox(
+                height: 35,
+                child: IntrinsicWidth(
+                  child: SpinBox(
+                    min: 1,
+                    max: 180,
+                    value: _borderConfig?.circularRadius ?? 45.0,
+                    showCursor: true,
+                    autofocus: true,
+                    onChanged: (value) {
+                      setState(() {
+                        _borderConfig =
+                            _borderConfig!.copyWith(circularRadius: value);
+                      });
+                      widget.onBorderConfigured(_borderConfig);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }
