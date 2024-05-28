@@ -115,8 +115,8 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                     max: 100,
                     value: _borderConfig?.width ?? 1.0,
                     showCursor: true,
-                    autofocus: true,
-                    onChanged: (value) {
+                    autofocus: false,
+                    onSubmitted: (value) {
                       setState(() {
                         _borderConfig = _borderConfig!.copyWith(width: value);
                       });
@@ -392,8 +392,8 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                     max: 180,
                     value: _borderConfig?.circularRadius ?? 45.0,
                     showCursor: true,
-                    autofocus: true,
-                    onChanged: (value) {
+                    autofocus: false,
+                    onSubmitted: (value) {
                       setState(() {
                         _borderConfig =
                             _borderConfig!.copyWith(circularRadius: value);

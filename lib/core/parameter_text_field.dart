@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:twinned_widgets/core/definitions.dart';
 
 class ParameterTextField extends StatefulWidget {
   final Map<String, dynamic> parameters;
   final String parameter;
+  final ValueChangeNotifier? changeNotifier;
 
   const ParameterTextField(
-      {super.key, required this.parameters, required this.parameter});
+      {super.key,
+      required this.parameters,
+      required this.parameter,
+      this.changeNotifier});
 
   @override
   State<ParameterTextField> createState() => _ParameterTextFieldState();
@@ -38,6 +43,9 @@ class _ParameterTextFieldState extends State<ParameterTextField> {
       controller: _controller,
       onChanged: (value) {
         widget.parameters[widget.parameter] = value;
+        if (null != widget.changeNotifier) {
+          widget.changeNotifier!();
+        }
       },
     );
   }

@@ -86,189 +86,210 @@ class _DeviceMinMaxAvgWidgetState extends BaseState<DeviceMinMaxAvgWidget> {
     return Center(
       child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-        return Row(
-          children: [
-            Expanded(
-              child: Column(
+        return Expanded(
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  Text(
-                    widget.config.title,
-                    style: TextStyle(
-                      fontFamily: titleFont.fontFamily,
-                      fontSize: titleFont.fontSize,
-                      fontWeight: titleFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(titleFont.fontColor),
-                    ),
-                  ),
                   Expanded(
-                    child: Row(children: [
-                      Expanded(
-                        child: Container(
-                          color: Color(widget.config.minBgColor),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    widget.config.prefixLabel,
-                                    style: TextStyle(
-                                        fontWeight: prefixFont.fontBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: prefixFont.fontSize,
-                                        color: Color(prefixFont.fontColor)),
-                                  ),
-                                  Text(
-                                    minValue,
-                                    style: TextStyle(
-                                      fontWeight: valueFont.fontBold
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      fontSize: valueFont.fontSize,
-                                      color: Color(valueFont.fontColor),
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.config.suffixLabel,
-                                    style: TextStyle(
-                                        fontWeight: suffixFont.fontBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: suffixFont.fontSize,
-                                        color: Color(suffixFont.fontColor)),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: labelSpacing),
-                              Text(
-                                widget.config.minLabel,
-                                style: TextStyle(
-                                    fontWeight: labelFont.fontBold
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    fontSize: labelFont.fontSize,
-                                    color: Color(labelFont.fontColor)),
-                              ),
-                            ],
+                    child: Container(
+                      alignment: Alignment.center,
+                      color: Color(
+                        widget.config.titleBgColor,
+                      ),
+                      child: Text(
+                        widget.config.title,
+                        style: TextStyle(
+                          fontFamily: titleFont.fontFamily,
+                          fontSize: titleFont.fontSize,
+                          fontWeight: titleFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(
+                            titleFont.fontColor,
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          color: Color(widget.config.avgBgColor),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    widget.config.prefixLabel,
-                                    style: TextStyle(
-                                        fontWeight: prefixFont.fontBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: prefixFont.fontSize,
-                                        color: Color(prefixFont.fontColor)),
-                                  ),
-                                  Text(
-                                    avgValue,
-                                    style: TextStyle(
-                                      fontWeight: valueFont.fontBold
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      fontSize: valueFont.fontSize,
-                                      color: Color(valueFont.fontColor),
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.config.suffixLabel,
-                                    style: TextStyle(
-                                        fontWeight: suffixFont.fontBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: suffixFont.fontSize,
-                                        color: Color(suffixFont.fontColor)),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: labelSpacing),
-                              Text(
-                                widget.config.avgLabel,
-                                style: TextStyle(
-                                    fontWeight: labelFont.fontBold
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    fontSize: labelFont.fontSize,
-                                    color: Color(labelFont.fontColor)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          color: Color(widget.config.maxBgColor),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    widget.config.prefixLabel,
-                                    style: TextStyle(
-                                        fontWeight: prefixFont.fontBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: prefixFont.fontSize,
-                                        color: Color(prefixFont.fontColor)),
-                                  ),
-                                  Text(
-                                    maxValue,
-                                    style: TextStyle(
-                                      fontWeight: valueFont.fontBold
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      fontSize: valueFont.fontSize,
-                                      color: Color(valueFont.fontColor),
-                                    ),
-                                  ),
-                                  Text(
-                                    widget.config.suffixLabel,
-                                    style: TextStyle(
-                                        fontWeight: suffixFont.fontBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        fontSize: suffixFont.fontSize,
-                                        color: Color(suffixFont.fontColor)),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: labelSpacing),
-                              Text(
-                                widget.config.maxLabel,
-                                style: TextStyle(
-                                    fontWeight: labelFont.fontBold
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    fontSize: labelFont.fontSize,
-                                    color: Color(labelFont.fontColor)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ]),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: widget.config.borderWidth,
+                      color: Color(
+                        widget.config.borderColor,
+                      ),
+                    ),
+                  ),
+                  child: Row(children: [
+                    Expanded(
+                      child: Container(
+                        color: Color(widget.config.minBgColor),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.config.prefixLabel,
+                                  style: TextStyle(
+                                    fontWeight: prefixFont.fontBold
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: prefixFont.fontSize,
+                                    color: Color(prefixFont.fontColor),
+                                  ),
+                                ),
+                                Text(
+                                  minValue,
+                                  style: TextStyle(
+                                    fontWeight: valueFont.fontBold
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: valueFont.fontSize,
+                                    color: Color(valueFont.fontColor),
+                                  ),
+                                ),
+                                Text(
+                                  widget.config.suffixLabel,
+                                  style: TextStyle(
+                                      fontWeight: suffixFont.fontBold
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: suffixFont.fontSize,
+                                      color: Color(suffixFont.fontColor)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: labelSpacing),
+                            Text(
+                              widget.config.minLabel,
+                              style: TextStyle(
+                                  fontWeight: labelFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  fontSize: labelFont.fontSize,
+                                  color: Color(labelFont.fontColor)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Color(widget.config.avgBgColor),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.config.prefixLabel,
+                                  style: TextStyle(
+                                      fontWeight: prefixFont.fontBold
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: prefixFont.fontSize,
+                                      color: Color(prefixFont.fontColor)),
+                                ),
+                                Text(
+                                  avgValue,
+                                  style: TextStyle(
+                                    fontWeight: valueFont.fontBold
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: valueFont.fontSize,
+                                    color: Color(valueFont.fontColor),
+                                  ),
+                                ),
+                                Text(
+                                  widget.config.suffixLabel,
+                                  style: TextStyle(
+                                      fontWeight: suffixFont.fontBold
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: suffixFont.fontSize,
+                                      color: Color(suffixFont.fontColor)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: labelSpacing),
+                            Text(
+                              widget.config.avgLabel,
+                              style: TextStyle(
+                                  fontWeight: labelFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  fontSize: labelFont.fontSize,
+                                  color: Color(labelFont.fontColor)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Color(widget.config.maxBgColor),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.config.prefixLabel,
+                                  style: TextStyle(
+                                      fontWeight: prefixFont.fontBold
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: prefixFont.fontSize,
+                                      color: Color(prefixFont.fontColor)),
+                                ),
+                                Text(
+                                  maxValue,
+                                  style: TextStyle(
+                                    fontWeight: valueFont.fontBold
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    fontSize: valueFont.fontSize,
+                                    color: Color(valueFont.fontColor),
+                                  ),
+                                ),
+                                Text(
+                                  widget.config.suffixLabel,
+                                  style: TextStyle(
+                                      fontWeight: suffixFont.fontBold
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: suffixFont.fontSize,
+                                      color: Color(suffixFont.fontColor)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: labelSpacing),
+                            Text(
+                              widget.config.maxLabel,
+                              style: TextStyle(
+                                  fontWeight: labelFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  fontSize: labelFont.fontSize,
+                                  color: Color(labelFont.fontColor)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ],
+          ),
         );
       }),
     );
@@ -319,11 +340,8 @@ class _DeviceMinMaxAvgWidgetState extends BaseState<DeviceMinMaxAvgWidget> {
         num max = json['aggregations']['max']['value'] ?? 0;
 
         minValue = min.toStringAsFixed(2);
-        ;
         avgValue = avg.toStringAsFixed(2);
-        ;
         maxValue = max.toStringAsFixed(2);
-        ;
       }
     });
 

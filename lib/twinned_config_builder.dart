@@ -20,12 +20,14 @@ import 'package:twinned_widgets/core/field_dropdown.dart';
 import 'package:twinned_models/twinned_models.dart';
 import 'package:twinned_widgets/core/multi_devicemodel_dropdown.dart';
 import 'package:twinned_widgets/core/multi_facility_dropdown.dart';
+import 'package:twinned_widgets/core/multi_field_dropdown.dart';
 import 'package:twinned_widgets/core/multi_floor_dropdown.dart';
 import 'package:twinned_widgets/core/multi_premise_dropdown.dart';
 import 'package:twinned_widgets/core/number_field.dart';
 import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
 import 'package:twinned_widgets/core/range_list.dart';
+import 'package:twinned_widgets/core/yesno_field.dart';
 
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
@@ -248,7 +250,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildYesNoField(String parameter) {
-    return const SizedBox.shrink(); //TODO implement this
+    return YesNoField(parameters: _parameters, parameter: parameter);
   }
 
   Widget _buildEnumeratedField(String parameter) {
@@ -302,12 +304,11 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
               _parameters[parameter] = items.map((i) => i.id).toList();
             });
       case HintType.field:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('Field List'),
-            ));
+        return MultiFieldDropdown(
+            selectedItems: toList(_parameters[parameter]),
+            onFieldsSelected: (fields) {
+              _parameters[parameter] = fields.map((i) => i.name).toList();
+            });
       case HintType.deviceModelId:
         return MultiDeviceModelDropdown(
             selectedItems: toList(_parameters[parameter]),
@@ -378,7 +379,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     for (Map<String, dynamic> map in list) {
       values.add(map);
     }
-    return RangeList(parameters: values);
+    return RangeList(
+      parameters: values,
+      onRangeListSaved: (params) {
+        _parameters[parameter] = params;
+      },
+    );
   }
 
   @override

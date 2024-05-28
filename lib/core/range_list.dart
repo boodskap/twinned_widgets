@@ -4,11 +4,15 @@ import 'package:twinned_widgets/core/decimal_field.dart';
 import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:uuid/uuid.dart';
 
+typedef OnRangeListSaved = void Function(List<Map<String, dynamic>> parameters);
 typedef OnRangeDelete = void Function(int index);
+typedef OnRangeUpdate = void Function(int index);
 
 class RangeList extends StatefulWidget {
   final List<Map<String, dynamic>> parameters;
-  const RangeList({super.key, required this.parameters});
+  final OnRangeListSaved onRangeListSaved;
+  const RangeList(
+      {super.key, required this.parameters, required this.onRangeListSaved});
 
   @override
   State<RangeList> createState() => _RangeListState();
@@ -27,6 +31,10 @@ class _RangeListState extends State<RangeList> {
           setState(() {
             widget.parameters.removeAt(index);
           });
+          widget.onRangeListSaved(widget.parameters);
+        },
+        onRangeUpdate: (index) {
+          widget.onRangeListSaved(widget.parameters);
         },
       ));
     }
@@ -47,6 +55,7 @@ class _RangeListState extends State<RangeList> {
                         'color': Colors.red.value
                       });
                     });
+                    widget.onRangeListSaved(widget.parameters);
                   },
                   icon: const Icon(
                     Icons.add,
@@ -65,11 +74,13 @@ class Range extends StatefulWidget {
   final int index;
   final Map<String, dynamic> parameters;
   final OnRangeDelete onRangeDelete;
+  final OnRangeUpdate onRangeUpdate;
   const Range(
       {super.key,
       required this.index,
       required this.parameters,
-      required this.onRangeDelete});
+      required this.onRangeDelete,
+      required this.onRangeUpdate});
 
   @override
   State<Range> createState() => _RangeState();
@@ -95,7 +106,13 @@ class _RangeState extends State<Range> {
               const SizedBox(
                 width: 5.0,
               ),
-              DecimalField(parameters: widget.parameters, parameter: 'from'),
+              DecimalField(
+                parameters: widget.parameters,
+                parameter: 'from',
+                changeNotifier: () {
+                  widget.onRangeUpdate(widget.index);
+                },
+              ),
             ],
           ),
           const SizedBox(
@@ -110,7 +127,13 @@ class _RangeState extends State<Range> {
               const SizedBox(
                 width: 5.0,
               ),
-              DecimalField(parameters: widget.parameters, parameter: 'to'),
+              DecimalField(
+                parameters: widget.parameters,
+                parameter: 'to',
+                changeNotifier: () {
+                  widget.onRangeUpdate(widget.index);
+                },
+              ),
             ],
           ),
           const SizedBox(
@@ -129,7 +152,12 @@ class _RangeState extends State<Range> {
                 constraints: const BoxConstraints(
                     minWidth: 50, maxWidth: 225, maxHeight: 40),
                 child: ParameterTextField(
-                    parameters: widget.parameters, parameter: 'label'),
+                  parameters: widget.parameters,
+                  parameter: 'label',
+                  changeNotifier: () {
+                    widget.onRangeUpdate(widget.index);
+                  },
+                ),
               ),
             ],
           ),
@@ -139,7 +167,12 @@ class _RangeState extends State<Range> {
           ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 100, maxHeight: 40),
               child: ColorPickerField(
-                  config: widget.parameters, parameter: 'color')),
+                config: widget.parameters,
+                parameter: 'color',
+                changeNotifier: () {
+                  widget.onRangeUpdate(widget.index);
+                },
+              )),
           const SizedBox(
             width: 5.0,
           ),
