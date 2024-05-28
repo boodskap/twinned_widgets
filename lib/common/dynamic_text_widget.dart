@@ -88,9 +88,7 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
         if (values.isNotEmpty) {
           for (Map<String, dynamic> obj in values) {
             dynamic fetchedValue = obj['p_source']['data'][widget.config.field];
-            setState(() {
-              value = '$fetchedValue';
-            });
+            value = '$fetchedValue';
           }
         }
       }

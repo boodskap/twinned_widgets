@@ -198,7 +198,7 @@ class _ValueDistributionPieChartWidgetState
                 cornerStyle: CornerStyle.bothCurve,
                 dataSource: chartData,
                 trackOpacity: 0.3,
-                //radius: '100%',
+                //rad: '100%',
                 gap: '2%',
                 innerRadius: '40%',
                 enableTooltip: true,
