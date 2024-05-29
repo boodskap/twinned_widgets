@@ -9,7 +9,7 @@ import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
-
+import 'package:syncfusion_flutter_core/theme.dart';
 
 class AssetModelGridWidget extends StatefulWidget {
   final AssetModelGridWidgetConfig config;
@@ -22,47 +22,94 @@ class AssetModelGridWidget extends StatefulWidget {
 class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
   final List<dynamic> tankDataList = [];
   late List<Map<String, dynamic>> dataGridSource = [];
- 
+  List<String> sortingFields = [];
+  List<String> matchedSortingFields = [];
+  bool allowSorting = false;
+
+  late FontConfig titleFont;
+  late Color titleFontColor;
+  late FontConfig headerFont;
+  late Color headerFontColor;
+
+  @override
+  void initState() {
+    var config = widget.config;
+
+    titleFont = FontConfig.fromJson(config.titleFont);
+    titleFontColor =
+        titleFont.fontColor <= 0 ? Colors.black : Color(titleFont.fontColor);
+
+    headerFont = FontConfig.fromJson(config.headerFont);
+    headerFontColor =
+        headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
+
+    sortingFields = widget.config.sortingFields;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-         Padding(
-          padding: const EdgeInsets.all(8.0),
+        Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text(
             widget.config.title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(
+                fontWeight:
+                    titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                fontSize: titleFont.fontSize,
+                color: titleFontColor),
             textAlign: TextAlign.center,
           ),
         ),
         Expanded(
-          child: SfDataGrid(
-            gridLinesVisibility: GridLinesVisibility.both,
-            headerGridLinesVisibility: GridLinesVisibility.both,
-            source: DynamicDataGridSource(dataSource: dataGridSource),
-            columns: dataGridSource.isNotEmpty
-                ? dataGridSource.first.entries.map((entry) {
-                    dynamic columnName = entry.key;
-                    return GridColumn(
-                      columnName: columnName,
-                      label: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          columnName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: SfDataGridTheme(
+              data: SfDataGridThemeData(
+                headerColor: Color(widget.config.headerBgColor),
+                sortIconColor: Color(widget.config.iconColor),
+              ),
+              child: SfDataGrid(
+                showHorizontalScrollbar: true,
+                showVerticalScrollbar: true,
+                gridLinesVisibility: GridLinesVisibility.both,
+                headerGridLinesVisibility: GridLinesVisibility.both,
+                source: DynamicDataGridSource(dataSource: dataGridSource),
+                allowSorting: true,
+                columns: dataGridSource.isNotEmpty
+                    ? dataGridSource.first.entries.map((entry) {
+                        dynamic columnName = entry.key;
+                        if (matchedSortingFields.contains(columnName)) {
+                          allowSorting = true;
+                        } else {
+                          allowSorting = false;
+                        }
+                        return GridColumn(
+                          columnName: columnName,
+                          allowSorting: allowSorting,
+                          label: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              columnName,
+                              style: TextStyle(
+                                  fontWeight: headerFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  fontSize: headerFont.fontSize,
+                                  color: headerFontColor),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }).toList()
-                : [],
+                        );
+                      }).toList()
+                    : [],
+              ),
+            ),
           ),
         ),
       ],
@@ -104,17 +151,21 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
             if (dataSource is Map<dynamic, dynamic>) {
               refresh(sync: () {
                 Map<String, dynamic> dataEntry = {};
+
                 for (int i = 0; i < fieldsToCheck.length; i++) {
                   String fieldToCheck = fieldsToCheck[i];
+
                   if (dataSource.containsKey(fieldToCheck)) {
                     dataEntry[fieldsLabels[i]] =
                         dataSource[fieldToCheck].toString();
-                  }
-                  else{
-                     dataEntry[fieldsLabels[i]] =
-                        '-';
+                    if (sortingFields.contains(fieldToCheck)) {
+                      matchedSortingFields.add(fieldsLabels[i]);
+                    }
+                  } else {
+                    dataEntry[fieldsLabels[i]] = '-';
                   }
                 }
+
                 dataGridSource.add(dataEntry);
               });
             }
@@ -171,7 +222,7 @@ class AssetModelGridWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   PaletteCategory getPaletteCategory() {
-    return PaletteCategory.dataGrids;
+    return PaletteCategory.chartsAndGraphs;
   }
 
   @override
