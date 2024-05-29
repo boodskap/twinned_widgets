@@ -21,18 +21,30 @@ class TwinImageHelper {
     return null;
   }
 
-  static Future<twin.ImageFileEntityRes> _upload(
+  static Future<twin.ImageFileEntityRes?>? _upload(
       web.MultipartRequest mpr, PlatformFile file) async {
-    mpr.headers['APIKEY'] = TwinnedSession.instance.authToken ?? '';
+    try {
+      debugPrint('ApiKey ${TwinnedSession.instance.authToken}');
+      mpr.headers['APIKEY'] = TwinnedSession.instance.authToken ?? '';
 
-    mpr.files.add(
-      web.MultipartFile.fromBytes('file', file.bytes!, filename: file.name),
-    );
+      mpr.files.add(
+        web.MultipartFile.fromBytes('file', file.bytes!, filename: file.name),
+      );
 
-    var stream = await mpr.send();
-    var response = await stream.stream.bytesToString();
-    var map = jsonDecode(response) as Map<String, dynamic>;
-    return twin.ImageFileEntityRes.fromJson(map);
+      debugPrint('Uploading...');
+      var stream = await mpr.send();
+      var response = await stream.stream.bytesToString();
+
+      debugPrint('Decoding response...');
+      var map = jsonDecode(response) as Map<String, dynamic>;
+
+      debugPrint('Converting response... ${jsonEncode(map)}');
+      return twin.ImageFileEntityRes.fromJson(map);
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
+
+    return null;
   }
 
   static Future<twin.ImageFileEntityRes?> uploadDomainIcon() async {
@@ -50,19 +62,24 @@ class TwinImageHelper {
     return _upload(mpr, file);
   }
 
-  static Future<twin.ImageFileEntityRes?> uploadDomainImage() async {
-    var file = await pickFile();
-    if (null == file) return null;
+  static Future<twin.ImageFileEntityRes?>? uploadDomainImage() async {
+    try {
+      var file = await pickFile();
 
-    var mpr = web.MultipartRequest(
-      "POST",
-      Uri.https(
-        TwinnedSession.instance.host,
-        "/rest/nocode/TwinImage/upload/domain/${twin.TwinImageUploadModelImageTypeModelIdPostImageType.image.value}",
-      ),
-    );
+      if (null == file) return null;
 
-    return _upload(mpr, file);
+      var mpr = web.MultipartRequest(
+        "POST",
+        Uri.https(
+          TwinnedSession.instance.host,
+          "/rest/nocode/TwinImage/upload/domain/${twin.TwinImageUploadModelImageTypeModelIdPostImageType.image.value}",
+        ),
+      );
+
+      return _upload(mpr, file);
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
   }
 
   static Future<twin.ImageFileEntityRes?> uploadDomainBanner() async {
