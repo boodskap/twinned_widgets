@@ -3,6 +3,7 @@ library twinned_widgets;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
@@ -39,6 +40,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDynamicTextWidget': DynamicTextWidgetBuilder(),
   'TWMultipleDeviceModelChartWidget': MultipleDeviceModelChartWidgetBuilder(),
   'TWAssetModelGridWidget': AssetModelGridWidgetBuilder(),
+  'TWAssetModelDataGridWidget': AssetModelDataGridWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
