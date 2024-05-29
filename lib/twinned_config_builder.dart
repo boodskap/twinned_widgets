@@ -66,48 +66,46 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, Widget> _fields = {};
-    final List<Widget> _children = [];
+    final Map<String, Widget> fields = {};
+    final List<Widget> children = [];
 
     for (var parameter in widget.parameters.keys) {
       DataType dataType = widget.config.getDataType(parameter);
-      HintType hintType = widget.config.getHintType(parameter);
-
-      debugPrint('Building type:$dataType hint:$hintType');
+      String label = widget.config.getLabel(parameter);
 
       switch (dataType) {
         case DataType.numeric:
-          _fields[parameter] = _buildNumberField(parameter);
+          fields[label] = _buildNumberField(parameter);
           break;
         case DataType.decimal:
-          _fields[parameter] = _buildDecimalField(parameter);
+          fields[label] = _buildDecimalField(parameter);
           break;
         case DataType.text:
-          _fields[parameter] = _buildTextField(parameter);
+          fields[label] = _buildTextField(parameter);
           break;
         case DataType.yesno:
-          _fields[parameter] = _buildYesNoField(parameter);
+          fields[label] = _buildYesNoField(parameter);
           break;
         case DataType.enumerated:
-          _fields[parameter] = _buildEnumeratedField(parameter);
+          fields[label] = _buildEnumeratedField(parameter);
           break;
         case DataType.font:
-          _fields[parameter] = _buildFontField(parameter);
+          fields[label] = _buildFontField(parameter);
           break;
         case DataType.listOfTexts:
-          _fields[parameter] = _buildListOfTextsField(parameter);
+          fields[label] = _buildListOfTextsField(parameter);
           break;
         case DataType.listOfNumbers:
-          _fields[parameter] = _buildListOfNumbersField(parameter);
+          fields[label] = _buildListOfNumbersField(parameter);
           break;
         case DataType.listOfDecimals:
-          _fields[parameter] = _buildListOfDecimalsField(parameter);
+          fields[label] = _buildListOfDecimalsField(parameter);
           break;
         case DataType.listOfRanges:
-          _fields[parameter] = _buildListOfRangesField(parameter);
+          fields[label] = _buildListOfRangesField(parameter);
           break;
         case DataType.image:
-          _fields[parameter] = _buildImageUploadField(parameter);
+          fields[label] = _buildImageUploadField(parameter);
           break;
         case DataType.none:
           // We ignore unknown data types (may be a hidden parameter)
@@ -115,11 +113,11 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       }
     }
 
-    _fields.forEach((key, value) {
-      _children.add(Row(
+    fields.forEach((key, value) {
+      children.add(Row(
         children: [
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Text(
               key,
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -130,7 +128,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         ],
       ));
 
-      _children.add(divider());
+      children.add(divider());
     });
 
     return Column(
@@ -138,7 +136,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-              children: _children,
+              children: children,
             ),
           ),
         ),
@@ -290,11 +288,16 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildListOfTextsField(String parameter) {
-    var paramValue = _parameters[parameter];
+    TextEditingController? controller;
 
-    if (null == paramValue) {
-    } else if (paramValue is List<String>) {
-    } else if (paramValue is String) {}
+    if (widget.config.getHintType(parameter) == HintType.none) {
+      controller = TextEditingController();
+      List<String>? paramValue = _parameters[parameter];
+      if (null != paramValue) {
+        controller.text = paramValue!.join(',');
+      }
+      _controllers.add(controller!);
+    }
 
     switch (widget.config.getHintType(parameter)) {
       case HintType.deviceId:
@@ -346,12 +349,18 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       default:
-        return const SizedBox(
-            height: 48,
-            child: Placeholder(
-              color: Colors.red,
-              child: Text('String List'),
-            ));
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: controller,
+            maxLines: 4, //or null
+            decoration:
+                const InputDecoration.collapsed(hintText: "Comma Separated"),
+            onSubmitted: (value) {
+              _parameters[parameter] = value.split(',');
+            },
+          ),
+        );
     }
   }
 
