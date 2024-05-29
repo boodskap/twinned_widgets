@@ -64,6 +64,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                       body: TwinnedConfigBuilder(
                           config: TotalValueWidgetConfig(),
                           parameters: TotalValueWidgetConfig().toJson(),
+                          defaultParameters: TotalValueWidgetConfig().toJson(),
                           onConfigSaved: (data) {
                             debugPrint(jsonEncode(data));
                           }));
