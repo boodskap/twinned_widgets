@@ -46,7 +46,10 @@ class _ImageUploadFieldState extends BaseState<ImageUploadField> {
   Future _upload() async {
     await execute(() async {
       var res = await TwinImageHelper.uploadDomainImage();
-      if (res?.ok ?? false) {
+      if (null == res) {
+        return null;
+      }
+      if (res!.ok) {
         alert('Upload Failed', 'Unknown failure');
       } else {
         setState(() {
