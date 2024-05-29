@@ -222,7 +222,7 @@ class AssetModelGridWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   PaletteCategory getPaletteCategory() {
-    return PaletteCategory.dataGrids;
+    return PaletteCategory.chartsAndGraphs;
   }
 
   @override
