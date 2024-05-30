@@ -40,24 +40,18 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Wrap(
-              spacing: 5,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  widget.title,
-                  style: labelStyle,
-                ),
-                Checkbox(
-                    value: null != _paddingConfig,
-                    onChanged: (selected) {
-                      _setSelected(selected ?? false);
-                    })
-              ],
-            )
+            Text(
+              widget.title,
+              style: labelStyle,
+            ),
+            Checkbox(
+                value: null != _paddingConfig,
+                onChanged: (selected) {
+                  _setSelected(selected ?? false);
+                })
           ],
         ),
         if (null != _paddingConfig) divider(),

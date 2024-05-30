@@ -45,7 +45,7 @@ class _DeviceFieldPercentageWidgetState
     bgColor = Color(config.bgColor);
     fillColor = Color(config.fillColor);
     borderColor = Color(config.borderColor);
-    titleBgColor =Color(config.titleBgColor);
+    titleBgColor = Color(config.titleBgColor);
     borderRadius = config.borderRadius;
     borderWidth = config.borderWidth;
     titleFont = FontConfig.fromJson(config.titleFont);
@@ -76,7 +76,7 @@ class _DeviceFieldPercentageWidgetState
       );
     }
 
-    if (widget.config.shape == PercentageWidgetShape.rectangle) {
+    if (widgetShape == PercentageWidgetShape.rectangle && animate == true) {
       return Column(
         children: [
           Row(
@@ -112,12 +112,12 @@ class _DeviceFieldPercentageWidgetState
               center: Text(
                 value != null ? '$rawValue%' : '',
                 style: TextStyle(
-                  fontFamily: labelFont.fontFamily,
-                  fontSize: labelFont.fontSize,
-                  fontWeight:
-                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                  color: Color(labelFont.fontColor)
-                ),
+                    fontFamily: labelFont.fontFamily,
+                    fontSize: labelFont.fontSize,
+                    fontWeight: labelFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(labelFont.fontColor)),
               ),
             ),
           ),
@@ -125,7 +125,7 @@ class _DeviceFieldPercentageWidgetState
       );
     }
 
-    if (widget.config.shape == PercentageWidgetShape.circle) {
+    if (widgetShape == PercentageWidgetShape.circle && animate == true) {
       return Column(
         children: [
           Row(
@@ -150,21 +150,172 @@ class _DeviceFieldPercentageWidgetState
             ],
           ),
           Expanded(
-            child: LiquidCircularProgressIndicator(
-              value: value ?? 0.0,
-              valueColor: AlwaysStoppedAnimation(fillColor),
-              backgroundColor: bgColor,
-              borderColor: borderColor,
-              borderWidth: borderWidth,
-              direction: waveDirection,
-               center: Text(
-                value != null ? '$rawValue%' : '',
-                style: TextStyle(
-                  fontFamily: labelFont.fontFamily,
-                  fontSize: labelFont.fontSize,
-                  fontWeight:
-                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                  color: Color(labelFont.fontColor)
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: LiquidCircularProgressIndicator(
+                value: value ?? 0.0,
+                valueColor: AlwaysStoppedAnimation(fillColor),
+                backgroundColor: bgColor,
+                borderColor: borderColor,
+                borderWidth: borderWidth,
+                direction: waveDirection,
+                center: Text(
+                  value != null ? '$rawValue%' : '',
+                  style: TextStyle(
+                      fontFamily: labelFont.fontFamily,
+                      fontSize: labelFont.fontSize,
+                      fontWeight: labelFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(labelFont.fontColor)),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (widget.config.shape == PercentageWidgetShape.rectangle &&
+        animate == false) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.teal,
+                  child: Text(
+                    widget.config.title,
+                    style: TextStyle(
+                      fontFamily: titleFont.fontFamily,
+                      fontSize: titleFont.fontSize,
+                      fontWeight: titleFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(titleFont.fontColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: borderColor, width: borderWidth),
+                borderRadius: BorderRadius.circular(borderRadius),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        borderRadius: BorderRadius.circular(borderRadius),
+                      ),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: FractionallySizedBox(
+                      alignment: Alignment.bottomCenter,
+                      heightFactor: value,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      value != null ? '$rawValue%' : '',
+                      style: TextStyle(
+                          fontFamily: labelFont.fontFamily,
+                          fontSize: labelFont.fontSize,
+                          fontWeight: labelFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(labelFont.fontColor)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (widget.config.shape == PercentageWidgetShape.circle &&
+        animate == false) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Colors.teal,
+                  child: Text(
+                    widget.config.title,
+                    style: TextStyle(
+                      fontFamily: titleFont.fontFamily,
+                      fontSize: titleFont.fontSize,
+                      fontWeight: titleFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(titleFont.fontColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 1.0,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: borderColor, width: borderWidth),
+                      ),
+                      child: ClipOval(
+                        child: RotatedBox(
+                          quarterTurns: 3,
+                          child: LinearProgressIndicator(
+                            value: value,
+                            backgroundColor: bgColor,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(fillColor),
+                            minHeight: double.infinity,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        // value != null
+                        //     ? '${(value! * 100).toStringAsFixed(0)}%'
+                        //     : '',
+                        value != null ? '$rawValue%' : '',
+                        style: TextStyle(
+                          fontFamily: labelFont.fontFamily,
+                          fontSize: labelFont.fontSize,
+                          fontWeight: labelFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(labelFont.fontColor),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -207,9 +358,6 @@ class _DeviceFieldPercentageWidgetState
           for (Map<String, dynamic> obj in values) {
             rawValue = obj['p_source']['data'][widget.config.field];
             value = (rawValue! / 100.0).clamp(0.0, 1.0);
-            debugPrint('rawvalue-----> ${rawValue.toString()}');
-            debugPrint('-----------------------------');
-            debugPrint('value-----> ${value.toString()}');
           }
         }
       }

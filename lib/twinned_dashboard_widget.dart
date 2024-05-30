@@ -296,6 +296,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     if (widget.editMode) {
       Widget clickable = InkWell(
+        mouseCursor: SystemMouseCursors.contextMenu,
         onTap: () {
           setState(() {
             selectedRow = rowIndex;
@@ -305,31 +306,6 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
         child: container,
       );
       container = clickable;
-    }
-
-    if (widget.editMode && selectedRow != rowIndex) {
-      Widget stacked = Stack(
-        alignment: Alignment.center,
-        children: [
-          container,
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () {
-                  widget.onRowClicked!(rowIndex, row);
-                },
-                child: const Icon(
-                  Icons.edit,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-      container = stacked;
     }
 
     return container;
@@ -373,7 +349,9 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
           left: child.paddingConfig?.left ?? 0);
     }
 
-    if (null != child.alignment) {
+    if (null != child.alignment &&
+        child.alignment!.alignment !=
+            AlignmentConfigAlignment.swaggerGeneratedUnknown) {
       switch (child.alignment!.alignment) {
         case AlignmentConfigAlignment.swaggerGeneratedUnknown:
         case AlignmentConfigAlignment.center:
@@ -411,6 +389,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     if (widget.editMode) {
       Widget clickable = InkWell(
+        mouseCursor: SystemMouseCursors.contextMenu,
         onTap: () {
           setState(() {
             selectedRow = rowIndex;
@@ -443,25 +422,6 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     if (child.expanded ?? false) {
       Widget expanded = Expanded(flex: child.flex ?? 1, child: container);
       container = expanded;
-    }
-
-    if (widget.editMode && selectedRow != rowIndex && selectedCol != colIndex) {
-      Widget stacked = Stack(
-        alignment: Alignment.center,
-        children: [
-          container,
-          InkWell(
-            onTap: () {
-              widget.onComponentClicked!(rowIndex, colIndex, row, child);
-            },
-            child: const Icon(
-              Icons.edit,
-              color: Colors.red,
-            ),
-          ),
-        ],
-      );
-      container = stacked;
     }
 
     return container;
@@ -552,6 +512,20 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       );
 
       child = scrollable;
+    }
+
+    if (null != screen.bannerImage && screen.bannerImage!.isNotEmpty) {
+      //TODO get height and fit from config
+      Widget banner = TwinImageHelper.getDomainImage(screen.bannerImage!);
+
+      Widget column = Column(
+        children: [
+          banner,
+          Flexible(child: child),
+        ],
+      );
+
+      child = column;
     }
 
     return Scaffold(
