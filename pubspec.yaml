@@ -16,6 +16,8 @@ dependencies:
   search_choices: ^2.2.7
   liquid_progress_indicator_v2: ^0.5.0
   intl: ^0.18.1
+  syncfusion_flutter_datagrid: ^25.2.6
+  syncfusion_flutter_gauges: ^25.2.6
 
   nocode_commons:
     git:
@@ -27,7 +29,7 @@ dependencies:
     git:
       url: https://github.com/boodskap/twinned_models.git
       ref: main
-  syncfusion_flutter_datagrid: ^25.2.6
+
     #  path:
     #    twinned_models
 
