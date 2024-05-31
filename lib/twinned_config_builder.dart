@@ -34,12 +34,14 @@ typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 class TwinnedConfigBuilder extends StatefulWidget {
   final BaseConfig config;
   final Map<String, dynamic> parameters;
+  final Map<String, dynamic> defaultParameters;
   final OnConfigSaved onConfigSaved;
 
   const TwinnedConfigBuilder(
       {super.key,
       required this.config,
       required this.parameters,
+      required this.defaultParameters,
       required this.onConfigSaved});
 
   @override
@@ -53,6 +55,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   @override
   void initState() {
     _parameters.addAll(widget.parameters);
+
     super.initState();
   }
 
