@@ -30,11 +30,14 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
   late Color titleFontColor;
   late FontConfig headerFont;
   late Color headerFontColor;
+  bool isValidConfig = false;
 
   @override
   void initState() {
     var config = widget.config;
-
+    isValidConfig = widget.config.fields.isNotEmpty;
+    isValidConfig = isValidConfig && widget.config.modelIds.isNotEmpty;
+    isValidConfig = isValidConfig && widget.config.fieldLabels.isNotEmpty;
     titleFont = FontConfig.fromJson(config.titleFont);
     titleFontColor =
         titleFont.fontColor <= 0 ? Colors.black : Color(titleFont.fontColor);
@@ -50,6 +53,18 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Wrap(
+        spacing: 8.0,
+        children: [
+          Text(
+            'Not configured properly',
+            style:
+                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+          ),
+        ],
+      );
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
