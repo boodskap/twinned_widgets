@@ -41,9 +41,6 @@ class _TimeStampWidgetState extends BaseState<TimeStampWidget> {
   void initState() {
     super.initState();
     isValidConfig = widget.config.deviceId.isNotEmpty;
-    if (isValidConfig) {
-      load();
-    }
   }
 
   @override
@@ -79,94 +76,105 @@ class _TimeStampWidgetState extends BaseState<TimeStampWidget> {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          height: 200,
-          width: 250,
-          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-          child: Column(
-            children: [
-              Text(
-                formattedDate ?? '',
-                style: TextStyle(
-                  fontSize: yearFont.fontSize,
-                  color: yearFontColor,
-                  fontWeight:
-                      yearFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                  fontFamily: yearFont.fontFamily,
-                ),
-              ),
-              Row(
+        IntrinsicWidth(
+          child: IntrinsicHeight(
+            child: Container(
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
+              child: Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: IntrinsicWidth(
-                      child: IntrinsicHeight(
-                        child: Text(
-                          time ?? '',
-                          style: TextStyle(
-                            fontSize: timeFont.fontSize,
-                            color: timeFontColor,
-                            fontWeight: timeFont.fontBold
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            fontFamily: timeFont.fontFamily,
+                  Row(
+                    children: [
+                      Card(
+                        elevation: 5,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: IntrinsicWidth(
+                            child: IntrinsicHeight(
+                              child: Text(
+                                time ?? '-',
+                                style: TextStyle(
+                                  fontSize: timeFont.fontSize,
+                                  color: timeFontColor,
+                                  fontWeight: timeFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  fontFamily: timeFont.fontFamily,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        meridiem ?? '-',
+                        style: TextStyle(
+                          fontSize: meridiemFont.fontSize,
+                          color: meridiemFontColor,
+                          fontWeight: meridiemFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontFamily: meridiemFont.fontFamily,
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    meridiem ?? '',
-                    style: TextStyle(
-                      fontSize: meridiemFont.fontSize,
-                      color: meridiemFontColor,
-                      fontWeight: meridiemFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontFamily: meridiemFont.fontFamily,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        year ?? '-',
+                        style: TextStyle(
+                          fontSize: yearFont.fontSize,
+                          color: yearFontColor,
+                          fontWeight: yearFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontFamily: yearFont.fontFamily,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        month ?? '-',
+                        style: TextStyle(
+                          fontSize: monthFont.fontSize,
+                          color: monthFontColor,
+                          fontWeight: monthFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontFamily: monthFont.fontFamily,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        date ?? '-',
+                        style: TextStyle(
+                          fontSize: dateFont.fontSize,
+                          color: dateFontColor,
+                          fontWeight: dateFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontFamily: dateFont.fontFamily,
+                        ),
+                      )
+                    ],
                   )
                 ],
               ),
-              Row(
-                children: [
-                  Text(
-                    month ?? '',
-                    style: TextStyle(
-                      fontSize: monthFont.fontSize,
-                      color: monthFontColor,
-                      fontWeight: monthFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontFamily: monthFont.fontFamily,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    date ?? '',
-                    style: TextStyle(
-                      fontSize: dateFont.fontSize,
-                      color: dateFontColor,
-                      fontWeight: dateFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontFamily: dateFont.fontFamily,
-                    ),
-                  )
-                ],
-              )
-            ],
+            ),
           ),
         )
       ],
@@ -188,7 +196,7 @@ class _TimeStampWidgetState extends BaseState<TimeStampWidget> {
         body: EqlSearch(
           source: [],
           conditions: [],
-          size: 100,
+          size: 10,
           queryConditions: [],
           boolConditions: [],
           mustConditions: [
@@ -199,20 +207,26 @@ class _TimeStampWidgetState extends BaseState<TimeStampWidget> {
           sort: {'updatedStamp': 'desc'},
         ),
       );
-
       if (validateResponse(sRes)) {
-        var json = sRes.body!.result! as Map<String, dynamic>;
+        Map<String, dynamic> json = sRes.body!.result! as Map<String, dynamic>;
+        Map<String, dynamic> source = json['hits']['hits'][0]['p_source'];
         int millis;
         if (widget.config.field.isNotEmpty) {
-          millis = json['data'][widget.config.field];
+          millis = source['data'][widget.config.field];
         } else {
-          millis = json['hits']['hits'][0]['p_source']['updatedStamp'];
+          millis = source['updatedStamp'];
         }
         DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millis);
         String formattedDateTime = dateFormat.format(dateTime);
 
         setState(() {
           formattedDate = formattedDateTime;
+          formattedDate = dateFormat.format(dateTime);
+          year = DateFormat('yyyy').format(dateTime);
+          month = DateFormat('MMM').format(dateTime);
+          date = DateFormat('dd').format(dateTime);
+          time = DateFormat('hh:mm').format(dateTime);
+          meridiem = DateFormat('a').format(dateTime);
         });
       }
     });
