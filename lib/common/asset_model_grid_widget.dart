@@ -166,22 +166,23 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
             if (dataSource is Map<dynamic, dynamic>) {
               refresh(sync: () {
                 Map<String, dynamic> dataEntry = {};
+                if (fieldsToCheck.isNotEmpty) {
+                  for (int i = 0; i < fieldsToCheck.length; i++) {
+                    String fieldToCheck = fieldsToCheck[i];
 
-                for (int i = 0; i < fieldsToCheck.length; i++) {
-                  String fieldToCheck = fieldsToCheck[i];
-
-                  if (dataSource.containsKey(fieldToCheck)) {
-                    dataEntry[fieldsLabels[i]] =
-                        dataSource[fieldToCheck].toString();
-                    if (sortingFields.contains(fieldToCheck)) {
-                      matchedSortingFields.add(fieldsLabels[i]);
+                    if (dataSource.containsKey(fieldToCheck)) {
+                      dataEntry[fieldsLabels[i]] =
+                          dataSource[fieldToCheck].toString();
+                      if (sortingFields.contains(fieldToCheck)) {
+                        matchedSortingFields.add(fieldsLabels[i]);
+                      }
+                    } else {
+                      dataEntry[fieldsLabels[i]] = '-';
                     }
-                  } else {
-                    dataEntry[fieldsLabels[i]] = '-';
                   }
-                }
 
-                dataGridSource.add(dataEntry);
+                  dataGridSource.add(dataEntry);
+                }
               });
             }
           }
