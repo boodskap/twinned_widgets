@@ -26,9 +26,18 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
 
   @override
   void initState() {
+     var config = widget.config;
     title = widget.config.title;
     isValidConfig = widget.config.field.isNotEmpty;
     isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
+     font = FontConfig.fromJson(config.font);
+    fontColor =
+        font.fontColor <= 0 ? Colors.black : Color(font.fontColor);
+
+    titleFont = FontConfig.fromJson(config.titleFont);
+    titleFontColor =
+        titleFont.fontColor <= 0 ? Colors.black : Color(titleFont.fontColor);
+
     super.initState();
   }
 
@@ -47,8 +56,7 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
       );
     }
 
-    font = FontConfig.fromJson(widget.config.font);
-    titleFont = FontConfig.fromJson(widget.config.titleFont);
+
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +67,7 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
           child: Text(
             widget.config.title,
             style: TextStyle(
-              color: Color(titleFont.fontColor),
+              color: fontColor,
               fontSize: titleFont.fontSize,
               fontFamily: titleFont.fontFamily,
               fontWeight:
@@ -75,7 +83,7 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
           child: Text(
             value,
             style: TextStyle(
-              color: Color(font.fontColor),
+              color: titleFontColor,
               fontSize: font.fontSize,
               fontFamily: font.fontFamily,
               fontWeight: font.fontBold ? FontWeight.bold : FontWeight.normal,
