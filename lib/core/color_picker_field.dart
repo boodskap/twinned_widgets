@@ -45,6 +45,9 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
     if (null != widget.changeNotifier) {
       widget.changeNotifier!();
     }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _showColorPickerDialog() {
@@ -57,9 +60,7 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
             child: ColorPicker(
               pickerColor: getColor(),
               onColorChanged: (color) {
-                setState(() {
-                  setColor(color);
-                });
+                setColor(color);
               },
               enableAlpha: true,
               displayThumbColor: true,

@@ -34,38 +34,37 @@ class _RangeListState extends State<RangeList> {
           widget.onRangeListSaved(widget.parameters);
         },
         onRangeUpdate: (index) {
+          setState(() {});
           widget.onRangeListSaved(widget.parameters);
         },
       ));
     }
-    return Expanded(
-      child: Column(
-        key: Key(Uuid().v4()),
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      widget.parameters.add(<String, dynamic>{
-                        'from': null,
-                        'to': null,
-                        'label': 'New Segment',
-                        'color': Colors.red.value
-                      });
+    return Column(
+      key: Key(Uuid().v4()),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    widget.parameters.add(<String, dynamic>{
+                      'from': null,
+                      'to': null,
+                      'label': 'New Segment',
+                      'color': Colors.red.value
                     });
-                    widget.onRangeListSaved(widget.parameters);
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.green,
-                  ))
-            ],
-          ),
-          ...children
-        ],
-      ),
+                  });
+                  widget.onRangeListSaved(widget.parameters);
+                },
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.green,
+                ))
+          ],
+        ),
+        ...children
+      ],
     );
   }
 }
@@ -92,97 +91,95 @@ class _RangeState extends State<Range> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              Text(
-                'From',
-                style: labelStyle,
-              ),
-              const SizedBox(
-                width: 5.0,
-              ),
-              DecimalField(
-                parameters: widget.parameters,
-                parameter: 'from',
-                changeNotifier: () {
-                  widget.onRangeUpdate(widget.index);
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            width: 5.0,
-          ),
-          Row(
-            children: [
-              Text(
-                'To',
-                style: labelStyle,
-              ),
-              const SizedBox(
-                width: 5.0,
-              ),
-              DecimalField(
-                parameters: widget.parameters,
-                parameter: 'to',
-                changeNotifier: () {
-                  widget.onRangeUpdate(widget.index);
-                },
-              ),
-            ],
-          ),
-          const SizedBox(
-            width: 5.0,
-          ),
-          Row(
-            children: [
-              Text(
-                'Label',
-                style: labelStyle,
-              ),
-              const SizedBox(
-                width: 5.0,
-              ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(
-                    minWidth: 50, maxWidth: 225, maxHeight: 40),
-                child: ParameterTextField(
-                  parameters: widget.parameters,
-                  parameter: 'label',
-                  changeNotifier: () {
-                    widget.onRangeUpdate(widget.index);
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            width: 5.0,
-          ),
-          ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 100, maxHeight: 40),
-              child: ColorPickerField(
-                config: widget.parameters,
-                parameter: 'color',
-                changeNotifier: () {
-                  widget.onRangeUpdate(widget.index);
-                },
-              )),
-          const SizedBox(
-            width: 5.0,
-          ),
-          IconButton(
-              onPressed: () {
-                widget.onRangeDelete(widget.index);
+    return Row(
+      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          children: [
+            Text(
+              'From',
+              style: labelStyle,
+            ),
+            const SizedBox(
+              width: 5.0,
+            ),
+            DecimalField(
+              parameters: widget.parameters,
+              parameter: 'from',
+              changeNotifier: () {
+                widget.onRangeUpdate(widget.index);
               },
-              icon: const Icon(Icons.delete_forever))
-        ],
-      ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          width: 5.0,
+        ),
+        Row(
+          children: [
+            Text(
+              'To',
+              style: labelStyle,
+            ),
+            const SizedBox(
+              width: 5.0,
+            ),
+            DecimalField(
+              parameters: widget.parameters,
+              parameter: 'to',
+              changeNotifier: () {
+                widget.onRangeUpdate(widget.index);
+              },
+            ),
+          ],
+        ),
+        const SizedBox(
+          width: 5.0,
+        ),
+        Row(
+          children: [
+            Text(
+              'Label',
+              style: labelStyle,
+            ),
+            const SizedBox(
+              width: 5.0,
+            ),
+            ConstrainedBox(
+              constraints: const BoxConstraints(
+                  minWidth: 50, maxWidth: 225, maxHeight: 40),
+              child: ParameterTextField(
+                parameters: widget.parameters,
+                parameter: 'label',
+                changeNotifier: () {
+                  widget.onRangeUpdate(widget.index);
+                },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          width: 5.0,
+        ),
+        ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100, maxHeight: 40),
+            child: ColorPickerField(
+              config: widget.parameters,
+              parameter: 'color',
+              changeNotifier: () {
+                widget.onRangeUpdate(widget.index);
+              },
+            )),
+        const SizedBox(
+          width: 5.0,
+        ),
+        IconButton(
+            onPressed: () {
+              widget.onRangeDelete(widget.index);
+            },
+            icon: const Icon(Icons.delete_forever))
+      ],
     );
   }
 }
