@@ -26,6 +26,9 @@ class _DeviceMultiFieldDialWidgetState
   late String deviceId;
   late List<String> fields;
   Map<String, dynamic> fieldValues = {};
+  late String title;
+  late FontConfig titleFont;
+  late Color titleBgColor;
 
   @override
   void initState() {
@@ -33,6 +36,10 @@ class _DeviceMultiFieldDialWidgetState
     isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
     fields = widget.config.field;
     deviceId = widget.config.deviceId;
+    title = widget.config.title;
+    titleFont = FontConfig.fromJson(widget.config.titleFont);
+    titleBgColor = Color(widget.config.titleBgColor);
+
     super.initState();
 
     // if (isValidConfig) {
@@ -45,29 +52,36 @@ class _DeviceMultiFieldDialWidgetState
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              color: Color(
+                widget.config.titleBgColor,
+              ),
+              child: Text(
+                widget.config.title,
+                style: TextStyle(
+                  fontFamily: titleFont.fontFamily,
+                  fontSize: titleFont.fontSize,
+                  fontWeight:
+                      titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  color: Color(
+                    titleFont.fontColor,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         Expanded(
           flex: 95,
           child: SfRadialGauge(
             axes: _buildRadialAxes(),
           ),
         ),
-        Expanded(
-          flex: 8,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (var field in fields)
-                if (fieldValues.containsKey(field))
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      '$field: ${fieldValues[field]}',
-                      style: labelStyle,
-                    ),
-                  ),
-            ],
-          ),
-        ),
+       
       ],
     );
   }
@@ -110,15 +124,19 @@ class _DeviceMultiFieldDialWidgetState
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
                 verticalAlignment: GaugeAlignment.center,
-                widget: Text(
-                  '$value$label',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                widget: Row(
+                  children: [
+                    Text(
+                      '$value$label',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                angle: 0,
-                positionFactor: 0.9,
+                angle:90,
+                positionFactor: 1,
               ),
             ],
           ),
@@ -150,14 +168,14 @@ class _DeviceMultiFieldDialWidgetState
               }
           ],
         );
-        debugPrint('Query: ${query.toJson()}');
+        // debugPrint('Query: ${query.toJson()}');
 
         var qRes = await TwinnedSession.instance.twin.queryDeviceData(
           apikey: TwinnedSession.instance.authToken,
           body: query,
         );
 
-        debugPrint('Response: ${qRes.body?.toJson()}');
+        // debugPrint('Response: ${qRes.body?.toJson()}');
 
         if (qRes.body != null &&
             qRes.body!.result != null &&
@@ -178,23 +196,13 @@ class _DeviceMultiFieldDialWidgetState
               for (var field in fields) {
                 fieldValues[field] = data[field];
               }
-
-              for (var field in fields) {
-                debugPrint('$field: ${fieldValues[field]}');
-              }
-            } else {
-              debugPrint('No hits found in response.');
             }
-          } else {
-            debugPrint('Failed to parse JSON response.');
           }
-        } else {
-          debugPrint('Failed to validate response: ${qRes.statusCode}');
         }
       });
     } catch (e, stackTrace) {
-      debugPrint('Error loading data: $e');
-      debugPrint('Stack trace: $stackTrace');
+      // debugPrint('Error loading data: $e');
+      // debugPrint('Stack trace: $stackTrace');
     } finally {
       loading = false;
       refresh();
