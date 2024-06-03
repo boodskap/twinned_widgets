@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/progress/progress.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class DeviceFieldPercentageWidget extends StatefulWidget {
   final DeviceFieldPercentageWidgetConfig config;
@@ -21,18 +22,15 @@ class _DeviceFieldPercentageWidgetState
     extends BaseState<DeviceFieldPercentageWidget> {
   late String field;
   late String deviceId;
-  late Color bgColor;
   late Color fillColor;
-  late Color borderColor;
   late Color titleBgColor;
-  late double borderRadius;
-  late double borderWidth;
+  late Color unfillColor;
+  late double circularRadius;
+  late double progressbarWidth;
   late PercentageWidgetShape widgetShape;
-  late Axis waveDirection;
   late FontConfig titleFont;
   late FontConfig labelFont;
-  late bool animate;
-  double? value;
+  dynamic value;
   double? rawValue;
 
   bool isValidConfig = false;
@@ -42,18 +40,14 @@ class _DeviceFieldPercentageWidgetState
     var config = widget.config;
     field = config.field;
     deviceId = config.deviceId;
-    bgColor = Color(config.bgColor);
     fillColor = Color(config.fillColor);
-    borderColor = Color(config.borderColor);
+    unfillColor = Color(config.unfillColor);
     titleBgColor = Color(config.titleBgColor);
-    borderRadius = config.borderRadius;
-    borderWidth = config.borderWidth;
+    circularRadius = config.circularRadius;
+    progressbarWidth = config.progressbarWidth;
     titleFont = FontConfig.fromJson(config.titleFont);
     labelFont = FontConfig.fromJson(config.labelFont);
     widgetShape = config.shape;
-    waveDirection = config.waveDirection;
-    animate = config.animate;
-
     isValidConfig = widget.config.field.isNotEmpty;
     isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
     super.initState();
@@ -76,7 +70,7 @@ class _DeviceFieldPercentageWidgetState
       );
     }
 
-    if (widgetShape == PercentageWidgetShape.rectangle && animate == true) {
+    if (widget.config.shape == PercentageWidgetShape.linear) {
       return Column(
         children: [
           Row(
@@ -85,179 +79,6 @@ class _DeviceFieldPercentageWidgetState
                 child: Container(
                   alignment: Alignment.center,
                   color: titleBgColor,
-                  child: Text(
-                    widget.config.title,
-                    style: TextStyle(
-                      fontFamily: titleFont.fontFamily,
-                      fontSize: titleFont.fontSize,
-                      fontWeight: titleFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(titleFont.fontColor),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: LiquidLinearProgressIndicator(
-              value: value ?? 0.0,
-              valueColor: AlwaysStoppedAnimation(fillColor),
-              backgroundColor: bgColor,
-              borderColor: borderColor,
-              borderWidth: borderWidth,
-              borderRadius: borderRadius,
-              direction: waveDirection,
-              center: Text(
-                value != null ? '$rawValue%' : '',
-                style: TextStyle(
-                    fontFamily: labelFont.fontFamily,
-                    fontSize: labelFont.fontSize,
-                    fontWeight: labelFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: Color(labelFont.fontColor)),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (widgetShape == PercentageWidgetShape.circle && animate == true) {
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  color: titleBgColor,
-                  child: Text(
-                    widget.config.title,
-                    style: TextStyle(
-                      fontFamily: titleFont.fontFamily,
-                      fontSize: titleFont.fontSize,
-                      fontWeight: titleFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(titleFont.fontColor),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1.0,
-              child: LiquidCircularProgressIndicator(
-                value: value ?? 0.0,
-                valueColor: AlwaysStoppedAnimation(fillColor),
-                backgroundColor: bgColor,
-                borderColor: borderColor,
-                borderWidth: borderWidth,
-                direction: waveDirection,
-                center: Text(
-                  value != null ? '$rawValue%' : '',
-                  style: TextStyle(
-                      fontFamily: labelFont.fontFamily,
-                      fontSize: labelFont.fontSize,
-                      fontWeight: labelFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(labelFont.fontColor)),
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (widget.config.shape == PercentageWidgetShape.rectangle &&
-        animate == false) {
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Colors.teal,
-                  child: Text(
-                    widget.config.title,
-                    style: TextStyle(
-                      fontFamily: titleFont.fontFamily,
-                      fontSize: titleFont.fontSize,
-                      fontWeight: titleFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(titleFont.fontColor),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: borderColor, width: borderWidth),
-                borderRadius: BorderRadius.circular(borderRadius),
-              ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: bgColor,
-                        borderRadius: BorderRadius.circular(borderRadius),
-                      ),
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: FractionallySizedBox(
-                      alignment: Alignment.bottomCenter,
-                      heightFactor: value,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.pink,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      value != null ? '$rawValue%' : '',
-                      style: TextStyle(
-                          fontFamily: labelFont.fontFamily,
-                          fontSize: labelFont.fontSize,
-                          fontWeight: labelFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: Color(labelFont.fontColor)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (widget.config.shape == PercentageWidgetShape.circle &&
-        animate == false) {
-      return Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Colors.teal,
                   child: Text(
                     widget.config.title,
                     style: TextStyle(
@@ -275,48 +96,74 @@ class _DeviceFieldPercentageWidgetState
           ),
           Expanded(
             child: Center(
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border:
-                            Border.all(color: borderColor, width: borderWidth),
-                      ),
-                      child: ClipOval(
-                        child: RotatedBox(
-                          quarterTurns: 3,
-                          child: LinearProgressIndicator(
-                            value: value,
-                            backgroundColor: bgColor,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(fillColor),
-                            minHeight: double.infinity,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        // value != null
-                        //     ? '${(value! * 100).toStringAsFixed(0)}%'
-                        //     : '',
-                        value != null ? '$rawValue%' : '',
-                        style: TextStyle(
-                          fontFamily: labelFont.fontFamily,
-                          fontSize: labelFont.fontSize,
-                          fontWeight: labelFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: Color(labelFont.fontColor),
-                        ),
-                      ),
-                    ),
-                  ],
+              child: LinearPercentIndicator(
+                animation: true,
+                lineHeight: progressbarWidth,
+                animationDuration: 2500,
+                percent: value,
+                center: Text(
+                  value != null ? '$rawValue%' : '',
+                  style: TextStyle(
+                      fontFamily: labelFont.fontFamily,
+                      fontSize: labelFont.fontSize,
+                      fontWeight: labelFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(labelFont.fontColor)),
                 ),
+                progressColor: fillColor,
+                backgroundColor: unfillColor,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (widget.config.shape == PercentageWidgetShape.circle) {
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  color: titleBgColor,
+                  child: Text(
+                    widget.config.title,
+                    style: TextStyle(
+                      fontFamily: titleFont.fontFamily,
+                      fontSize: titleFont.fontSize,
+                      fontWeight: titleFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(titleFont.fontColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Center(
+              child: CircularPercentIndicator(
+                radius: circularRadius,
+                lineWidth: progressbarWidth,
+                animation: true,
+                percent: value,
+                center: Text(
+                  value != null ? '$rawValue%' : '',
+                  style: TextStyle(
+                      fontFamily: labelFont.fontFamily,
+                      fontSize: labelFont.fontSize,
+                      fontWeight: labelFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(labelFont.fontColor)),
+                ),
+                circularStrokeCap: CircularStrokeCap.round,
+                progressColor: fillColor,
+                backgroundColor: unfillColor,
               ),
             ),
           ),

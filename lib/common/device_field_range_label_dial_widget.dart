@@ -40,7 +40,7 @@ class _DeviceFieldRangeLabelDialWidgetState
     deviceId = config.deviceId;
     title = config.title;
     titleBgColor = Color(config.titleBgColor);
-    animate = config.animate;
+    animate = config.gaugeAnimate;
     titleFont = FontConfig.fromJson(config.titleFont);
     labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
