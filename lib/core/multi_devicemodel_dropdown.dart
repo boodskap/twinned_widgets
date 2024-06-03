@@ -63,6 +63,7 @@ class _MultiDeviceModelDropdownState
   }
 
   Future<void> _load() async {
+    debugPrint('SELECTED DEVICE MODELS: ${widget.selectedItems}');
     if (widget.selectedItems!.isEmpty) {
       return;
     }
@@ -73,6 +74,7 @@ class _MultiDeviceModelDropdownState
       );
       if (eRes != null && eRes.body != null) {
         setState(() {
+          if (!mounted) return;
           _selectedItems.addAll(eRes.body!.values!);
         });
       }
