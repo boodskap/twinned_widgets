@@ -1,9 +1,11 @@
 import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
+import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
+import 'package:uuid/uuid.dart';
 
 typedef OnFieldsSelected<Parameter> = void Function(List<Parameter> item);
 
@@ -21,13 +23,14 @@ class MultiFieldDropdown extends StatefulWidget {
   State<MultiFieldDropdown> createState() => _MultiFieldDropdownState();
 }
 
-class _MultiFieldDropdownState extends State<MultiFieldDropdown> {
+class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
   final List<twin.Parameter> _allItems = [];
   final List<twin.Parameter> _selectedItems = [];
 
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Parameter>(
+        key: Key(Uuid().v4()),
         searchHint: 'Select Fields',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
@@ -57,13 +60,8 @@ class _MultiFieldDropdownState extends State<MultiFieldDropdown> {
     return items;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
   Future<void> _load() async {
+    _selectedItems.clear();
     try {
       var eRes = await TwinnedSession.instance.twin.listAllParameters(
         apikey: TwinnedSession.instance.authToken,
@@ -82,5 +80,10 @@ class _MultiFieldDropdownState extends State<MultiFieldDropdown> {
     } catch (e, s) {
       debugPrint('$e\n$s');
     }
+  }
+
+  @override
+  void setup() {
+    _load();
   }
 }
