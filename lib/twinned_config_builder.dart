@@ -56,6 +56,13 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   void initState() {
     _parameters.addAll(widget.parameters);
 
+    widget.defaultParameters.forEach((k, v) {
+      if (!_parameters.containsKey(k)) {
+        debugPrint('*ADDING MISSING PARAMETER: $k*');
+        _parameters[k] = v;
+      }
+    });
+
     super.initState();
   }
 
@@ -72,7 +79,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     final Map<String, Widget> fields = {};
     final List<Widget> children = [];
 
-    for (var parameter in widget.parameters.keys) {
+    for (var parameter in _parameters.keys) {
       DataType dataType = widget.config.getDataType(parameter);
       String label = widget.config.getLabel(parameter);
 
