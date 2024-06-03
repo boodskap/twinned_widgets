@@ -50,7 +50,7 @@ class _DecimalFieldState extends BaseState<DecimalField> {
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
           ],
-          onChanged: (value) {
+          onSubmitted: (value) {
             if (value.isEmpty) {
               widget.parameters[widget.parameter] = null;
             } else {
