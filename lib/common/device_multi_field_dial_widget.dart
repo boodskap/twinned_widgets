@@ -22,7 +22,7 @@ class _DeviceMultiFieldDialWidgetState
     extends BaseState<DeviceMultiFieldDialWidget> {
   final TextStyle labelStyle =
       const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-  bool isValidConfig = false;
+  late bool isConfigValid;
   late String deviceId;
   late List<String> fields;
   Map<String, dynamic> fieldValues = {};
@@ -30,25 +30,27 @@ class _DeviceMultiFieldDialWidgetState
   late FontConfig titleFont;
   late Color titleBgColor;
 
-  @override
-  void initState() {
-    isValidConfig = widget.config.field.isNotEmpty;
-    isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
+  void _initState() {
     fields = widget.config.field;
     deviceId = widget.config.deviceId;
     title = widget.config.title;
     titleFont = FontConfig.fromJson(widget.config.titleFont);
     titleBgColor = Color(widget.config.titleBgColor);
-
-    super.initState();
-
-    // if (isValidConfig) {
-    //   load();
-    // }
+    isConfigValid = fields.isNotEmpty &&
+        deviceId.isNotEmpty &&
+        (widget.config.field.length == widget.config.ranges.length);
   }
 
   @override
   Widget build(BuildContext context) {
+    _initState();
+    if (!isConfigValid) {
+      return const Center(
+          child: Text(
+        'Not configured properly',
+        style: TextStyle(color: Colors.red),
+      ));
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -81,7 +83,6 @@ class _DeviceMultiFieldDialWidgetState
             axes: _buildRadialAxes(),
           ),
         ),
-       
       ],
     );
   }
@@ -95,20 +96,21 @@ class _DeviceMultiFieldDialWidgetState
 
     for (int i = 0; i < numFields; i++) {
       var field = fields[i];
+      Range range = Range.fromJson(widget.config.ranges[i]);
       if (fieldValues.containsKey(field)) {
         var value = fieldValues[field] ?? 0.0;
-        double minValue = (value - 20 < 0) ? 0 : value - 20;
-        double maxValue = value + 20;
-        var label = field == 'temperature_value' ? '°C' : '';
+        double minValue = range.from ?? 0;
+        double maxValue = range.to ?? 100;
+        var label = range.label;
 
         axes.add(
           RadialAxis(
             minimum: minValue,
             maximum: maxValue,
             radiusFactor: 0.1 + (i * spacingFactor),
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 5,
-              color: Colors.blue,
+              color: Color(range.color ?? Colors.black.value),
             ),
             pointers: <GaugePointer>[
               NeedlePointer(
@@ -135,7 +137,7 @@ class _DeviceMultiFieldDialWidgetState
                     ),
                   ],
                 ),
-                angle:90,
+                angle: 90,
                 positionFactor: 1,
               ),
             ],
@@ -147,7 +149,8 @@ class _DeviceMultiFieldDialWidgetState
   }
 
   Future<void> load() async {
-    if (!isValidConfig) return;
+    _initState();
+    if (!isConfigValid) return;
 
     if (loading) return;
     loading = true;
@@ -161,11 +164,7 @@ class _DeviceMultiFieldDialWidgetState
           mustConditions: [
             {
               "match_phrase": {"deviceId": deviceId}
-            },
-            for (var field in fields)
-              {
-                "exists": {"field": "data.$field"}
-              }
+            }
           ],
         );
         // debugPrint('Query: ${query.toJson()}');
@@ -194,7 +193,7 @@ class _DeviceMultiFieldDialWidgetState
                   source['data'] as Map<String, dynamic>;
 
               for (var field in fields) {
-                fieldValues[field] = data[field];
+                fieldValues[field] = data[field] ?? 0.0;
               }
             }
           }

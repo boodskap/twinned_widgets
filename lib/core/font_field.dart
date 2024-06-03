@@ -128,7 +128,7 @@ class _FontFieldState extends BaseState<FontField> {
                   max: 50,
                   value: getFontSize(),
                   showCursor: true,
-                  autofocus: true,
+                  autofocus: false,
                   onChanged: _updateFontSize,
                 ),
               ),
