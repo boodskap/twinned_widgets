@@ -41,7 +41,7 @@ class _ParameterTextFieldState extends State<ParameterTextField> {
     return TextField(
       decoration: const InputDecoration(border: OutlineInputBorder()),
       controller: _controller,
-      onChanged: (value) {
+      onSubmitted: (value) {
         widget.parameters[widget.parameter] = value;
         if (null != widget.changeNotifier) {
           widget.changeNotifier!();
