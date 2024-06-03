@@ -35,7 +35,7 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name} ID:${item.id}');
+          return Text('${item.name}');
         },
         itemIdFunc: (item) {
           return item.id;
@@ -70,6 +70,7 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
       );
       if (eRes != null && eRes.body != null) {
         setState(() {
+          if (!mounted) return;
           _selectedItems.addAll(eRes.body!.values!);
         });
       }

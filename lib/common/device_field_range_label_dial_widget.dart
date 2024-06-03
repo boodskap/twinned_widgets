@@ -66,6 +66,36 @@ class _DeviceFieldRangeLabelDialWidgetState
         ),
       );
     }
+    List<GaugeRange> ranges = [];
+    int i = 0;
+    late Range begin;
+    late Range end;
+    for (dynamic val in widget.config.ranges) {
+      Range range = Range.fromJson(val);
+      if (i == 0) {
+        begin = range;
+      }
+      end = range;
+      ++i;
+      ranges.add(
+        GaugeRange(
+          labelStyle: GaugeTextStyle(
+            fontFamily: labelFont.fontFamily,
+            color: Color(labelFont.fontColor),
+            fontSize: labelFont.fontSize,
+            fontWeight:
+                labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          ),
+          startWidth: 50,
+          endWidth: 50,
+          startValue: range.from ?? double.minPositive,
+          endValue: range.to ?? double.maxFinite,
+          color: Color(range.color ?? Colors.black.value),
+          label: range.label,
+        ),
+      );
+    }
+
     return Center(
       child: SfRadialGauge(
         enableLoadingAnimation: animate,
@@ -106,59 +136,13 @@ class _DeviceFieldRangeLabelDialWidgetState
               ),
             ],
             axisLineStyle: const AxisLineStyle(
-              thickness: 100,
+              thickness: 60,
             ),
-            minimum: 0,
-            maximum: 100,
+            minimum: begin.from ?? 0,
+            maximum: end.to ?? 100,
             showLabels: true,
             radiusFactor: 0.9,
-            ranges: [
-              GaugeRange(
-                labelStyle: GaugeTextStyle(
-                  fontFamily: labelFont.fontFamily,
-                  color: Color(labelFont.fontColor),
-                  fontSize: labelFont.fontSize,
-                  fontWeight:
-                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                ),
-                startWidth: 100,
-                endWidth: 100,
-                startValue: 0,
-                endValue: 40,
-                color: Colors.green,
-                label: 'Low',
-              ),
-              GaugeRange(
-                labelStyle: GaugeTextStyle(
-                  fontFamily: labelFont.fontFamily,
-                  color: Color(labelFont.fontColor),
-                  fontSize: labelFont.fontSize,
-                  fontWeight:
-                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                ),
-                startWidth: 100,
-                endWidth: 100,
-                startValue: 40,
-                endValue: 70,
-                color: Colors.yellow,
-                label: 'Medium',
-              ),
-              GaugeRange(
-                labelStyle: GaugeTextStyle(
-                  fontFamily: labelFont.fontFamily,
-                  color: Color(labelFont.fontColor),
-                  fontSize: labelFont.fontSize,
-                  fontWeight:
-                      labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                ),
-                startWidth: 100,
-                endWidth: 100,
-                startValue: 70,
-                endValue: 100,
-                color: Colors.red,
-                label: 'High',
-              ),
-            ],
+            ranges: ranges,
           ),
         ],
       ),

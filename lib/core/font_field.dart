@@ -101,50 +101,46 @@ class _FontFieldState extends BaseState<FontField> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            IntrinsicWidth(
-              child: ElevatedButton(
-                onPressed: _showColorPickerDialog,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: getColor(),
-                ),
-                child: const Text(
-                  'Pick Color',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+    return Row(
+      children: [
+        IntrinsicWidth(
+          child: ElevatedButton(
+            onPressed: _showColorPickerDialog,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: getColor(),
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
             ),
-            const SizedBox(width: 10),
-            SizedBox(
-              height: 35,
-              child: IntrinsicWidth(
-                child: SpinBox(
-                  min: 4,
-                  max: 50,
-                  value: getFontSize(),
-                  showCursor: true,
-                  autofocus: true,
-                  onChanged: _updateFontSize,
-                ),
-              ),
+            child: const Text(
+              'Pick Color',
+              style: TextStyle(color: Colors.white),
             ),
-            const SizedBox(width: 10),
-            IntrinsicWidth(
-              child: IconButton(
-                icon: Icon(isBold()
-                    ? Icons.font_download_sharp
-                    : Icons.font_download_outlined),
-                onPressed: _toggleBold,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        const SizedBox(width: 10),
+        SizedBox(
+          height: 35,
+          child: IntrinsicWidth(
+            child: SpinBox(
+              min: 4,
+              max: 50,
+              value: getFontSize(),
+              showCursor: true,
+              autofocus: false,
+              onChanged: _updateFontSize,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        IntrinsicWidth(
+          child: IconButton(
+            icon: Icon(isBold()
+                ? Icons.font_download_sharp
+                : Icons.font_download_outlined),
+            onPressed: _toggleBold,
+          ),
+        ),
+      ],
     );
   }
 

@@ -32,12 +32,12 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
   late Color headerFontColor;
   bool isValidConfig = false;
 
-  @override
-  void initState() {
+  void _initState() {
     var config = widget.config;
-    isValidConfig = widget.config.fields.isNotEmpty;
-    isValidConfig = isValidConfig && widget.config.modelIds.isNotEmpty;
-    isValidConfig = isValidConfig && widget.config.fieldLabels.isNotEmpty;
+    isValidConfig = widget.config.fields.isNotEmpty &&
+        widget.config.modelIds.isNotEmpty &&
+        widget.config.fieldLabels.isNotEmpty &&
+        widget.config.fields.length == widget.config.fieldLabels.length;
     titleFont = FontConfig.fromJson(config.titleFont);
     titleFontColor =
         titleFont.fontColor <= 0 ? Colors.black : Color(titleFont.fontColor);
@@ -47,24 +47,21 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
 
     sortingFields = widget.config.sortingFields;
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _initState();
+
     if (!isValidConfig) {
-      return const Wrap(
-        spacing: 8.0,
-        children: [
-          Text(
-            'Not configured properly',
-            style:
-                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
-          ),
-        ],
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+        ),
       );
     }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,6 +129,10 @@ class _AssetModelGridWidgetState extends BaseState<AssetModelGridWidget> {
   }
 
   Future _load() async {
+    _initState();
+
+    if (!isValidConfig) return;
+
     if (loading) return;
     loading = true;
 

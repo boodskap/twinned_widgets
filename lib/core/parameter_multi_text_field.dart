@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:twinned_widgets/core/definitions.dart';
 
-class ParameterTextField extends StatefulWidget {
+class ParameterMultiTextField extends StatefulWidget {
   final Map<String, dynamic> parameters;
   final String parameter;
   final ValueChangeNotifier? changeNotifier;
 
-  const ParameterTextField(
+  const ParameterMultiTextField(
       {super.key,
       required this.parameters,
       required this.parameter,
       this.changeNotifier});
 
   @override
-  State<ParameterTextField> createState() => _ParameterTextFieldState();
+  State<ParameterMultiTextField> createState() =>
+      _ParameterMultiTextFieldState();
 }
 
-class _ParameterTextFieldState extends State<ParameterTextField> {
+class _ParameterMultiTextFieldState extends State<ParameterMultiTextField> {
   final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
-    dynamic value = widget.parameters[widget.parameter] ?? '';
     try {
-      _controller.text = widget.parameters[widget.parameter] ?? '';
+      List<dynamic> value = widget.parameters[widget.parameter] ?? [];
+      _controller.text = value.join(',');
     } catch (e, s) {
       debugPrint('$e\n$s');
     }
@@ -38,11 +39,15 @@ class _ParameterTextFieldState extends State<ParameterTextField> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Building Multi Text Field');
     return TextField(
       decoration: const InputDecoration(border: OutlineInputBorder()),
       controller: _controller,
+      //maxLines: 2,
       onSubmitted: (value) {
-        widget.parameters[widget.parameter] = value;
+        List<String> list = value.split(',');
+        debugPrint('OnSubmitted: $list');
+        widget.parameters[widget.parameter] = list;
         if (null != widget.changeNotifier) {
           widget.changeNotifier!();
         }
