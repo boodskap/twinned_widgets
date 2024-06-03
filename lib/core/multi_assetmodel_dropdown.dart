@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
+import 'package:uuid/uuid.dart';
 
 typedef OnAssetModelsSelected<AssetModel> = void Function(
     List<AssetModel> item);
@@ -21,12 +23,13 @@ class MultiAssetModelDropdown extends StatefulWidget {
       _MultiAssetModelDropdownState();
 }
 
-class _MultiAssetModelDropdownState extends State<MultiAssetModelDropdown> {
+class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
   final List<twin.AssetModel> _selectedItems = [];
 
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.AssetModel>(
+        key: Key(Uuid().v4()),
         searchHint: 'Select Asset Models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
@@ -34,7 +37,7 @@ class _MultiAssetModelDropdownState extends State<MultiAssetModelDropdown> {
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name} ID:${item.id}');
+          return Text('${item.name}');
         },
         itemIdFunc: (item) {
           return item.id;
@@ -58,13 +61,8 @@ class _MultiAssetModelDropdownState extends State<MultiAssetModelDropdown> {
     return items;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
   Future<void> _load() async {
+    debugPrint('SELECTED ASSET MODELS: ${widget.selectedItems}');
     if (widget.selectedItems.isEmpty) {
       return;
     }
@@ -75,11 +73,17 @@ class _MultiAssetModelDropdownState extends State<MultiAssetModelDropdown> {
       );
       if (eRes != null && eRes.body != null) {
         setState(() {
+          if (!mounted) return;
           _selectedItems.addAll(eRes.body!.values!);
         });
       }
     } catch (e, s) {
       debugPrint('$e\n$s');
     }
+  }
+
+  @override
+  void setup() {
+    _load();
   }
 }

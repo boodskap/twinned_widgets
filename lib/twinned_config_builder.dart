@@ -24,6 +24,7 @@ import 'package:twinned_widgets/core/multi_field_dropdown.dart';
 import 'package:twinned_widgets/core/multi_floor_dropdown.dart';
 import 'package:twinned_widgets/core/multi_premise_dropdown.dart';
 import 'package:twinned_widgets/core/number_field.dart';
+import 'package:twinned_widgets/core/parameter_multi_text_field.dart';
 import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
 import 'package:twinned_widgets/core/range_list.dart';
@@ -126,8 +127,10 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       children.add(Row(
         children: [
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Text(
+              maxLines: 4,
+              overflow: TextOverflow.visible,
               key,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -166,7 +169,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
               message: 'Save',
               child: IconButton(
                 onPressed: () async {
-                  await _save();
+                  _save();
                 },
                 icon: const Icon(Icons.save),
               ),
@@ -301,10 +304,8 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
     if (widget.config.getHintType(parameter) == HintType.none) {
       controller = TextEditingController();
-      List<String>? paramValue = _parameters[parameter];
-      if (null != paramValue) {
-        controller.text = paramValue!.join(',');
-      }
+      List<dynamic> paramValue = _parameters[parameter] ?? [];
+      controller.text = paramValue!.join(',');
       _controllers.add(controller!);
     }
 
@@ -358,17 +359,12 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       default:
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: controller,
-            maxLines: 4, //or null
-            decoration:
-                const InputDecoration.collapsed(hintText: "Comma Separated"),
-            onSubmitted: (value) {
-              _parameters[parameter] = value.split(',');
-            },
-          ),
+        return ParameterMultiTextField(
+          parameters: _parameters,
+          parameter: parameter,
+          changeNotifier: () {
+            debugPrint('VALUES: ${_parameters[parameter]}');
+          },
         );
     }
   }
@@ -408,14 +404,16 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   @override
   void setup() {}
 
-  Future _save() async {
+  void _save() {
     bool valid = true;
 
+    debugPrint('*** SAVING ***');
     _parameters.forEach((parameter, value) {
       bool required = widget.config.isRequired(parameter);
       dynamic value = _parameters[parameter];
 
       if (required && null == value) {
+        valid = false;
         alert('Missing', '$parameter is required');
         return;
       }
@@ -432,9 +430,16 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             break;
           case DataType.numeric:
           case DataType.decimal:
-          case DataType.yesno:
-          case DataType.font:
+            if (value is! num) {
+              valid = false;
+              alert('Invalid', '$parameter must be a number');
+            }
             break;
+          case DataType.yesno:
+            if (value is! bool) {
+              valid = false;
+              alert('Invalid', '$parameter must be a boolean');
+            }
           case DataType.enumerated:
           case DataType.listOfTexts:
           case DataType.listOfNumbers:
@@ -442,9 +447,11 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           case DataType.listOfRanges:
             List<dynamic> values = value;
             if (values.isEmpty) {
+              valid = false;
               alert('Invalid', '$parameter can not be an empty array');
             }
             break;
+          case DataType.font:
           case DataType.none:
             break;
         }
@@ -452,8 +459,10 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     });
 
     if (valid) {
-      widget.onConfigSaved(_parameters);
       Navigator.pop(context);
+      widget.onConfigSaved(_parameters);
     }
+
+    debugPrint('** SAVING DONE **');
   }
 }
