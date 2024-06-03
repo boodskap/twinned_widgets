@@ -18,6 +18,7 @@ dependencies:
   intl: ^0.18.1
   syncfusion_flutter_datagrid: ^25.2.6
   syncfusion_flutter_gauges: ^25.2.6
+  percent_indicator: ^4.2.3
 
   nocode_commons:
     git:
