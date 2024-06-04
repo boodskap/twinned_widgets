@@ -37,7 +37,7 @@ class _DeviceMultiFieldDialWidgetState
   late double angle;
 
   void _initState() {
-    fields = widget.config.fields;
+    fields = widget.config.field;
     deviceId = widget.config.deviceId;
     title = widget.config.title;
     titleFont = FontConfig.fromJson(widget.config.titleFont);
@@ -50,7 +50,7 @@ class _DeviceMultiFieldDialWidgetState
     needleLength = widget.config.needleLength;
     isConfigValid = fields.isNotEmpty &&
         deviceId.isNotEmpty &&
-        (widget.config.fields.length == widget.config.ranges.length);
+        (widget.config.field.length == widget.config.ranges.length);
   }
 
   @override
