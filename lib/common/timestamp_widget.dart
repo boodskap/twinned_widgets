@@ -39,8 +39,8 @@ class _TimeStampWidgetState extends BaseState<TimeStampWidget> {
 
   @override
   void initState() {
-    super.initState();
     isValidConfig = widget.config.deviceId.isNotEmpty;
+    super.initState();
   }
 
   @override

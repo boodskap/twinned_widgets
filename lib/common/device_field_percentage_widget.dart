@@ -239,7 +239,7 @@ class DeviceFieldPercentageWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.stacked_line_chart);
+    return const Icon(Icons.data_usage);
   }
 
   @override
