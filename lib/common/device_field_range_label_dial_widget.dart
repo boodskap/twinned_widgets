@@ -70,8 +70,7 @@ class _DeviceFieldRangeLabelDialWidgetState
       positionFactor = 0;
     }
 
-    isValidConfig = isValidConfig && deviceId.isNotEmpty;
-    isValidConfig = field.isNotEmpty;
+    isValidConfig = isValidConfig && deviceId.isNotEmpty && field.isNotEmpty;
     super.initState();
   }
 
@@ -229,7 +228,7 @@ class _DeviceFieldRangeLabelDialWidgetState
 
             if (hits.isNotEmpty) {
               Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-              
+
               value = obj['p_source']['data'][widget.config.field];
               // debugPrint(value.toString());
             } else {
