@@ -35,6 +35,7 @@ class _DeviceMultiFieldDialWidgetState
   late double axisThickness;
   late double needleLength;
   late double angle;
+  late bool gaugeAnimate;
 
   void _initState() {
     fields = widget.config.field;
@@ -48,6 +49,7 @@ class _DeviceMultiFieldDialWidgetState
     axisThickness = widget.config.axisThickness;
     angle = widget.config.angle;
     needleLength = widget.config.needleLength;
+    gaugeAnimate = widget.config.gaugeAnimate;
     isConfigValid = fields.isNotEmpty &&
         deviceId.isNotEmpty &&
         (widget.config.field.length == widget.config.ranges.length);
@@ -124,7 +126,7 @@ class _DeviceMultiFieldDialWidgetState
             pointers: <GaugePointer>[
               NeedlePointer(
                 value: value,
-                enableAnimation: true,
+                enableAnimation: gaugeAnimate,
                 animationDuration: 1000,
                 needleStartWidth: 1,
                 needleEndWidth: 5,
@@ -139,11 +141,12 @@ class _DeviceMultiFieldDialWidgetState
                     Text(
                       '$value  $labelField',
                       style: TextStyle(
-                          fontSize: labelFont.fontSize,
-                          fontWeight: labelFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: Color(range.color ?? Colors.black.value)),
+                        fontSize: labelFont.fontSize,
+                        fontWeight: labelFont.fontBold
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: Color(range.color ?? Colors.black.value),
+                      ),
                     ),
                   ],
                 ),
@@ -210,7 +213,7 @@ class _DeviceMultiFieldDialWidgetState
           }
         }
       });
-    } catch (e, stackTrace) {
+    } catch (e) {
       // debugPrint('Error loading data: $e');
       // debugPrint('Stack trace: $stackTrace');
     } finally {
