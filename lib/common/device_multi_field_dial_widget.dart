@@ -28,14 +28,26 @@ class _DeviceMultiFieldDialWidgetState
   Map<String, dynamic> fieldValues = {};
   late String title;
   late FontConfig titleFont;
+  late FontConfig labelFont;
   late Color titleBgColor;
+  late double positionFactor;
+  late double radiusFactor;
+  late double axisThickness;
+  late double needleLength;
+  late double angle;
 
   void _initState() {
     fields = widget.config.field;
     deviceId = widget.config.deviceId;
     title = widget.config.title;
     titleFont = FontConfig.fromJson(widget.config.titleFont);
+    labelFont = FontConfig.fromJson(widget.config.labelFont);
     titleBgColor = Color(widget.config.titleBgColor);
+    positionFactor = widget.config.positionFactor;
+    radiusFactor = widget.config.radiusFactor;
+    axisThickness = widget.config.axisThickness;
+    angle = widget.config.angle;
+    needleLength = widget.config.needleLength;
     isConfigValid = fields.isNotEmpty &&
         deviceId.isNotEmpty &&
         (widget.config.field.length == widget.config.ranges.length);
@@ -78,7 +90,6 @@ class _DeviceMultiFieldDialWidgetState
           ],
         ),
         Expanded(
-          flex: 95,
           child: SfRadialGauge(
             axes: _buildRadialAxes(),
           ),
@@ -91,25 +102,23 @@ class _DeviceMultiFieldDialWidgetState
     List<RadialAxis> axes = [];
 
     int numFields = fields.length;
-
-    double spacingFactor = 0.8 / numFields;
+    double spacingFactor = 0.7 / numFields;
 
     for (int i = 0; i < numFields; i++) {
       var field = fields[i];
       Range range = Range.fromJson(widget.config.ranges[i]);
       if (fieldValues.containsKey(field)) {
         var value = fieldValues[field] ?? 0.0;
-        double minValue = range.from ?? 0;
-        double maxValue = range.to ?? 100;
-        var label = range.label;
-
+        double minValue = (value - 20 < 0) ? 0 : value - 20;
+        double maxValue = value + 20;
+        var labelField = range.label;
         axes.add(
           RadialAxis(
             minimum: minValue,
             maximum: maxValue,
-            radiusFactor: 0.1 + (i * spacingFactor),
+            radiusFactor: radiusFactor + (i * spacingFactor),
             axisLineStyle: AxisLineStyle(
-              thickness: 5,
+              thickness: axisThickness,
               color: Color(range.color ?? Colors.black.value),
             ),
             pointers: <GaugePointer>[
@@ -119,26 +128,28 @@ class _DeviceMultiFieldDialWidgetState
                 animationDuration: 1000,
                 needleStartWidth: 1,
                 needleEndWidth: 5,
-                needleLength: 0.8,
+                needleLength: needleLength,
                 knobStyle: const KnobStyle(knobRadius: 0.09),
               ),
             ],
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
-                verticalAlignment: GaugeAlignment.center,
-                widget: Row(
+                widget: Column(
                   children: [
                     Text(
-                      '$value$label',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      '$value  $labelField',
+                      style: TextStyle(
+                          fontSize: labelFont.fontSize,
+                          fontWeight: labelFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(range.color ?? Colors.black.value)),
                     ),
                   ],
                 ),
-                angle: 90,
-                positionFactor: 1,
+                angle: angle,
+                positionFactor: positionFactor,
+                verticalAlignment: GaugeAlignment.near,
               ),
             ],
           ),
