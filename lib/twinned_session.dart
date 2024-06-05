@@ -9,11 +9,9 @@ class TwinnedSession {
   }
 
   Future _load() async {
-    await dotenv.load(fileName: 'settings.txt');
-
-    var session = SessionManager();
-
-    await session.update();
+    //await dotenv.load(fileName: 'settings.txt');
+    //var session = SessionManager();
+    //await session.update();
   }
 
   void init(

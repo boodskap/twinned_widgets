@@ -13,6 +13,7 @@ class TwinnedDashboardWidget extends StatefulWidget {
   final DashboardScreen? screen;
   final String? screenId;
   final bool editMode;
+  final bool popupMode;
   final int? selectedRow;
   final int? selectedCol;
   final OnRowClicked? onRowClicked;
@@ -23,6 +24,7 @@ class TwinnedDashboardWidget extends StatefulWidget {
       this.screen,
       this.screenId,
       this.editMode = false,
+      this.popupMode = false,
       this.selectedRow,
       this.selectedCol,
       this.onRowClicked,
@@ -139,13 +141,13 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
           case ImageFitConfigFit.fill:
             fit = BoxFit.fill;
             break;
-          case ImageFitConfigFit.fitheight:
+          case ImageFitConfigFit.fitHeight:
             fit = BoxFit.fitHeight;
             break;
-          case ImageFitConfigFit.fitwidth:
+          case ImageFitConfigFit.fitWidth:
             fit = BoxFit.fitWidth;
             break;
-          case ImageFitConfigFit.scaledown:
+          case ImageFitConfigFit.scaleDown:
             fit = BoxFit.scaleDown;
             break;
         }
@@ -516,11 +518,42 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     if (null != screen.bannerImage && screen.bannerImage!.isNotEmpty) {
       //TODO get height and fit from config
-      Widget banner = TwinImageHelper.getDomainImage(screen.bannerImage!);
+      BoxFit fit = BoxFit.contain;
+
+      if (null != screen.bannerImageFit) {
+        switch (screen.bannerImageFit!.fit) {
+          case ImageFitConfigFit.swaggerGeneratedUnknown:
+          case ImageFitConfigFit.none:
+          case ImageFitConfigFit.contain:
+            fit = BoxFit.contain;
+            break;
+          case ImageFitConfigFit.cover:
+            fit = BoxFit.cover;
+            break;
+          case ImageFitConfigFit.fill:
+            fit = BoxFit.fill;
+            break;
+          case ImageFitConfigFit.fitHeight:
+            fit = BoxFit.fitHeight;
+            break;
+          case ImageFitConfigFit.fitWidth:
+            fit = BoxFit.fitWidth;
+            break;
+          case ImageFitConfigFit.scaleDown:
+            fit = BoxFit.scaleDown;
+            break;
+        }
+      }
+
+      Widget banner =
+          TwinImageHelper.getDomainImage(screen.bannerImage!, fit: fit);
 
       Widget column = Column(
         children: [
-          banner,
+          SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: screen.bannerHeight ?? 100,
+              child: banner),
           Flexible(child: child),
         ],
       );
@@ -530,7 +563,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     Widget? floating;
 
-    if (widget.editMode) {
+    if (widget.popupMode) {
       floating = IconButton(
           onPressed: () {},
           icon: const Icon(
@@ -549,8 +582,10 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
     );
   }
 
-  void apply(DashboardScreen screen) {
+  void apply(DashboardScreen screen, int? selectedRow, int? selectedCol) {
     setState(() {
+      this.selectedRow = selectedRow;
+      this.selectedCol = selectedCol;
       _screen = screen;
     });
   }

@@ -34,7 +34,10 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
         searchHint: 'Select Fields',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onFieldsSelected(selectedItems as List<twin.Parameter>);
+          List<twin.Parameter> parameters =
+              selectedItems as List<twin.Parameter>;
+          debugPrint('PARAMETERS: $parameters');
+          widget.onFieldsSelected(parameters);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
