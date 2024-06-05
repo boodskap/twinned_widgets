@@ -62,6 +62,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                   super.alertDialog(
                       title: '',
                       body: TwinnedConfigBuilder(
+                          verbose: true,
                           config: TotalValueWidgetConfig(),
                           parameters: TotalValueWidgetConfig().toJson(),
                           defaultParameters: TotalValueWidgetConfig().toJson(),
