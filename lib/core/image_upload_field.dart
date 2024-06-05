@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:nocode_commons/util/nocode_utils.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twinned_api/twinned_api.dart' as twin;
 
 class ImageUploadField extends StatefulWidget {
   final Map<String, dynamic> config;
@@ -29,7 +30,7 @@ class _ImageUploadFieldState extends BaseState<ImageUploadField> {
       spacing: 10.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        if (null != imageId)
+        if (imageId?.isNotEmpty ?? false)
           SizedBox(
               width: 100,
               height: 100,
@@ -45,16 +46,16 @@ class _ImageUploadFieldState extends BaseState<ImageUploadField> {
 
   Future _upload() async {
     await execute(() async {
-      var res = await TwinImageHelper.uploadDomainImage();
+      twin.ImageFileEntityRes? res = await TwinImageHelper.uploadDomainImage();
       if (null == res) {
         return null;
       }
-      if (res!.ok) {
-        alert('Upload Failed', 'Unknown failure');
-      } else {
+      if (res?.ok ?? false) {
         setState(() {
-          widget.config[widget.parameter] = res!.entity!.id!;
+          widget.config[widget.parameter] = res?.entity?.id;
         });
+      } else {
+        alert('Upload Failed', 'Unknown failure');
       }
     });
   }
