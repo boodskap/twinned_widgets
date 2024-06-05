@@ -100,7 +100,7 @@ class _DeviceFieldPercentageWidgetState
                 animation: true,
                 lineHeight: progressbarWidth,
                 animationDuration: 2500,
-                percent: value,
+                percent: value ?? 0.0,
                 center: Text(
                   value != null ? '$rawValue%' : '',
                   style: TextStyle(
@@ -150,7 +150,7 @@ class _DeviceFieldPercentageWidgetState
                 radius: circularRadius,
                 lineWidth: progressbarWidth,
                 animation: true,
-                percent: value,
+                percent: value ?? 0.0,
                 center: Text(
                   value != null ? '$rawValue%' : '',
                   style: TextStyle(
@@ -204,6 +204,11 @@ class _DeviceFieldPercentageWidgetState
         if (values.isNotEmpty) {
           for (Map<String, dynamic> obj in values) {
             rawValue = obj['p_source']['data'][widget.config.field];
+            if (rawValue! < 0) {
+              rawValue = 0;
+            } else if (rawValue! > 100) {
+              rawValue = 100;
+            }
             value = (rawValue! / 100.0).clamp(0.0, 1.0);
           }
         }
@@ -234,7 +239,7 @@ class DeviceFieldPercentageWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.stacked_line_chart);
+    return const Icon(Icons.data_usage);
   }
 
   @override

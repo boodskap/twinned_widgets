@@ -28,7 +28,16 @@ class _DeviceFieldRangeLabelDialWidgetState
   late FontConfig labelFont;
   late FontConfig valueFont;
   late Color titleBgColor;
-  late bool animate;
+  late bool gaugeAnimate;
+  late double positionFactor;
+  late double radiusFactor;
+  late double dialStartWidth;
+  late double dialEndWidth;
+  late double angle;
+  late double axisThickness;
+  late bool showLabel;
+  String selectedFieldName = '';
+
   dynamic temperatureValue;
   dynamic volume;
   dynamic value;
@@ -40,13 +49,28 @@ class _DeviceFieldRangeLabelDialWidgetState
     deviceId = config.deviceId;
     title = config.title;
     titleBgColor = Color(config.titleBgColor);
-    animate = config.gaugeAnimate;
+    gaugeAnimate = config.gaugeAnimate;
+    positionFactor = config.positionFactor;
+    radiusFactor = config.radiusFactor;
+    dialStartWidth = config.dialStartWidth;
+    dialEndWidth = config.dialEndWidth;
+    axisThickness = config.axisThickness;
+    angle = config.angle;
+    showLabel = config.showLabel;
     titleFont = FontConfig.fromJson(config.titleFont);
     labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
 
-    isValidConfig = isValidConfig && deviceId.isNotEmpty;
-    isValidConfig = field.isNotEmpty;
+    if (radiusFactor > 1 && positionFactor > 1) {
+      radiusFactor = 1;
+      positionFactor = 1;
+    }
+    if (radiusFactor < 0 && positionFactor < 0) {
+      radiusFactor = 0;
+      positionFactor = 0;
+    }
+
+    isValidConfig = isValidConfig && deviceId.isNotEmpty && field.isNotEmpty;
     super.initState();
   }
 
@@ -86,8 +110,8 @@ class _DeviceFieldRangeLabelDialWidgetState
             fontWeight:
                 labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
           ),
-          startWidth: 50,
-          endWidth: 50,
+          startWidth: dialStartWidth,
+          endWidth: dialEndWidth,
           startValue: range.from ?? double.minPositive,
           endValue: range.to ?? double.maxFinite,
           color: Color(range.color ?? Colors.black.value),
@@ -98,7 +122,7 @@ class _DeviceFieldRangeLabelDialWidgetState
 
     return Center(
       child: SfRadialGauge(
-        enableLoadingAnimation: animate,
+        enableLoadingAnimation: gaugeAnimate,
         title: GaugeTitle(
           backgroundColor: titleBgColor,
           text: title,
@@ -114,34 +138,50 @@ class _DeviceFieldRangeLabelDialWidgetState
           RadialAxis(
             pointers: [
               NeedlePointer(
-                enableAnimation: animate,
+                enableAnimation: gaugeAnimate,
                 value: value ?? 0.0,
               )
             ],
             annotations: [
               GaugeAnnotation(
-                widget: Text(
-                  value != null ? '$value' : '-',
-                  style: TextStyle(
-                    color: Color(valueFont.fontColor),
-                    fontFamily: valueFont.fontFamily,
-                    fontSize: valueFont.fontSize,
-                    fontWeight: valueFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
+                widget: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      value != null ? '$value' : '-',
+                      style: TextStyle(
+                        color: Color(valueFont.fontColor),
+                        fontFamily: valueFont.fontFamily,
+                        fontSize: valueFont.fontSize,
+                        fontWeight: valueFont.fontBold
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    Text(
+                      selectedFieldName,
+                      style: TextStyle(
+                        color: Color(valueFont.fontColor),
+                        fontFamily: valueFont.fontFamily,
+                        fontSize: valueFont.fontSize - 10,
+                        fontWeight: valueFont.fontBold
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ),
-                angle: 90,
-                positionFactor: 0.5,
+                angle: angle,
+                positionFactor: positionFactor,
               ),
             ],
-            axisLineStyle: const AxisLineStyle(
-              thickness: 60,
+            axisLineStyle: AxisLineStyle(
+              thickness: axisThickness + 10,
             ),
             minimum: begin.from ?? 0,
             maximum: end.to ?? 100,
-            showLabels: true,
-            radiusFactor: 0.9,
+            showLabels: showLabel,
+            radiusFactor: radiusFactor,
             ranges: ranges,
           ),
         ],
@@ -188,29 +228,25 @@ class _DeviceFieldRangeLabelDialWidgetState
 
             if (hits.isNotEmpty) {
               Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-              // Map<String, dynamic> source =
-              //     obj['p_source'] as Map<String, dynamic>;
-              // Map<String, dynamic> data =
-              //     source['data'] as Map<String, dynamic>;
+
               value = obj['p_source']['data'][widget.config.field];
-              debugPrint(value.toString());
-              // debugPrint('temperature_value: $temperatureValue');
-              // debugPrint('volume: $volume');
+              // debugPrint(value.toString());
             } else {
-              debugPrint('No hits found in response.');
+              // debugPrint('No hits found in response.');
             }
           } else {
-            debugPrint('Failed to parse JSON response.');
+            // debugPrint('Failed to parse JSON response.');
           }
         } else {
-          debugPrint('Failed to validate response: ${qRes.statusCode}');
+          // debugPrint('Failed to validate response: ${qRes.statusCode}');
         }
       });
     } catch (e, stackTrace) {
-      debugPrint('Error loading data: $e');
-      debugPrint('Stack trace: $stackTrace');
+      // debugPrint('Error loading data: $e');
+      // debugPrint('Stack trace: $stackTrace');
     } finally {
       loading = false;
+      selectedFieldName = field;
       refresh();
     }
   }

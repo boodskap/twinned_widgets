@@ -23,51 +23,80 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
   late Color fontColor;
   late FontConfig titleFont;
   late Color titleFontColor;
+  late FontConfig prefixFont;
+  late Color prefixFontColor;
+  late FontConfig suffixFont;
+  late Color suffixFontColor;
+  late TextAlignment prefixTextAlignment;
+  late TextAlignment suffixTextAlignment;
+  late TextAlignment valueTextAlignment;
 
   @override
   void initState() {
-     var config = widget.config;
+    var config = widget.config;
     title = widget.config.title;
     isValidConfig = widget.config.field.isNotEmpty;
     isValidConfig = isValidConfig && widget.config.deviceId.isNotEmpty;
-     font = FontConfig.fromJson(config.font);
-    fontColor =
-        font.fontColor <= 0 ? Colors.black : Color(font.fontColor);
+    font = FontConfig.fromJson(config.font);
+    fontColor = font.fontColor <= 0 ? Colors.black : Color(font.fontColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     titleFontColor =
         titleFont.fontColor <= 0 ? Colors.black : Color(titleFont.fontColor);
 
+    prefixFont = FontConfig.fromJson(config.prefixFont);
+    prefixFontColor =
+        prefixFont.fontColor <= 0 ? Colors.black : Color(prefixFont.fontColor);
+    suffixFont = FontConfig.fromJson(config.suffixFont);
+    suffixFontColor =
+        suffixFont.fontColor <= 0 ? Colors.black : Color(suffixFont.fontColor);
+
     super.initState();
+  }
+
+  Alignment _getAlignment(TextAlignment alignment) {
+    switch (alignment) {
+      case TextAlignment.bottomLeft:
+        return Alignment.bottomLeft;
+      case TextAlignment.bottomCenter:
+        return Alignment.bottomCenter;
+      case TextAlignment.bottomRight:
+        return Alignment.bottomRight;
+      case TextAlignment.topLeft:
+        return Alignment.topLeft;
+      case TextAlignment.topCenter:
+        return Alignment.topCenter;
+      case TextAlignment.topRight:
+        return Alignment.topRight;
+      case TextAlignment.centerLeft:
+        return Alignment.centerLeft;
+      case TextAlignment.centerRight:
+        return Alignment.centerRight;
+      default:
+        return Alignment.center;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
-      return const Wrap(
-        spacing: 8.0,
-        children: [
-          Text(
-            'Not configured properly',
-            style:
-                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
-          ),
-        ],
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+        ),
       );
     }
 
-
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Align(
           alignment: Alignment.center,
           child: Text(
             widget.config.title,
             style: TextStyle(
-              color: fontColor,
+              color: titleFontColor,
               fontSize: titleFont.fontSize,
               fontFamily: titleFont.fontFamily,
               fontWeight:
@@ -76,18 +105,56 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
           ),
         ),
         const SizedBox(
-          height: 10,
+          height: 50,
         ),
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            value,
-            style: TextStyle(
-              color: titleFontColor,
-              fontSize: font.fontSize,
-              fontFamily: font.fontFamily,
-              fontWeight: font.fontBold ? FontWeight.bold : FontWeight.normal,
-            ),
+        SizedBox(
+          width: widget.config.width.toDouble(),
+          height: widget.config.height.toDouble(),
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: _getAlignment(widget.config.prefixTextAlignment),
+                child: Text(
+                  widget.config.prefixText,
+                  style: TextStyle(
+                    color: prefixFontColor,
+                    fontSize: prefixFont.fontSize,
+                    fontFamily: prefixFont.fontFamily,
+                    fontWeight: prefixFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+               Align(
+                alignment: _getAlignment(widget.config.valueTextAlignment),
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    color: fontColor,
+                    fontSize: font.fontSize,
+                    fontFamily: font.fontFamily,
+                    fontWeight:
+                        font.fontBold ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: _getAlignment(widget.config.suffixTextAlignment),
+                child: Text(
+                  widget.config.suffixText,
+                  style: TextStyle(
+                    color: suffixFontColor,
+                    fontSize: suffixFont.fontSize,
+                    fontFamily: suffixFont.fontFamily,
+                    fontWeight: suffixFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+             
+            ],
           ),
         ),
       ],
