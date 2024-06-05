@@ -33,6 +33,7 @@ import 'package:twinned_widgets/core/yesno_field.dart';
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
 class TwinnedConfigBuilder extends StatefulWidget {
+  final bool verbose;
   final BaseConfig config;
   final Map<String, dynamic> parameters;
   final Map<String, dynamic> defaultParameters;
@@ -40,6 +41,7 @@ class TwinnedConfigBuilder extends StatefulWidget {
 
   const TwinnedConfigBuilder(
       {super.key,
+      required this.verbose,
       required this.config,
       required this.parameters,
       required this.defaultParameters,
@@ -323,7 +325,9 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         return MultiFieldDropdown(
             selectedItems: toList(_parameters[parameter]),
             onFieldsSelected: (fields) {
+              debugPrint('SELECTED $fields');
               _parameters[parameter] = fields.map((i) => i.name).toList();
+              if (widget.verbose) debugPrint('${_parameters[parameter]}');
             });
       case HintType.deviceModelId:
         return MultiDeviceModelDropdown(
@@ -366,7 +370,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           parameters: _parameters,
           parameter: parameter,
           changeNotifier: () {
-            debugPrint('VALUES: ${_parameters[parameter]}');
+            if (widget.verbose) debugPrint('VALUES: ${_parameters[parameter]}');
           },
         );
     }
@@ -410,7 +414,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   void _save() {
     bool valid = true;
 
-    debugPrint('*** SAVING ***');
+    if (widget.verbose) debugPrint('*** SAVING ***');
     _parameters.forEach((parameter, value) {
       bool required = widget.config.isRequired(parameter);
       dynamic value = _parameters[parameter];
@@ -463,9 +467,10 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
     if (valid) {
       Navigator.pop(context);
+      if (widget.verbose) debugPrint('** PARAMETERS\n$_parameters **');
       widget.onConfigSaved(_parameters);
     }
 
-    debugPrint('** SAVING DONE **');
+    if (widget.verbose) debugPrint('** SAVING DONE **');
   }
 }
