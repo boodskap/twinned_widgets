@@ -110,7 +110,7 @@ class _MultiDropdownSearchableState<T>
             if (!_selectedItems.containsKey(id)) {
               _selectedItems[id] = selected;
             }
-            List<dynamic> items = [];
+            List<T> items = [];
             _selectedItems.forEach((k, v) {
               items.add(v);
             });
