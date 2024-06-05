@@ -70,7 +70,8 @@ class _DeviceFieldRangeLabelDialWidgetState
       positionFactor = 0;
     }
 
-    isValidConfig = isValidConfig && deviceId.isNotEmpty && field.isNotEmpty;
+    isValidConfig = isValidConfig && deviceId.isNotEmpty;
+    isValidConfig = field.isNotEmpty;
     super.initState();
   }
 
