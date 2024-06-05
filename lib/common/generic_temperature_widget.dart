@@ -51,7 +51,7 @@ class _GenericTemperatureWidgetState
         config.widgetColor <= 0 ? Colors.black : Color(config.widgetColor);
     titleFont = FontConfig.fromJson(config.titleFont);
     labelFont = FontConfig.fromJson(config.labelFont);
-
+    displayInCelcius = widget.config.displayInCelcius;
     isValidConfig = widget.config.deviceId.isNotEmpty;
     super.initState();
   }
@@ -59,13 +59,13 @@ class _GenericTemperatureWidgetState
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
-      return Wrap(
+      return const Wrap(
         spacing: 8.0,
         children: [
           Text(
             'Not configured properly',
-            style: const TextStyle(
-                color: Colors.red, overflow: TextOverflow.ellipsis),
+            style:
+                TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
           ),
         ],
       );
@@ -119,19 +119,19 @@ class _GenericTemperatureWidgetState
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                temperatureField,
+                                ('$temperatureField°'),
                                 style: TextStyle(
                                   color: widgetColor,
                                   fontSize: 40,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 15),
+                              Transform.translate(
+                                offset: const Offset(-12.0, 7.0),
                                 child: Text(
-                                  'F',
+                                  displayInCelcius ? 'C' : 'F',
                                   style: TextStyle(
                                     color: Color(labelFont.fontColor),
-                                    fontSize: labelFont.fontSize,
+                                    fontSize: 12,
                                     fontFamily: labelFont.fontFamily,
                                     fontWeight: labelFont.fontBold
                                         ? FontWeight.bold
