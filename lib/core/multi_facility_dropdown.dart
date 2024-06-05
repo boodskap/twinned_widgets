@@ -5,7 +5,7 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnFacilitiesSelected<Facility> = void Function(List<Facility> item);
+typedef OnFacilitiesSelected = void Function(List<twin.Facility> item);
 
 class MultiFacilityDropdown extends StatefulWidget {
   final List<String> selectedItems;
@@ -31,11 +31,11 @@ class _MultiFacilityDropdownState extends BaseState<MultiFacilityDropdown> {
         searchHint: 'Select Facilities',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onFacilitiesSelected(selectedItems);
+          widget.onFacilitiesSelected(selectedItems as List<twin.Facility>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name} ID:${item.id}');
+          return Text('${item.name}');
         },
         itemIdFunc: (item) {
           return item.id;

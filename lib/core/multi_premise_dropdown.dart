@@ -5,7 +5,7 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnPremisesSelected<Premise> = void Function(List<Premise> item);
+typedef OnPremisesSelected = void Function(List<twin.Premise> item);
 
 class MultiPremiseDropdown extends StatefulWidget {
   final List<String> selectedItems;
@@ -31,11 +31,11 @@ class _MultiPremiseDropdownState extends BaseState<MultiPremiseDropdown> {
         searchHint: 'Select Premises',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onPremisesSelected(selectedItems);
+          widget.onPremisesSelected(selectedItems as List<twin.Premise>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name} ID:${item.id}');
+          return Text('${item.name}');
         },
         itemIdFunc: (item) {
           return item.id;

@@ -23,14 +23,14 @@ dependencies:
   nocode_commons:
     git:
       url: https://github.com/boodskap/nocode_commons.git
-    #  path:
-    #    nocode_commons
+      ref: main
+#      path:
+#        nocode_commons
 
   twinned_models:
     git:
       url: https://github.com/boodskap/twinned_models.git
       ref: main
-
     #  path:
     #    twinned_models
 

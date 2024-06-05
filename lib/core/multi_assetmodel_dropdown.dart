@@ -5,8 +5,7 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnAssetModelsSelected<AssetModel> = void Function(
-    List<AssetModel> item);
+typedef OnAssetModelsSelected = void Function(List<twin.AssetModel> item);
 
 class MultiAssetModelDropdown extends StatefulWidget {
   final List<String> selectedItems;
@@ -33,7 +32,7 @@ class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
         searchHint: 'Select Asset Models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onAssetModelsSelected(selectedItems);
+          widget.onAssetModelsSelected(selectedItems as List<twin.AssetModel>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {

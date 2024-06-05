@@ -5,8 +5,7 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnDeviceModelsSelected<DeviceModel> = void Function(
-    List<DeviceModel> device);
+typedef OnDeviceModelsSelected = void Function(List<twin.DeviceModel> device);
 
 class MultiDeviceModelDropdown extends StatefulWidget {
   final List<String> selectedItems;
@@ -34,11 +33,12 @@ class _MultiDeviceModelDropdownState
         searchHint: 'Select Device Models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onDeviceModelsSelected(selectedItems);
+          widget
+              .onDeviceModelsSelected(selectedItems as List<twin.DeviceModel>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name} ID:${item.id}');
+          return Text('${item.name}');
         },
         itemIdFunc: (item) {
           return item.id;

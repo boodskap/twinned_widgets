@@ -8,10 +8,16 @@ typedef OnFloorSelected = void Function(twin.Floor? floor);
 
 class FloorDropdown extends StatefulWidget {
   final String? selectedItem;
+  final String? selectedPremise;
+  final String? selectedFacility;
   final OnFloorSelected onFloorSelected;
 
   const FloorDropdown(
-      {super.key, this.selectedItem, required this.onFloorSelected});
+      {super.key,
+      required this.selectedItem,
+      required this.selectedPremise,
+      required this.selectedFacility,
+      required this.onFloorSelected});
 
   @override
   State<FloorDropdown> createState() => _FloorDropdownState();
@@ -37,7 +43,7 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
       dialogBox: true,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
-        twin.Premise entity = value;
+        twin.Floor entity = value;
         return Text('${entity.name} ${entity.description}');
       },
       onChanged: (selected) {
@@ -58,6 +64,8 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
     try {
       var pRes = await TwinnedSession.instance.twin.searchFloors(
           apikey: TwinnedSession.instance.authToken,
+          premiseId: widget.selectedPremise,
+          facilityId: widget.selectedFacility,
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {

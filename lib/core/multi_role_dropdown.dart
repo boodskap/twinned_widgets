@@ -7,34 +7,34 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnFieldsSelected = void Function(List<twin.Parameter> item);
+typedef OnRolesSelected = void Function(List<twin.Role> items);
 
-class MultiFieldDropdown extends StatefulWidget {
+class MultiRoleDropdown extends StatefulWidget {
   final List<String> selectedItems;
-  final OnFieldsSelected onFieldsSelected;
+  final OnRolesSelected onRolesSelected;
 
-  const MultiFieldDropdown({
+  const MultiRoleDropdown({
     super.key,
     required this.selectedItems,
-    required this.onFieldsSelected,
+    required this.onRolesSelected,
   });
 
   @override
-  State<MultiFieldDropdown> createState() => _MultiFieldDropdownState();
+  State<MultiRoleDropdown> createState() => _MultiRoleDropdownState();
 }
 
-class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
-  final List<twin.Parameter> _allItems = [];
-  final List<twin.Parameter> _selectedItems = [];
+class _MultiRoleDropdownState extends BaseState<MultiRoleDropdown> {
+  final List<twin.Role> _allItems = [];
+  final List<twin.Role> _selectedItems = [];
 
   @override
   Widget build(BuildContext context) {
-    return MultiDropdownSearchable<twin.Parameter>(
+    return MultiDropdownSearchable<twin.Role>(
         key: Key(Uuid().v4()),
-        searchHint: 'Select Fields',
+        searchHint: 'Select Roles',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onFieldsSelected(selectedItems as List<twin.Parameter>);
+          widget.onRolesSelected(selectedItems as List<twin.Role>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
@@ -45,8 +45,8 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
         });
   }
 
-  Future<List<twin.Parameter>> _search(String keyword, int page) async {
-    List<twin.Parameter> items = [];
+  Future<List<twin.Role>> _search(String keyword, int page) async {
+    List<twin.Role> items = [];
 
     try {
       for (var p in _allItems) {
@@ -63,9 +63,9 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
   Future<void> _load() async {
     _selectedItems.clear();
     try {
-      var eRes = await TwinnedSession.instance.twin.listAllParameters(
-        apikey: TwinnedSession.instance.authToken,
-      );
+      var eRes = await TwinnedSession.instance.twin.listRoles(
+          apikey: TwinnedSession.instance.authToken,
+          body: const twin.ListReq(page: 0, size: 10000));
       if (eRes != null && eRes.body != null) {
         setState(() {
           if (!mounted) return;
