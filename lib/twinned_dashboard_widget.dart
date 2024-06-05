@@ -528,9 +528,23 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       child = column;
     }
 
+    Widget? floating;
+
+    if (widget.editMode) {
+      floating = IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.arrow_left,
+            size: 48,
+            color: Colors.blue,
+          ));
+    }
+
     return Scaffold(
       key: Key(const Uuid().v4()),
       backgroundColor: Color(bgColor),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      floatingActionButton: floating,
       body: child,
     );
   }

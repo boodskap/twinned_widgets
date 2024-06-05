@@ -57,7 +57,7 @@ class _MultiDropdownSearchableState<T>
           setState(() {
             _selectedItems.remove(k);
           });
-          List<dynamic> items = [];
+          List<T> items = [];
           _selectedItems.forEach((k, v) {
             items.add(v);
           });

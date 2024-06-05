@@ -5,7 +5,7 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnFloorsSelected<Floor> = void Function(List<Floor> item);
+typedef OnFloorsSelected = void Function(List<twin.Floor> item);
 
 class MultiFloorDropdown extends StatefulWidget {
   final List<String> selectedItems;
@@ -31,11 +31,11 @@ class _MultiFloorDropdownState extends BaseState<MultiFloorDropdown> {
         searchHint: 'Select Floors',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onFloorsSelected(selectedItems);
+          widget.onFloorsSelected(selectedItems as List<twin.Floor>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name} ID:${item.id}');
+          return Text('${item.name}');
         },
         itemIdFunc: (item) {
           return item.id;

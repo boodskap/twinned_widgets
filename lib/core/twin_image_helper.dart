@@ -7,11 +7,19 @@ import 'package:file_picker/file_picker.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 
 class TwinImageHelper {
-  static Future<PlatformFile?> pickFile() async {
+  static Future<PlatformFile?> pickFile(
+      {List<String> allowedExtensions = const [
+        'jpg',
+        'png',
+        'jpeg',
+        'JPEG',
+        'JPG',
+        'PNG'
+      ]}) async {
     FilePickerResult? result = await FilePickerWeb.platform.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'png', 'jpeg', 'JPEG', 'JPG', 'PNG'],
+      allowedExtensions: allowedExtensions,
     );
 
     if (null != result) {
@@ -60,6 +68,54 @@ class TwinImageHelper {
     );
 
     return _upload(mpr, file);
+  }
+
+  static Future<twin.AssetBulkUploadRes?> uploadAssetBulkUpload(
+      PlatformFile file,
+      {required String premiseId,
+      required String facilityId,
+      required String floorId,
+      required String assetModelId,
+      required String deviceModelId,
+      required List<String> roleIds,
+      required List<String> clientIds}) async {
+    var mpr = web.MultipartRequest(
+      "POST",
+      Uri.https(
+        TwinnedSession.instance.host,
+        "/rest/nocode/Asset/bulk/upload",
+      ),
+    );
+
+    try {
+      debugPrint('ApiKey ${TwinnedSession.instance.authToken}');
+      mpr.headers['APIKEY'] = TwinnedSession.instance.authToken ?? '';
+      mpr.headers['premiseId'] = premiseId;
+      mpr.headers['facilityId'] = facilityId;
+      mpr.headers['floorId'] = floorId;
+      mpr.headers['assetModelId'] = assetModelId;
+      mpr.headers['deviceModelId'] = deviceModelId;
+      if (clientIds.isNotEmpty) mpr.headers['clientIds'] = clientIds.join(',');
+      if (roleIds.isNotEmpty) mpr.headers['roleIds'] = roleIds.join(',');
+
+      mpr.files.add(
+        web.MultipartFile.fromBytes('file', file.bytes!, filename: file.name),
+      );
+
+      debugPrint('Uploading...');
+      var stream = await mpr.send();
+      var response = await stream.stream.bytesToString();
+
+      debugPrint('Decoding response...');
+      var map = jsonDecode(response) as Map<String, dynamic>;
+
+      debugPrint('Converting response... ${jsonEncode(map)}');
+      return twin.AssetBulkUploadRes.fromJson(map);
+    } catch (e, s) {
+      debugPrint('$e\n$s');
+    }
+
+    return null;
   }
 
   static Future<twin.ImageFileEntityRes?>? uploadDomainImage() async {

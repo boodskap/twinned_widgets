@@ -5,33 +5,33 @@ import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
-typedef OnAssetsSelected = void Function(List<twin.Asset> item);
+typedef OnClientsSelected = void Function(List<twin.Client> items);
 
-class MultiAssetDropdown extends StatefulWidget {
+class MultiClientDropdown extends StatefulWidget {
   final List<String> selectedItems;
-  final OnAssetsSelected onAssetsSelected;
+  final OnClientsSelected onClientsSelected;
 
-  const MultiAssetDropdown({
+  const MultiClientDropdown({
     super.key,
     required this.selectedItems,
-    required this.onAssetsSelected,
+    required this.onClientsSelected,
   });
 
   @override
-  State<MultiAssetDropdown> createState() => _MultiAssetDropdownState();
+  State<MultiClientDropdown> createState() => _MultiClientDropdownState();
 }
 
-class _MultiAssetDropdownState extends BaseState<MultiAssetDropdown> {
-  final List<twin.Asset> _selectedItems = [];
+class _MultiClientDropdownState extends BaseState<MultiClientDropdown> {
+  final List<twin.Client> _selectedItems = [];
 
   @override
   Widget build(BuildContext context) {
-    return MultiDropdownSearchable<twin.Asset>(
+    return MultiDropdownSearchable<twin.Client>(
         key: Key(Uuid().v4()),
-        searchHint: 'Select Assets',
+        searchHint: 'Select Clients',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
-          widget.onAssetsSelected(selectedItems as List<twin.Asset>);
+          widget.onClientsSelected(selectedItems as List<twin.Client>);
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
@@ -42,11 +42,11 @@ class _MultiAssetDropdownState extends BaseState<MultiAssetDropdown> {
         });
   }
 
-  Future<List<twin.Asset>> _search(String keyword, int page) async {
-    List<twin.Asset> items = [];
+  Future<List<twin.Client>> _search(String keyword, int page) async {
+    List<twin.Client> items = [];
 
     try {
-      var pRes = await TwinnedSession.instance.twin.searchAssets(
+      var pRes = await TwinnedSession.instance.twin.searchClients(
         apikey: TwinnedSession.instance.authToken,
         body: twin.SearchReq(search: keyword, page: page, size: 25),
       );
@@ -60,12 +60,11 @@ class _MultiAssetDropdownState extends BaseState<MultiAssetDropdown> {
   }
 
   Future<void> _load() async {
-    debugPrint('SELECTED ASSETS: ${widget.selectedItems}');
     if (widget.selectedItems.isEmpty) {
       return;
     }
     try {
-      var eRes = await TwinnedSession.instance.twin.getAssets(
+      var eRes = await TwinnedSession.instance.twin.getClients(
         apikey: TwinnedSession.instance.authToken,
         body: twin.GetReq(ids: widget.selectedItems),
       );

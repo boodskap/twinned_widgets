@@ -8,11 +8,13 @@ typedef OnFacilitySelected = void Function(twin.Facility? facility);
 
 class FacilityDropdown extends StatefulWidget {
   final String? selectedItem;
+  final String? selectedPremise;
   final OnFacilitySelected onFacilitySelected;
 
   const FacilityDropdown(
       {super.key,
       required this.selectedItem,
+      required this.selectedPremise,
       required this.onFacilitySelected});
 
   @override
@@ -39,7 +41,7 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
       dialogBox: true,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
-        twin.Premise entity = value;
+        twin.Facility entity = value;
         return Text('${entity.name} ${entity.description}');
       },
       onChanged: (selected) {
@@ -60,6 +62,7 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
     try {
       var pRes = await TwinnedSession.instance.twin.searchFacilities(
           apikey: TwinnedSession.instance.authToken,
+          premiseId: widget.selectedPremise,
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
         for (var entity in pRes.body!.values!) {

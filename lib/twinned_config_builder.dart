@@ -244,12 +244,15 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       case HintType.facilityId:
         return FacilityDropdown(
             selectedItem: _parameters[parameter],
+            selectedPremise: null,
             onFacilitySelected: (facility) {
               _parameters[parameter] = facility?.id ?? '';
             });
       case HintType.floorId:
         return FloorDropdown(
             selectedItem: _parameters[parameter],
+            selectedFacility: null,
+            selectedPremise: null,
             onFloorSelected: (floor) {
               _parameters[parameter] = floor?.id ?? '';
             });
