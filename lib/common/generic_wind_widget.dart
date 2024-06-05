@@ -34,7 +34,8 @@ class _GenericWindInfoWidgetState extends BaseState<GenericWindInfoWidget> {
   late double width;
   late double height;
   late double contentFontSize;
-  
+  bool apiLoadingStatus = false;
+
   @override
   void initState() {
     var config = widget.config;
@@ -62,7 +63,7 @@ class _GenericWindInfoWidgetState extends BaseState<GenericWindInfoWidget> {
   }
 
   double getAngle(String direction) {
-    switch (direction.toLowerCase()) {
+    switch (direction.toLowerCase().trim()) {
       case 'east':
         return 0;
       case 'southeast':
@@ -94,6 +95,10 @@ class _GenericWindInfoWidgetState extends BaseState<GenericWindInfoWidget> {
         ),
       );
     }
+     if (!apiLoadingStatus) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,7 +150,8 @@ class _GenericWindInfoWidgetState extends BaseState<GenericWindInfoWidget> {
                           showTicks: false,
                           showLabels: false,
                           axisLineStyle: AxisLineStyle(
-                              dashArray: const <double>[2, 4], color: labelFontColor),
+                              dashArray: const <double>[2, 4],
+                              color: labelFontColor),
                           pointers: <GaugePointer>[
                             MarkerPointer(
                                 value: windValue,
@@ -387,6 +393,7 @@ class _GenericWindInfoWidgetState extends BaseState<GenericWindInfoWidget> {
     });
 
     loading = false;
+    apiLoadingStatus = true;
     refresh();
   }
 
