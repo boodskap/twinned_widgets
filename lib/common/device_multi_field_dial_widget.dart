@@ -22,7 +22,7 @@ class _DeviceMultiFieldDialWidgetState
     extends BaseState<DeviceMultiFieldDialWidget> {
   final TextStyle labelStyle =
       const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-  late bool isConfigValid;
+  bool isConfigValid  = false;
   late String deviceId;
   late List<String> fields;
   Map<String, dynamic> fieldValues = {};
