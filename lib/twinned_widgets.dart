@@ -12,6 +12,7 @@ import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
 import 'package:twinned_widgets/common/dynamic_text_widget.dart';
+import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
@@ -51,6 +52,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWAssetModelDataGridWidget': AssetModelDataGridWidgetBuilder(),
   'TWDeviceFieldRangeLabelDialWidget': DeviceFieldRangeLabelDialWidgetBuilder(),
   'TWGenericTemperatureWidget': GenericTemperatureWidgetBuilder(),
+  'TWGenericDayWeatherWidget': GenericDayWeatherWidgetBuilder(),
   'TWGenericValueCardWidget': GenericValueCardWidgetBuilder(),
   'TWGenericWindWidget': GenericWindWidgetBuilder(),
 };
