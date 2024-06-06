@@ -25,7 +25,7 @@ import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'common/multiple_device_cartesian_chart_widget.dart';
-
+import 'package:twinned_widgets/common/single_value_slider_widget.dart';
 export 'common/total_value_widget.dart';
 export 'common/value_distribution_pie_widget.dart';
 export 'common/total_and_reporting_asset_widget.dart';
@@ -55,6 +55,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericDayWeatherWidget': GenericDayWeatherWidgetBuilder(),
   'TWGenericValueCardWidget': GenericValueCardWidgetBuilder(),
   'TWGenericWindWidget': GenericWindWidgetBuilder(),
+  'TWSingleValueSliderWidget': SingleValueSliderWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
