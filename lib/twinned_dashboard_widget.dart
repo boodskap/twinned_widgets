@@ -565,7 +565,9 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
 
     if (widget.popupMode) {
       floating = IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: const Icon(
             Icons.arrow_left,
             size: 48,
