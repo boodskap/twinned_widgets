@@ -345,6 +345,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         return MultiAssetModelDropdown(
             selectedItems: toList(_parameters[parameter]),
             onAssetModelsSelected: (models) {
+              debugPrint('ASSET MODELS: $models');
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.premiseId:
