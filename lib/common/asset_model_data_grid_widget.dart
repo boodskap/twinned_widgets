@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twinned_widgets/core/field_sensor_data_widget.dart';
+import 'package:twinned_widgets/core/infra_component_detail_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:nocode_commons/core/base_state.dart';
@@ -10,7 +11,6 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:nocode_commons/util/nocode_utils.dart';
-import 'package:nocode_commons/sensor_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class AssetModelDataGridWidget extends StatefulWidget {
@@ -188,6 +188,10 @@ class _AssetModelDataGridWidgetState
         "facility",
         "floor",
         "asset",
+        "premiseId",
+        "facilityId",
+        "floorId",
+        "assetId",
         "updatedStamp"
       ], mustConditions: [
         {
@@ -220,29 +224,104 @@ class _AssetModelDataGridWidgetState
                 style: labelStyle,
               )),
             if (widget.config.showAsset)
-              DataCell(Text(
-                '${source['asset']}',
-                style: labelStyle,
+              DataCell(InkWell(
+                onTap: null == source['assetId']
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Material(
+                                      child: InfraComponentDetailWidget(
+                                        twinInfraType: TwinInfraType.asset,
+                                        componentId: source['assetId'],
+                                      ),
+                                    )));
+                      },
+                child: Text(
+                  '${source['asset']}',
+                  style: labelStyle,
+                ),
               )),
             if (widget.config.showDevice)
-              DataCell(Text(
-                '${source['deviceName']}',
-                style: labelStyle,
+              DataCell(InkWell(
+                onTap: null == source['deviceId']
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Material(
+                                      child: InfraComponentDetailWidget(
+                                        twinInfraType: TwinInfraType.device,
+                                        componentId: source['deviceId'],
+                                      ),
+                                    )));
+                      },
+                child: Text(
+                  '${source['deviceName']}',
+                  style: labelStyle,
+                ),
               )),
             if (widget.config.showPremise)
-              DataCell(Text(
-                '${source['premise']}',
-                style: labelStyle,
+              DataCell(InkWell(
+                onTap: null == source['premiseId']
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Material(
+                                      child: InfraComponentDetailWidget(
+                                        twinInfraType: TwinInfraType.premise,
+                                        componentId: source['premiseId'],
+                                      ),
+                                    )));
+                      },
+                child: Text(
+                  '${source['premise']}',
+                  style: labelStyle,
+                ),
               )),
             if (widget.config.showFacility)
-              DataCell(Text(
-                '${source['facility']}',
-                style: labelStyle,
+              DataCell(InkWell(
+                onTap: null == source['facilityId']
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Material(
+                                      child: InfraComponentDetailWidget(
+                                        twinInfraType: TwinInfraType.facility,
+                                        componentId: source['facilityId'],
+                                      ),
+                                    )));
+                      },
+                child: Text(
+                  '${source['facility']}',
+                  style: labelStyle,
+                ),
               )),
             if (widget.config.showFloor)
-              DataCell(Text(
-                '${source['floor']}',
-                style: labelStyle,
+              DataCell(InkWell(
+                onTap: null == source['floorId']
+                    ? null
+                    : () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Material(
+                                      child: InfraComponentDetailWidget(
+                                        twinInfraType: TwinInfraType.floor,
+                                        componentId: source['floorId'],
+                                      ),
+                                    )));
+                      },
+                child: Text(
+                  '${source['floor']}',
+                  style: labelStyle,
+                ),
               )),
             if (widget.config.showData) await _buildCell(source),
           ]));
@@ -260,68 +339,6 @@ class _AssetModelDataGridWidgetState
     });
 
     loading = false;
-  }
-
-  Widget _buildWidget(String field, twinned.DeviceModel deviceModel,
-      Map<String, dynamic> source) {
-    SensorWidgetType type = NoCodeUtils.getSensorWidgetType(field, deviceModel);
-    twinned.Parameter? parameter = NoCodeUtils.getParameter(field, deviceModel);
-
-    if (null == parameter) {
-      return const SizedBox(
-        width: 80,
-        height: 80,
-        child: Placeholder(
-          color: Colors.red,
-        ),
-      );
-    }
-
-    Widget sensorWidget;
-
-    if (type == SensorWidgetType.none) {
-      Widget icon;
-      Map<String, dynamic> data = source['data'];
-      if (parameter!.icon?.isEmpty ?? true) {
-        icon = const Icon(Icons.device_unknown_sharp);
-      } else {
-        icon = SizedBox(
-            width: 24, child: TwinImageHelper.getDomainImage(parameter!.icon!));
-      }
-      String label = NoCodeUtils.getParameterLabel(field, deviceModel);
-      String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
-      String value = '${data[field] ?? '-'} $unit';
-      sensorWidget = Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: labelStyle,
-          ),
-          divider(),
-          icon,
-          Text(
-            value,
-            style: labelStyle,
-          )
-        ],
-      );
-    } else {
-      twinned.DeviceData dd = twinned.DeviceData.fromJson(source);
-
-      sensorWidget = SizedBox(
-        width: 70,
-        height: 70,
-        child: SensorWidget(
-          parameter: parameter!,
-          tiny: false,
-          deviceData: dd,
-          deviceModel: deviceModel,
-        ),
-      );
-    }
-
-    return sensorWidget;
   }
 
   Future<DataCell> _buildCell(Map<String, dynamic> source) async {
@@ -343,13 +360,11 @@ class _AssetModelDataGridWidgetState
 
     List<Widget> children = [];
 
-    for (String field in allFields) {
-      children.add(_buildWidget(field, _models[modelId]!, source));
-    }
-
-    return DataCell(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: children,
+    return DataCell(FieldSensorDataWidget(
+      fields: allFields,
+      deviceModel: _models[modelId]!,
+      source: source,
+      labelStyle: labelStyle,
     ));
   }
 
