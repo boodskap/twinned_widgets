@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_models/generic_value_card/generic_value_card.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_widgets/twinned_session.dart';
@@ -25,13 +26,14 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
   late String deviceId;
   late String topLabel;
   late String bottomLabel;
-  late String iconId;
+  String? iconId;
   late double elevation;
   late double iconWidth;
   late double iconHeight;
   late FontConfig topFont;
   late FontConfig valueFont;
   late FontConfig bottomFont;
+  late Color valueBgColor;
   dynamic value;
 
   @override
@@ -48,10 +50,16 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
     topFont = FontConfig.fromJson(config.topFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     bottomFont = FontConfig.fromJson(config.bottomFont);
+    valueBgColor = Color(config.valueBgColor);
 
-    isValidConfig = isValidConfig && deviceId.isNotEmpty && field.isNotEmpty;
+    isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -71,78 +79,77 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
       );
     }
     return Card(
+      color: Colors.white,
       elevation: elevation,
-      child: SizedBox(
-        height: 150,
-        width: 300,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Image.asset(
-                iconId,
-                height: iconHeight,
-                width: iconWidth,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SizedBox(
+              height: iconHeight,
+              width: iconWidth,
+              child: TwinImageHelper.getDomainImage(
+                iconId!,
+                fit: BoxFit.contain,
               ),
             ),
-            divider(horizontal: true, width: 20),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    topLabel,
-                    style: TextStyle(
-                      fontFamily: topFont.fontFamily,
-                      fontSize: topFont.fontSize,
-                      fontWeight: topFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(topFont.fontColor),
-                    ),
+          ),
+          divider(horizontal: true, width: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  topLabel,
+                  style: TextStyle(
+                    fontFamily: topFont.fontFamily,
+                    fontSize: topFont.fontSize,
+                    fontWeight:
+                        topFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                    color: Color(topFont.fontColor),
                   ),
-                  divider(),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.teal,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                          fontFamily: valueFont.fontFamily,
-                          fontSize: valueFont.fontSize,
-                          fontWeight: valueFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: Color(valueFont.fontColor),
-                        ),
+                ),
+                divider(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: valueBgColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: Text(
+                      value != null ? '$value' : '-',
+                      style: TextStyle(
+                        fontFamily: valueFont.fontFamily,
+                        fontSize: valueFont.fontSize,
+                        fontWeight: valueFont.fontBold
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: Color(valueFont.fontColor),
                       ),
                     ),
                   ),
-                  divider(),
-                  Text(
-                    bottomLabel,
-                    style: TextStyle(
-                      fontFamily: bottomFont.fontFamily,
-                      fontSize: bottomFont.fontSize,
-                      fontWeight: bottomFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(bottomFont.fontColor),
-                    ),
+                ),
+                divider(),
+                Text(
+                  bottomLabel,
+                  style: TextStyle(
+                    fontFamily: bottomFont.fontFamily,
+                    fontSize: bottomFont.fontSize,
+                    fontWeight: bottomFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(bottomFont.fontColor),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
