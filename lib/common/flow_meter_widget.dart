@@ -29,6 +29,7 @@ class _FlowMeterWidgetState extends BaseState<FlowMeterWidget> {
   late Color bodyColor;
   bool isValidConfig = false;
   String value = '';
+  String? percentageValue;
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _FlowMeterWidgetState extends BaseState<FlowMeterWidget> {
         ],
       );
     }
+    double percentage = double.tryParse(percentageValue ?? '0') ?? 0;
     return Card(
       child: FittedBox(
         fit: BoxFit.contain,
@@ -144,18 +146,35 @@ class _FlowMeterWidgetState extends BaseState<FlowMeterWidget> {
                     const SizedBox(
                       width: 5,
                     ),
-                    Container(
-                      height: 110,
-                      width: 50,
-                      color: flowColor,
+                    Stack(
+                      children: [
+                        Container(
+                          height: 110,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            border: Border.all(
+                              color: outerDialColor,
+                              width: 3.0,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          child: Container(
+                            height: 110 * (percentage / 100),
+                            width: 50,
+                            color: flowColor,
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
                       height: 200,
                       width: 200,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: outerDialColor,
-                        border: Border.all(width: 6.0),
+                        border: Border.all(width: 6.0, color: outerDialColor),
                       ),
                       child: Container(
                         decoration: BoxDecoration(
@@ -210,10 +229,28 @@ class _FlowMeterWidgetState extends BaseState<FlowMeterWidget> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: 110,
-                      width: 50,
-                      color: flowColor,
+                    Stack(
+                      children: [
+                        Container(
+                          height: 110,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            border: Border.all(
+                              color: outerDialColor,
+                              width: 3.0,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          child: Container(
+                            height: 110 * (percentage / 100),
+                            width: 50,
+                            color: flowColor,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       width: 5,
@@ -285,6 +322,9 @@ class _FlowMeterWidgetState extends BaseState<FlowMeterWidget> {
           for (Map<String, dynamic> obj in values) {
             dynamic fetchedValue = obj['p_source']['data'][widget.config.field];
             value = '$fetchedValue';
+            double maxValue = 100.0;
+            double percentageValueDouble = (fetchedValue / maxValue) * 100;
+            percentageValue = percentageValueDouble.toStringAsFixed(2);
           }
         }
       }
