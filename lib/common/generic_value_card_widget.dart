@@ -33,7 +33,6 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
   late FontConfig topFont;
   late FontConfig valueFont;
   late FontConfig bottomFont;
-  late Color valueBgColor;
   dynamic value;
 
   @override
@@ -50,11 +49,12 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
     topFont = FontConfig.fromJson(config.topFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     bottomFont = FontConfig.fromJson(config.bottomFont);
-    valueBgColor = Color(config.valueBgColor);
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
-
     super.initState();
+    // if (isValidConfig) {
+    //   load();
+    // }
   }
 
   @override
@@ -79,77 +79,79 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
       );
     }
     return Card(
-      color: Colors.white,
       elevation: elevation,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SizedBox(
-              height: iconHeight,
-              width: iconWidth,
-              child: TwinImageHelper.getDomainImage(
-                iconId!,
-                fit: BoxFit.contain,
+      child: SizedBox(
+        height: 150,
+        width: 300,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: SizedBox(
+                height: iconHeight,
+                width: iconWidth,
+                child: TwinImageHelper.getDomainImage(iconId!,
+                    fit: BoxFit.contain, scale: 1),
               ),
             ),
-          ),
-          divider(horizontal: true, width: 20),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  topLabel,
-                  style: TextStyle(
-                    fontFamily: topFont.fontFamily,
-                    fontSize: topFont.fontSize,
-                    fontWeight:
-                        topFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                    color: Color(topFont.fontColor),
+            divider(horizontal: true, width: 20),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    topLabel,
+                    style: TextStyle(
+                      fontFamily: topFont.fontFamily,
+                      fontSize: topFont.fontSize,
+                      fontWeight: topFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(topFont.fontColor),
+                    ),
                   ),
-                ),
-                divider(),
-                Container(
-                  decoration: BoxDecoration(
-                    color: valueBgColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: Text(
-                      value != null ? '$value' : '-',
-                      style: TextStyle(
-                        fontFamily: valueFont.fontFamily,
-                        fontSize: valueFont.fontSize,
-                        fontWeight: valueFont.fontBold
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: Color(valueFont.fontColor),
+                  divider(),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.teal,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: Text(
+                        value != null ? '$value' : '-',
+                        style: TextStyle(
+                          fontFamily: valueFont.fontFamily,
+                          fontSize: valueFont.fontSize,
+                          fontWeight: valueFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(valueFont.fontColor),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                divider(),
-                Text(
-                  bottomLabel,
-                  style: TextStyle(
-                    fontFamily: bottomFont.fontFamily,
-                    fontSize: bottomFont.fontSize,
-                    fontWeight: bottomFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: Color(bottomFont.fontColor),
+                  divider(),
+                  Text(
+                    bottomLabel,
+                    style: TextStyle(
+                      fontFamily: bottomFont.fontFamily,
+                      fontSize: bottomFont.fontSize,
+                      fontWeight: bottomFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(bottomFont.fontColor),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
