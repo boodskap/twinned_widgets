@@ -55,6 +55,7 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
   dynamic maxValue;
   dynamic humidityValue;
   dynamic pressureValue;
+  dynamic updatedStampValue;
 
   String formattedSunrise = "--";
   String formattedSunset = "--";
@@ -90,8 +91,7 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // String formattedDate = DateFormat('MMMM-dd-yyyy – hh:mm a').format(now);
-    String formattedDate = DateFormat('hh:mm a').format(now);
+    // String formattedDate = DateFormat('MMM-dd-yyyy – hh:mm a').format(now);
 
     if (!isConfigValid) {
       return const Wrap(
@@ -130,8 +130,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Text(sunriseTitle),
-                                    Text(formattedSunrise),
+                                    Text(
+                                      sunriseTitle,
+                                      style: TextStyle(
+                                        fontFamily: labelFont.fontFamily,
+                                        fontSize: labelFont.fontSize,
+                                        fontWeight: labelFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          labelFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      formattedSunrise,
+                                      style: TextStyle(
+                                        fontFamily: titleFont.fontFamily,
+                                        fontSize: titleFont.fontSize,
+                                        fontWeight: titleFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          titleFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -152,8 +176,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    Text(sunsetTitle),
-                                    Text(formattedSunset),
+                                    Text(
+                                      sunsetTitle,
+                                      style: TextStyle(
+                                        fontFamily: labelFont.fontFamily,
+                                        fontSize: labelFont.fontSize,
+                                        fontWeight: labelFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          labelFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      formattedSunset,
+                                      style: TextStyle(
+                                        fontFamily: titleFont.fontFamily,
+                                        fontSize: titleFont.fontSize,
+                                        fontWeight: titleFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          titleFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -173,7 +221,19 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(temperatureTitle),
+                        Text(
+                          temperatureTitle,
+                          style: TextStyle(
+                            fontFamily: labelFont.fontFamily,
+                            fontSize: labelFont.fontSize,
+                            fontWeight: labelFont.fontBold
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: Color(
+                              labelFont.fontColor,
+                            ),
+                          ),
+                        ),
                         Expanded(
                             child: Row(
                           children: [
@@ -183,8 +243,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("$currentValue $temperaturSuffix"),
-                                    Text(currentTitle),
+                                    Text(
+                                      "${currentValue ?? '--'} $temperaturSuffix",
+                                      style: TextStyle(
+                                        fontFamily: titleFont.fontFamily,
+                                        fontSize: titleFont.fontSize,
+                                        fontWeight: titleFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          titleFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      currentTitle,
+                                      style: TextStyle(
+                                        fontFamily: labelFont.fontFamily,
+                                        fontSize: labelFont.fontSize,
+                                        fontWeight: labelFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          labelFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -194,8 +278,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("$feelsLikeValue $temperaturSuffix"),
-                                    Text(feelsLikeTitle),
+                                    Text(
+                                      "${feelsLikeValue ?? '--'} $temperaturSuffix",
+                                      style: TextStyle(
+                                        fontFamily: titleFont.fontFamily,
+                                        fontSize: titleFont.fontSize,
+                                        fontWeight: titleFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          titleFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      feelsLikeTitle,
+                                      style: TextStyle(
+                                        fontFamily: labelFont.fontFamily,
+                                        fontSize: labelFont.fontSize,
+                                        fontWeight: labelFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          labelFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -211,8 +319,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("$minValue $temperaturSuffix"),
-                                    Text(minTitle),
+                                    Text(
+                                      "${minValue ?? '--'} $temperaturSuffix",
+                                      style: TextStyle(
+                                        fontFamily: titleFont.fontFamily,
+                                        fontSize: titleFont.fontSize,
+                                        fontWeight: titleFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          titleFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      minTitle,
+                                      style: TextStyle(
+                                        fontFamily: labelFont.fontFamily,
+                                        fontSize: labelFont.fontSize,
+                                        fontWeight: labelFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          labelFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -222,8 +354,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text("$maxValue $temperaturSuffix"),
-                                    Text(maxTitle),
+                                    Text(
+                                      "${maxValue ?? '--'} $temperaturSuffix",
+                                      style: TextStyle(
+                                        fontFamily: titleFont.fontFamily,
+                                        fontSize: titleFont.fontSize,
+                                        fontWeight: titleFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          titleFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      maxTitle,
+                                      style: TextStyle(
+                                        fontFamily: labelFont.fontFamily,
+                                        fontSize: labelFont.fontSize,
+                                        fontWeight: labelFont.fontBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        color: Color(
+                                          labelFont.fontColor,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -255,8 +411,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text(pressureTitle),
-                                      Text("$pressureValue $pressureSuffix"),
+                                      Text(
+                                        pressureTitle,
+                                        style: TextStyle(
+                                          fontFamily: labelFont.fontFamily,
+                                          fontSize: labelFont.fontSize,
+                                          fontWeight: labelFont.fontBold
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: Color(
+                                            labelFont.fontColor,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        "${pressureValue ?? '--'} $pressureSuffix",
+                                        style: TextStyle(
+                                          fontFamily: titleFont.fontFamily,
+                                          fontSize: titleFont.fontSize,
+                                          fontWeight: titleFont.fontBold
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: Color(
+                                            titleFont.fontColor,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -278,8 +458,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text(humidityTitle),
-                                      Text("$humidityValue %"),
+                                      Text(
+                                        humidityTitle,
+                                        style: TextStyle(
+                                          fontFamily: labelFont.fontFamily,
+                                          fontSize: labelFont.fontSize,
+                                          fontWeight: labelFont.fontBold
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: Color(
+                                            labelFont.fontColor,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        "${humidityValue ?? '--'} %",
+                                        style: TextStyle(
+                                          fontFamily: titleFont.fontFamily,
+                                          fontSize: titleFont.fontSize,
+                                          fontWeight: titleFont.fontBold
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: Color(
+                                            titleFont.fontColor,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -296,7 +500,18 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(formattedDate),
+            Text(
+              updatedStampValue ?? '--',
+              style: TextStyle(
+                fontFamily: titleFont.fontFamily,
+                fontSize: titleFont.fontSize,
+                fontWeight:
+                    titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                color: Color(
+                  titleFont.fontColor,
+                ),
+              ),
+            ),
           ],
         )
       ],
@@ -321,14 +536,11 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
             }
           ],
         );
-        // debugPrint('Query: ${query.toJson()}');
 
         var qRes = await TwinnedSession.instance.twin.queryDeviceData(
           apikey: TwinnedSession.instance.authToken,
           body: query,
         );
-
-        // debugPrint('Response: ${qRes.body?.toJson()}');
 
         if (qRes.body != null &&
             qRes.body!.result != null &&
@@ -345,34 +557,47 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                   obj['p_source'] as Map<String, dynamic>;
               Map<String, dynamic> data =
                   source['data'] as Map<String, dynamic>;
-              currentValue = obj['p_source']['data']['current'];
-              pressureValue = obj['p_source']['data']['pressure'];
-              sunsetValue = obj['p_source']['data']['sunset'];
-              sunriseValue = obj['p_source']['data']['sunrise'];
-              feelsLikeValue = obj['p_source']['data']['feelsLike'];
-              minValue = obj['p_source']['data']['max'];
-              maxValue = obj['p_source']['data']['min'];
+              currentValue = data['current'];
+              pressureValue = data['pressure'];
+              sunsetValue = data['sunset'];
+              sunriseValue = data['sunrise'];
+              feelsLikeValue = data['feelsLike'];
+              minValue = data['max'];
+              maxValue = data['min'];
+              humidityValue = data['humidity'];
+              updatedStampValue = obj['p_source']['updatedStamp'];
 
-              humidityValue = obj['p_source']['data']['humidity'];
+              if (sunsetValue is int) {
+                DateTime sunsetDateTime =
+                    DateTime.fromMillisecondsSinceEpoch(sunsetValue);
+                formattedSunset = DateFormat('hh:mm a').format(sunsetDateTime);
+              } else {
+                formattedSunset = "--";
+              }
 
-              DateTime sunsetDateTime =
-                  DateTime.fromMillisecondsSinceEpoch(sunsetValue);
-              DateTime sunriseDateTime =
-                  DateTime.fromMillisecondsSinceEpoch(sunriseValue);
+              if (sunriseValue is int) {
+                DateTime sunriseDateTime =
+                    DateTime.fromMillisecondsSinceEpoch(sunriseValue);
+                formattedSunrise =
+                    DateFormat('hh:mm a').format(sunriseDateTime);
+              } else {
+                formattedSunrise = "--";
+              }
 
-              // Define the desired time format
-              DateFormat timeFormat = DateFormat('hh:mm a');
-
-              // Format the DateTime objects into the desired string format
-              formattedSunset = timeFormat.format(sunsetDateTime);
-              formattedSunrise = timeFormat.format(sunriseDateTime);
+              if (updatedStampValue is int) {
+                DateTime updatedStampTime =
+                    DateTime.fromMillisecondsSinceEpoch(updatedStampValue);
+                updatedStampValue = DateFormat('MMM-dd-yyyy – hh:mm a')
+                    .format(updatedStampTime);
+              } else {
+                updatedStampValue = "--";
+              }
             }
           }
         }
       });
     } catch (e) {
-      // debugPrint('Error loading data: $e');
-      // debugPrint('Stack trace: $stackTrace');
+      // Handle error
     } finally {
       loading = false;
       refresh();
