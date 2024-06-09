@@ -9,6 +9,7 @@ typedef ItemLabelFunc<T> = Widget Function(T item);
 typedef ItemIdFunc<T> = String Function(T item);
 
 class MultiDropdownSearchable<T> extends StatefulWidget {
+  final bool allowDuplicates;
   final String searchHint;
   final List<T> selectedItems;
   final OnItemsSelected onItemsSelected;
@@ -18,6 +19,7 @@ class MultiDropdownSearchable<T> extends StatefulWidget {
 
   const MultiDropdownSearchable(
       {super.key,
+      required this.allowDuplicates,
       required this.searchHint,
       required this.selectedItems,
       required this.onItemsSelected,
@@ -32,16 +34,20 @@ class MultiDropdownSearchable<T> extends StatefulWidget {
 
 class _MultiDropdownSearchableState<T>
     extends BaseState<MultiDropdownSearchable> {
-  final Map<String, T> _selectedItems = <String, T>{};
+  final Map<String, List<T>> _selectedItems = <String, List<T>>{};
   final Map<String, DropdownMenuItem<T>> _items =
       <String, DropdownMenuItem<T>>{};
   T? _selectedItem;
 
   @override
   void initState() {
-    for (var item in widget.selectedItems) {
+    for (T item in widget.selectedItems) {
       String id = widget.itemIdFunc(item);
-      _selectedItems[id] = item;
+      if (_selectedItems.containsKey(id)) {
+        _selectedItems[id]!.add(item);
+      } else {
+        _selectedItems[id] = [item];
+      }
     }
     super.initState();
   }
@@ -50,20 +56,22 @@ class _MultiDropdownSearchableState<T>
   Widget build(BuildContext context) {
     List<Chip> chips = [];
 
-    _selectedItems.forEach((k, v) {
-      chips.add(Chip(
-        label: widget.itemLabelFunc(v),
-        onDeleted: () {
-          setState(() {
-            _selectedItems.remove(k);
-          });
-          List<T> items = [];
-          _selectedItems.forEach((k, v) {
-            items.add(v);
-          });
-          widget.onItemsSelected(items);
-        },
-      ));
+    _selectedItems.forEach((k, values) {
+      for (int i = 0; i < values.length; i++) {
+        T v = values[i];
+        chips.add(Chip(
+          label: widget.itemLabelFunc(v),
+          onDeleted: () {
+            setState(() {
+              values.removeAt(i);
+              if (values.isEmpty) {
+                _selectedItems.remove(k);
+              }
+            });
+            widget.onItemsSelected(values);
+          },
+        ));
+      }
     });
 
     return Column(
@@ -108,12 +116,16 @@ class _MultiDropdownSearchableState<T>
             String id = widget.itemIdFunc(selected);
 
             if (!_selectedItems.containsKey(id)) {
-              _selectedItems[id] = selected;
+              _selectedItems[id] = [selected];
+            } else if (widget.allowDuplicates) {
+              _selectedItems[id]!.add(selected);
             }
+
             List<T> items = [];
             _selectedItems.forEach((k, v) {
-              items.add(v);
+              items.addAll(v);
             });
+
             widget.onItemsSelected(items);
           },
         ),

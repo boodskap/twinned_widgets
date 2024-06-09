@@ -10,11 +10,13 @@ typedef OnDevicesSelected = void Function(List<twin.Device> device);
 class MultiDeviceDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnDevicesSelected onDevicesSelected;
+  final bool allowDuplicates;
 
   const MultiDeviceDropdown({
     super.key,
     required this.selectedItems,
     required this.onDevicesSelected,
+    required this.allowDuplicates,
   });
 
   @override
@@ -28,6 +30,7 @@ class _MultiDeviceDropdownState extends BaseState<MultiDeviceDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Device>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Devices',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {

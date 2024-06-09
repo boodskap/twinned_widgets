@@ -14,6 +14,7 @@ import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
 import 'package:twinned_widgets/common/dynamic_text_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
+import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
@@ -58,6 +59,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericValueCardWidget': GenericValueCardWidgetBuilder(),
   'TWGenericWindWidget': GenericWindWidgetBuilder(),
   'TWSingleValueSliderWidget': SingleValueSliderWidgetBuilder(),
+  'TWGenericMultiValueCardWidget': GenericMultiValueCardWidgetBuilder(),
   'TWFlowMeterWidget': FlowMeterWidgetBuilder(),
   'TWStaticTimelineWidget': StaticTimelineWidgetBuilder(),
 };

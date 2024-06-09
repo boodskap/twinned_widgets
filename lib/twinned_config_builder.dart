@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_widgets/core/asset_dropdown.dart';
@@ -11,6 +9,7 @@ import 'package:twinned_widgets/core/device_model_dropdown.dart';
 import 'package:twinned_widgets/core/facility_dropdown.dart';
 import 'package:twinned_widgets/core/floor_dropdown.dart';
 import 'package:twinned_widgets/core/image_upload_field.dart';
+import 'package:twinned_widgets/core/list_of_objects.dart';
 import 'package:twinned_widgets/core/multi_asset_dropdown.dart';
 import 'package:twinned_widgets/core/multi_assetmodel_dropdown.dart';
 import 'package:twinned_widgets/core/multi_device_dropdown.dart';
@@ -24,7 +23,6 @@ import 'package:twinned_widgets/core/multi_field_dropdown.dart';
 import 'package:twinned_widgets/core/multi_floor_dropdown.dart';
 import 'package:twinned_widgets/core/multi_premise_dropdown.dart';
 import 'package:twinned_widgets/core/number_field.dart';
-import 'package:twinned_widgets/core/parameter_multi_text_field.dart';
 import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
 import 'package:twinned_widgets/core/range_list.dart';
@@ -118,6 +116,21 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           break;
         case DataType.image:
           fields[label] = _buildImageUploadField(parameter);
+          break;
+        case DataType.listOfFonts:
+          fields[label] = ListOfObjectsWidget(
+            objectType: ObjectType.font,
+            config: _parameters,
+            parameter: parameter,
+            allowDuplicates: widget.config.canDuplicate(parameter),
+          );
+        case DataType.listOfImages:
+          fields[label] = ListOfObjectsWidget(
+            objectType: ObjectType.image,
+            config: _parameters,
+            parameter: parameter,
+            allowDuplicates: widget.config.canDuplicate(parameter),
+          );
           break;
         case DataType.none:
           // We ignore unknown data types (may be a hidden parameter)
@@ -305,24 +318,18 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildListOfTextsField(String parameter) {
-    TextEditingController? controller;
-
-    if (widget.config.getHintType(parameter) == HintType.none) {
-      controller = TextEditingController();
-      List<dynamic> paramValue = _parameters[parameter] ?? [];
-      controller.text = paramValue!.join(',');
-      _controllers.add(controller!);
-    }
-
-    switch (widget.config.getHintType(parameter)) {
+    final HintType hintType = widget.config.getHintType(parameter);
+    switch (hintType) {
       case HintType.deviceId:
         return MultiDeviceDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onDevicesSelected: (items) {
               _parameters[parameter] = items.map((i) => i.id).toList();
             });
       case HintType.field:
         return MultiFieldDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onFieldsSelected: (fields) {
               debugPrint('SELECTED $fields');
@@ -331,18 +338,21 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.deviceModelId:
         return MultiDeviceModelDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onDeviceModelsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.assetId:
         return MultiAssetDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onAssetsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.assetModelId:
         return MultiAssetModelDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onAssetModelsSelected: (models) {
               debugPrint('ASSET MODELS: $models');
@@ -350,49 +360,66 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.premiseId:
         return MultiPremiseDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onPremisesSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.facilityId:
         return MultiFacilityDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onFacilitiesSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
       case HintType.floorId:
         return MultiFloorDropdown(
+            allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onFloorsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
+      case HintType.userId:
+      // TODO: Handle this case.
+      case HintType.none:
+      case HintType.textArea:
       default:
-        return ParameterMultiTextField(
-          parameters: _parameters,
+        return ListOfObjectsWidget(
+          objectType: ObjectType.text,
+          config: _parameters,
           parameter: parameter,
-          changeNotifier: () {
-            if (widget.verbose) debugPrint('VALUES: ${_parameters[parameter]}');
-          },
+          allowDuplicates: widget.config.canDuplicate(parameter),
+          maxTextLines: hintType == HintType.textArea ? 3 : 1,
         );
     }
   }
 
   Widget _buildListOfNumbersField(String parameter) {
-    return const SizedBox(
-        height: 48,
-        child: Placeholder(
-          color: Colors.red,
-          child: Text('Number List'),
-        ));
+    switch (widget.config.getHintType(parameter)) {
+      case HintType.color:
+        return ListOfObjectsWidget(
+          objectType: ObjectType.color,
+          config: _parameters,
+          parameter: parameter,
+          allowDuplicates: widget.config.canDuplicate(parameter),
+        );
+      default:
+        return ListOfObjectsWidget(
+          objectType: ObjectType.number,
+          config: _parameters,
+          parameter: parameter,
+          allowDuplicates: widget.config.canDuplicate(parameter),
+        );
+    }
   }
 
   Widget _buildListOfDecimalsField(String parameter) {
-    return const SizedBox(
-        height: 48,
-        child: Placeholder(
-          color: Colors.red,
-          child: Text('Decimal List'),
-        ));
+    return ListOfObjectsWidget(
+      objectType: ObjectType.decimal,
+      config: _parameters,
+      parameter: parameter,
+      allowDuplicates: widget.config.canDuplicate(parameter),
+    );
   }
 
   Widget _buildListOfRangesField(String parameter) {
@@ -453,6 +480,8 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           case DataType.listOfNumbers:
           case DataType.listOfDecimals:
           case DataType.listOfRanges:
+          case DataType.listOfFonts:
+          case DataType.listOfImages:
             List<dynamic> values = value;
             if (values.isEmpty) {
               valid = false;
@@ -462,6 +491,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
           case DataType.font:
           case DataType.none:
             break;
+          // TODO: Handle this case.
         }
       }
     });

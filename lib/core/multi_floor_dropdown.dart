@@ -10,11 +10,13 @@ typedef OnFloorsSelected = void Function(List<twin.Floor> item);
 class MultiFloorDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnFloorsSelected onFloorsSelected;
+  final bool allowDuplicates;
 
   const MultiFloorDropdown({
     super.key,
     required this.selectedItems,
     required this.onFloorsSelected,
+    required this.allowDuplicates,
   });
 
   @override
@@ -28,6 +30,7 @@ class _MultiFloorDropdownState extends BaseState<MultiFloorDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Floor>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Floors',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
