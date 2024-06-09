@@ -196,6 +196,7 @@ class _BulkAssetUploadState extends BaseState<BulkAssetUpload> {
                 Expanded(
                   flex: 3,
                   child: MultiClientDropdown(
+                      allowDuplicates: false,
                       selectedItems: selectedClients ?? [],
                       onClientsSelected: (selected) {
                         _selectClients(selected);
