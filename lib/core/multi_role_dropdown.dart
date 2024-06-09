@@ -31,6 +31,7 @@ class _MultiRoleDropdownState extends BaseState<MultiRoleDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Role>(
         key: Key(Uuid().v4()),
+        allowDuplicates: false,
         searchHint: 'Select Roles',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {

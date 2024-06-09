@@ -46,9 +46,11 @@ class _NumberFieldState extends BaseState<NumberField> {
           keyboardType: const TextInputType.numberWithOptions(
               decimal: false, signed: true),
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^\s*-?[0-9]{1,10}\s*$')),
+            FilteringTextInputFormatter.allow(
+                RegExp(r'^-?\s*-?[0-9]{1,10}\s*$')),
           ],
           onChanged: (value) {
+            if(value == '-') return;
             if (value.isEmpty) {
               widget.parameters[widget.parameter] = null;
             } else {
