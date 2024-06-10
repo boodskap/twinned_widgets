@@ -6,6 +6,7 @@ import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:intl/intl.dart'; // Import intl package
 
 class DeviceMultiFieldChartWidget extends StatefulWidget {
   final DeviceMultiFieldChartWidgetConfig config;
@@ -20,6 +21,7 @@ class _DeviceMultiFieldChartWidgetState
     extends BaseState<DeviceMultiFieldChartWidget> {
   final List<SeriesData> _chatSeries = [];
   bool isValidConfig = false;
+  final DateFormat dateFormat = DateFormat('MM/dd HH:mm:ss');
 
   @override
   void initState() {
@@ -48,12 +50,14 @@ class _DeviceMultiFieldChartWidgetState
       child: SfCartesianChart(
         title: ChartTitle(text: widget.config.title),
         legend: const Legend(isVisible: true),
+        primaryXAxis:
+            const CategoryAxis(), // Change to CategoryAxis to display formatted date strings
         series: widget.config.field.map((field) {
-          return LineSeries<SeriesData, num>(
+          return LineSeries<SeriesData, String>(
             name: field,
             enableTooltip: true,
             dataSource: _chatSeries,
-            xValueMapper: (SeriesData data, _) => data.stamp,
+            xValueMapper: (SeriesData data, _) => data.formattedStamp,
             yValueMapper: (SeriesData data, _) => data.values[field],
             width: 2,
             markerSettings: const MarkerSettings(
@@ -82,6 +86,20 @@ class _DeviceMultiFieldChartWidgetState
 
     _chatSeries.clear();
 
+    List<Object> mustConditions = [
+      {
+        "match_phrase": {"deviceId": widget.config.deviceId}
+      }
+    ];
+
+    for (String field in widget.config.field) {
+      mustConditions.add(
+        {
+          "exists": {"field": "data.$field"}
+        },
+      );
+    }
+
     await execute(() async {
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
         apikey: TwinnedSession.instance.authToken,
@@ -89,18 +107,11 @@ class _DeviceMultiFieldChartWidgetState
           page: 0,
           size: 100,
           source: [],
-          mustConditions: [
-            {
-              "exists": {"field": "data.volume"}
-            },
-            {
-              "exists": {"field": "data.temperature_value"}
-            },
-            {
-              "match_phrase": {"deviceId": widget.config.deviceId}
-            },
-          ],
-          sort: {'updatedStamp': 'desc'}, conditions: [], queryConditions: [], boolConditions: [],
+          mustConditions: mustConditions,
+          sort: {'updatedStamp': 'desc'},
+          conditions: [],
+          queryConditions: [],
+          boolConditions: [],
         ),
       );
 
@@ -109,11 +120,17 @@ class _DeviceMultiFieldChartWidgetState
         List<dynamic> values = json['hits']['hits'];
         for (Map<String, dynamic> obj in values) {
           int millis = obj['p_source']['updatedStamp'];
+          DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millis);
+          String formattedDate = dateFormat.format(dateTime); // Format the date
+          dynamic value = obj['p_source']['data'][widget.config.field];
           Map<String, dynamic> dataValues = {};
           for (String field in widget.config.field) {
             dataValues[field] = obj['p_source']['data'][field];
           }
-          _chatSeries.add(SeriesData(stamp: millis, values: dataValues));
+          _chatSeries.add(SeriesData(
+              stamp: dateTime,
+              formattedStamp: formattedDate,
+              values: dataValues));
         }
       }
     });
@@ -129,10 +146,13 @@ class _DeviceMultiFieldChartWidgetState
 }
 
 class SeriesData {
-  final num stamp;
+  final DateTime stamp; // Original DateTime stamp
+  final String formattedStamp; // Formatted date string
   final Map<String, dynamic> values;
-
-  SeriesData({required this.stamp, required this.values});
+  SeriesData(
+      {required this.stamp,
+      required this.formattedStamp,
+      required this.values});
 }
 
 class DeviceMultiFieldChartWidgetBuilder extends TwinnedWidgetBuilder {
