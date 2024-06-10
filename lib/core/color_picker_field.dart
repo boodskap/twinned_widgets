@@ -58,13 +58,14 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
           title: const Text('Pick a color'),
           content: SingleChildScrollView(
             child: ColorPicker(
+              hexInputBar: true,
+              labelTypes: [],
               pickerColor: getColor(),
               onColorChanged: (color) {
                 setColor(color);
               },
               enableAlpha: true,
               displayThumbColor: true,
-              showLabel: true,
               pickerAreaHeightPercent: 0.8,
             ),
           ),

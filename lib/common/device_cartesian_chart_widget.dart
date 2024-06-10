@@ -53,7 +53,7 @@ class _DeviceCartesianChartWidgetState
       legend: const Legend(isVisible: true),
 
       primaryXAxis:
-          CategoryAxis(), // Change to CategoryAxis to display formatted date strings
+          const CategoryAxis(), // Change to CategoryAxis to display formatted date strings
       series: [
         LineSeries<SeriesData, String>(
             name: widget.config.field,
@@ -88,10 +88,10 @@ class _DeviceCartesianChartWidgetState
           apikey: TwinnedSession.instance.authToken,
           body: EqlSearch(page: 0, size: 100, source: [], mustConditions: [
             {
-              "exists": {"field": "data.volume"}
+              "match_phrase": {"deviceId": widget.config.deviceId}
             },
             {
-              "match_phrase": {"deviceId": widget.config.deviceId}
+              "exists": {"field": "data.${widget.config.field}"}
             },
           ], sort: {
             'updatedStamp': 'desc'
