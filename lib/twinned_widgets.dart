@@ -6,6 +6,7 @@ import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
+import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
 import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
@@ -58,6 +59,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericWindWidget': GenericWindWidgetBuilder(),
   'TWSingleValueSliderWidget': SingleValueSliderWidgetBuilder(),
   'TWFlowMeterWidget': FlowMeterWidgetBuilder(),
+  'TWDeviceDataAccordionWidget': DeviceDataAccordionWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
