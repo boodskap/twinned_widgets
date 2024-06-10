@@ -51,6 +51,8 @@ class _FontFieldState extends BaseState<FontField> {
           title: const Text('Pick a color'),
           content: SingleChildScrollView(
             child: ColorPicker(
+              hexInputBar: true,
+              labelTypes: [],
               pickerColor: getColor(),
               onColorChanged: (color) {
                 setState(() {
@@ -59,7 +61,6 @@ class _FontFieldState extends BaseState<FontField> {
               },
               enableAlpha: true,
               displayThumbColor: true,
-              showLabel: true,
               pickerAreaHeightPercent: 0.8,
             ),
           ),

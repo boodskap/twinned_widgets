@@ -10,11 +10,13 @@ typedef OnClientsSelected = void Function(List<twin.Client> items);
 class MultiClientDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnClientsSelected onClientsSelected;
+  final bool allowDuplicates;
 
   const MultiClientDropdown({
     super.key,
     required this.selectedItems,
     required this.onClientsSelected,
+    required this.allowDuplicates,
   });
 
   @override
@@ -28,6 +30,7 @@ class _MultiClientDropdownState extends BaseState<MultiClientDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Client>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Clients',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {

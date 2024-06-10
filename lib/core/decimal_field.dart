@@ -48,9 +48,10 @@ class _DecimalFieldState extends BaseState<DecimalField> {
           decoration: const InputDecoration(border: OutlineInputBorder()),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+            FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d*$')),
           ],
           onSubmitted: (value) {
+            if (value == '-') return;
             if (value.isEmpty) {
               widget.parameters[widget.parameter] = null;
             } else {

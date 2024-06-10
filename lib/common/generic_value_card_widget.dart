@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:nocode_commons/util/nocode_utils.dart';
 import 'package:twinned_models/generic_value_card/generic_value_card.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_widgets/twinned_session.dart';
@@ -26,18 +28,17 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
   late String deviceId;
   late String topLabel;
   late String bottomLabel;
-  String? iconId;
+  late String iconId;
   late double elevation;
   late double iconWidth;
   late double iconHeight;
   late FontConfig topFont;
   late FontConfig valueFont;
   late FontConfig bottomFont;
-  late Color valueBgColor;
   dynamic value;
+  Widget? iconImage;
 
-  @override
-  void initState() {
+  void _initState() {
     var config = widget.config;
     field = config.field;
     deviceId = config.deviceId;
@@ -50,20 +51,14 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
     topFont = FontConfig.fromJson(config.topFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     bottomFont = FontConfig.fromJson(config.bottomFont);
-    valueBgColor = Color(config.valueBgColor);
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    _initState();
+
     if (!isValidConfig) {
       return const Center(
         child: Wrap(
@@ -79,24 +74,18 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
       );
     }
     return Card(
-      color: Colors.white,
+      color: Colors.transparent,
       elevation: elevation,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: SizedBox(
-              height: iconHeight,
-              width: iconWidth,
-              child: TwinImageHelper.getDomainImage(
-                iconId!,
-                fit: BoxFit.contain,
-              ),
+          if (null != iconImage)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                  width: iconWidth, height: iconHeight, child: iconImage),
             ),
-          ),
-          divider(horizontal: true, width: 20),
+          //divider(horizontal: true, width: 20),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -104,48 +93,40 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
               children: [
                 Text(
                   topLabel,
-                  style: TextStyle(
-                    fontFamily: topFont.fontFamily,
-                    fontSize: topFont.fontSize,
-                    fontWeight:
-                        topFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                    color: Color(topFont.fontColor),
-                  ),
+                  style: TwinnedUtils.getTextStyle(topFont),
                 ),
                 divider(),
                 Container(
                   decoration: BoxDecoration(
-                    color: valueBgColor,
+                    color: Color(widget.config.valueBgColor),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
-                    child: Text(
-                      value != null ? '$value' : '-',
-                      style: TextStyle(
-                        fontFamily: valueFont.fontFamily,
-                        fontSize: valueFont.fontSize,
-                        fontWeight: valueFont.fontBold
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: Color(valueFont.fontColor),
-                      ),
+                    child: Wrap(
+                      spacing: 8.0,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          '${value ?? ''}',
+                          style: TwinnedUtils.getTextStyle(valueFont),
+                        ),
+                        if (widget.config.bottomLabelAsSuffix)
+                          Text(
+                            bottomLabel,
+                            style: TwinnedUtils.getTextStyle(bottomFont),
+                          ),
+                      ],
                     ),
                   ),
                 ),
-                divider(),
-                Text(
-                  bottomLabel,
-                  style: TextStyle(
-                    fontFamily: bottomFont.fontFamily,
-                    fontSize: bottomFont.fontSize,
-                    fontWeight: bottomFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: Color(bottomFont.fontColor),
+                if (!widget.config.bottomLabelAsSuffix) divider(),
+                if (!widget.config.bottomLabelAsSuffix)
+                  Text(
+                    bottomLabel,
+                    style: TwinnedUtils.getTextStyle(bottomFont),
                   ),
-                ),
               ],
             ),
           ),
@@ -160,6 +141,8 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
   }
 
   Future<void> load() async {
+    _initState();
+
     if (!isValidConfig) return;
 
     if (loading) return;
@@ -211,8 +194,13 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
       // debugPrint('Stack trace: $stackTrace');
     } finally {
       loading = false;
-      refresh();
     }
+
+    if (null != iconId && iconId.isNotEmpty) {
+      iconImage = TwinImageHelper.getDomainImage(iconId);
+    }
+
+    refresh();
   }
 }
 

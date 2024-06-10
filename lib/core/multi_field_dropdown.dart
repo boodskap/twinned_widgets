@@ -12,11 +12,13 @@ typedef OnFieldsSelected = void Function(List<twin.Parameter> item);
 class MultiFieldDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnFieldsSelected onFieldsSelected;
+  final bool allowDuplicates;
 
   const MultiFieldDropdown({
     super.key,
     required this.selectedItems,
     required this.onFieldsSelected,
+    required this.allowDuplicates,
   });
 
   @override
@@ -31,6 +33,7 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Parameter>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Fields',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
@@ -73,9 +76,11 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
         setState(() {
           if (!mounted) return;
           _allItems.addAll(eRes.body!.values!);
-          for (var p in _allItems) {
-            if (widget.selectedItems.contains(p.name)) {
-              _selectedItems.add(p);
+          for (String selected in widget.selectedItems) {
+            for (var p in _allItems) {
+              if (p.name == selected) {
+                _selectedItems.add(p);
+              }
             }
           }
         });
