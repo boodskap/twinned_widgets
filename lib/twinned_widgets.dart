@@ -65,7 +65,6 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWFlowMeterWidget': FlowMeterWidgetBuilder(),
   'TWDeviceDataAccordionWidget': DeviceDataAccordionWidgetBuilder(),
   'TWStaticTimelineWidget': StaticTimelineWidgetBuilder(),
-  'TWGenericAirQualityWidget': GenericAirQualityWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
