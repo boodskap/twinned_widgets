@@ -27,6 +27,7 @@ import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/common/static_timeline_widget.dart';
+import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'common/multiple_device_cartesian_chart_widget.dart';

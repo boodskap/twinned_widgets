@@ -61,8 +61,7 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
   String formattedSunrise = "--";
   String formattedSunset = "--";
 
-  @override
-  void initState() {
+  void _initState() {
     initializeDateFormatting();
     deviceId = widget.config.deviceId;
     minTitle = widget.config.minTitle;
@@ -87,13 +86,12 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
     pressureField = widget.config.pressureField;
     humidityField = widget.config.humidityField;
     isConfigValid = deviceId.isNotEmpty;
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // String formattedDate = DateFormat('MMM-dd-yyyy – hh:mm a').format(now);
+    _initState();
 
     if (!isConfigValid) {
       return const Wrap(
@@ -548,6 +546,8 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
   }
 
   Future<void> load() async {
+    _initState();
+
     if (!isConfigValid) return;
 
     if (loading) return;

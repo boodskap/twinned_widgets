@@ -2,8 +2,11 @@ import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:nocode_commons/util/nocode_utils.dart';
 import 'package:twinned_models/device_data_accordion/device_data_accordion.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
@@ -32,10 +35,12 @@ class _DeviceDataAccordionWidgetState
   late Color tableContentColor;
   String field = '';
   String value = '';
+  String deviceName = '';
   List<Map<String, String>> deviceData = [];
+  Map<String, String> fieldIcons = <String, String>{};
+  Map<String, String> fieldSuffix = <String, String>{};
 
-  @override
-  void initState() {
+  void _initState() {
     var config = widget.config;
     deviceId = widget.config.deviceId;
     title = widget.config.title;
@@ -53,11 +58,12 @@ class _DeviceDataAccordionWidgetState
         ? Colors.black
         : Color(config.tableContentColor);
     isValidConfig = widget.config.deviceId.isNotEmpty;
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _initState();
+
     if (!isValidConfig) {
       return const Wrap(
         spacing: 8.0,
@@ -100,7 +106,7 @@ class _DeviceDataAccordionWidgetState
             isOpen: false,
             leftIcon: const Icon(Icons.devices_other, color: Colors.white),
             header: Text(
-              deviceId,
+              deviceName,
               style: TextStyle(
                   fontSize: accordionTitleFont.fontSize,
                   fontFamily: accordionTitleFont.fontFamily,
@@ -109,7 +115,11 @@ class _DeviceDataAccordionWidgetState
                       : FontWeight.normal,
                   color: Color(accordionTitleFont.fontColor)),
             ),
-            content: MyDataTable(deviceData: deviceData),
+            content: MyDataTable(
+              deviceData: deviceData,
+              fieldIcons: fieldIcons,
+              fieldSuffix: fieldSuffix,
+            ),
           ),
         ],
       ),
@@ -117,6 +127,8 @@ class _DeviceDataAccordionWidgetState
   }
 
   Future load({String? filter, String search = '*'}) async {
+    _initState();
+
     if (!isValidConfig) return;
 
     if (loading) return;
@@ -133,30 +145,45 @@ class _DeviceDataAccordionWidgetState
             {
               "match_phrase": {"deviceId": widget.config.deviceId}
             },
-            {
-              "exists": {"field": "data.$field"}
-            },
           ],
         ),
       );
 
       if (validateResponse(qRes)) {
+        Device? device =
+            await TwinnedUtils.getDevice(deviceId: widget.config.deviceId);
+        if (null == device) return;
+        deviceName = device.name;
+        DeviceModel? deviceModel =
+            await TwinnedUtils.getDeviceModel(modelId: device.modelId);
+        if (null == deviceModel) return;
+
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
+
+        List<String> deviceFields = NoCodeUtils.getSortedFields(deviceModel);
 
         List<dynamic> values = json['hits']['hits'];
         List<Map<String, String>> fetchedData = [];
+
         if (values.isNotEmpty) {
-          for (Map<String, dynamic> obj in values) {
-            var data = obj['p_source']['data'];
-            var fieldData = data['field']?.toString() ?? '';
-            var valueData = data['value']?.toString() ?? '';
+          Map<String, dynamic> obj = values[0];
+          Map<String, dynamic> data = obj['p_source']['data'];
+
+          for (String field in deviceFields) {
+            String label = NoCodeUtils.getParameterLabel(field, deviceModel);
+            String value = '${data[field] ?? '-'}';
+            String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
+            String iconId = NoCodeUtils.getParameterIcon(field, deviceModel);
+            fieldSuffix[label] = unit;
+            fieldIcons[label] = iconId;
 
             fetchedData.add({
-              'field': fieldData,
-              'value': valueData,
+              'field': label,
+              'value': value,
             });
           }
         }
+        debugPrint('DEVICE DATA: $fetchedData');
         setState(() {
           deviceData = fetchedData;
         });
@@ -175,8 +202,45 @@ class _DeviceDataAccordionWidgetState
 
 class MyDataTable extends StatelessWidget {
   final List<Map<String, String>> deviceData;
+  final Map<String, String> fieldIcons;
+  final Map<String, String> fieldSuffix;
 
-  const MyDataTable({super.key, required this.deviceData});
+  const MyDataTable(
+      {super.key,
+      required this.deviceData,
+      required this.fieldIcons,
+      required this.fieldSuffix});
+
+  Widget _buildParameter(Map<String, String> data, String field) {
+    String? iconId = fieldIcons[field];
+
+    return Wrap(
+      spacing: 5.0,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        if (null == iconId || iconId.isEmpty) const Icon(Icons.menu),
+        if (null != iconId && iconId.isNotEmpty)
+          SizedBox(
+              width: 32,
+              height: 32,
+              child: TwinImageHelper.getDomainImage(iconId)),
+        Text(data['field'] ?? ''),
+      ],
+    );
+  }
+
+  Widget _buildValue(Map<String, String> data, String field) {
+    String? suffix = fieldSuffix[field];
+
+    return Wrap(
+      spacing: 5.0,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(data['value'] ?? ''),
+        if (null != suffix && suffix.isNotEmpty) Text(suffix),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,11 +251,11 @@ class MyDataTable extends StatelessWidget {
       columns: const [
         DataColumn(
             label: Text(
-          'Device Data',
+          'Parameter',
         )),
         DataColumn(
             label: Text(
-              'Values',
+              'Value',
             ),
             numeric: true),
       ],
@@ -199,8 +263,8 @@ class MyDataTable extends StatelessWidget {
           .map(
             (data) => DataRow(
               cells: [
-                DataCell(Text(data['field'] ?? '')),
-                DataCell(Text(data['value'] ?? '')),
+                DataCell(_buildParameter(data, data['field']!)),
+                DataCell(_buildValue(data, data['field']!)),
               ],
             ),
           )
