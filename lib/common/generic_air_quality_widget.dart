@@ -210,27 +210,27 @@ class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
-                          text: '$value\n',
+                          text: value!= null ? value.toString() : '--',
                           style: TextStyle(
                             fontSize: valueFont.fontSize,
                             fontWeight: valueFont.fontBold
                                 ? FontWeight.bold
                                 : FontWeight.normal,
                             color: Color(valueFont.fontColor),
-                          ),
-                          children: [
-                            TextSpan(
-                              text: airQualityType,
-                              style: TextStyle(
+                          )
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        airQualityType,
+                        style: TextStyle(
                                 fontSize: valueFont.fontSize * 0.55,
                                 fontWeight: valueFont.fontBold
                                     ? FontWeight.bold
                                     : FontWeight.normal,
                                 color: Color(valueFont.fontColor),
                               ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                     Center(
@@ -354,7 +354,7 @@ class GenericAirQualityWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteName() {
-    return "Generic Air Quality";
+    return "Generic Air Quality Gauge";
   }
 
   @override
@@ -367,6 +367,6 @@ class GenericAirQualityWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Air Quality';
+    return 'Generic Air Quality Gauge';
   }
 }
