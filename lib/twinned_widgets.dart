@@ -19,6 +19,7 @@ import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
+import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
 import 'package:twinned_widgets/common/timestamp_widget.dart';
@@ -64,6 +65,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWFlowMeterWidget': FlowMeterWidgetBuilder(),
   'TWDeviceDataAccordionWidget': DeviceDataAccordionWidgetBuilder(),
   'TWStaticTimelineWidget': StaticTimelineWidgetBuilder(),
+  'TWMultiDeviceBarChartWidget': MultiDeviceBarChartWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
