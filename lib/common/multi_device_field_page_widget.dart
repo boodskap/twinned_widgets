@@ -27,11 +27,9 @@ class _MultiDeviceFieldPageWidgetState
   late String imageId;
   late String subText;
   late String contentText;
-  dynamic dateTime;
   late Color fillColor;
-  late Color borderColor;
+  late FontConfig titleFont;
   late FontConfig valueFont;
-  late FontConfig preSuffixTextFont;
   late FontConfig subTextFont;
   late FontConfig contentTextFont;
 
@@ -44,11 +42,9 @@ class _MultiDeviceFieldPageWidgetState
     imageId = config.imageId;
     subText = config.subText;
     contentText = config.contentText;
-    dateTime = config.dateTime;
     fillColor = Color(config.fillColor);
-    borderColor = Color(config.borderColor);
+    titleFont = FontConfig.fromJson(config.titleFont);
     valueFont = FontConfig.fromJson(config.valueFont);
-    preSuffixTextFont = FontConfig.fromJson(config.preSuffixTextFont);
     subTextFont = FontConfig.fromJson(config.subTextFont);
     contentTextFont = FontConfig.fromJson(config.contentTextFont);
 
@@ -73,111 +69,120 @@ class _MultiDeviceFieldPageWidgetState
         ),
       );
     }
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Card(
-              color: fillColor,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: titleFont.fontSize,
+              color: Color(titleFont.fontColor),
+              fontFamily: titleFont.fontFamily,
+              fontWeight:
+                  titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+        Card(
+          color: fillColor,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  cityName,
+                  style: const TextStyle(
+                    color: Color(0XFFFFFAFA),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  DateFormat('EEE, MMM d, hh:mm a').format(DateTime.now()),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0XFFFFFAFA),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (imageId.isNotEmpty)
+                  SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: TwinImageHelper.getDomainImage(imageId)),
+                const Row(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(
-                      cityName,
-                      style: const TextStyle(
-                        color: Color(0XFFFFFAFA),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      DateFormat('EEE, MMM d, hh:mm a')
-                          .format(dateTime as DateTime),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0XFFFFFAFA),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    if (imageId.isNotEmpty)
-                      SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: TwinImageHelper.getDomainImage(imageId)),
-                    const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              '2',
-                              style: TextStyle(
-                                fontSize: 50,
-                                color: Color(0XFFF8F8FF),
-                              ),
-                            ),
-                            Text(
-                              '°',
-                              style: TextStyle(
-                                fontSize: 40,
-                                color: Color(0XFFF8F8FF),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    divider(height: 10),
-                    const Text(
-                      'Hey Cameron',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0XFFFFFAFA),
-                      ),
-                    ),
-                    divider(height: 10),
-                    const Column(
+                    Row(
                       children: [
                         Text(
-                          "It's gonna be a cold & stromy night...",
+                          '2',
                           style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0XFFFFFAFA),
+                            fontSize: 50,
+                            color: Color(0XFFF8F8FF),
                           ),
                         ),
                         Text(
-                          'Better get your umbrella with you.',
+                          '°',
                           style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0XFFFFFAFA),
+                            fontSize: 40,
+                            color: Color(0XFFF8F8FF),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    // Add a curved wave line here
-                    CustomPaint(
-                      size: const Size(400, 50),
-                      painter: CurvePainter(),
-                    ),
-                    divider(height: 10),
-                    // Add the list of days of the week here
-                    const WeekdaysRow(),
-                    divider(height: 10),
                   ],
                 ),
-              ),
+                // divider(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        subText,
+                        style: TextStyle(
+                          fontSize: subTextFont.fontSize,
+                          color: Color(subTextFont.fontColor),
+                          fontFamily: subTextFont.fontFamily,
+                          fontWeight: subTextFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                      divider(height: 10),
+                      Text(
+                        contentText,
+                        style: TextStyle(
+                          fontSize: contentTextFont.fontSize,
+                          fontFamily: contentTextFont.fontFamily,
+                          color: Color(contentTextFont.fontColor),
+                          fontWeight: contentTextFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                CustomPaint(
+                  size: const Size(400, 50),
+                  painter: CurvePainter(),
+                ),
+                divider(height: 8),
+                const WeekdaysRow(),
+                divider(height: 8),
+              ],
             ),
-            // Add the SfCalendar widget here
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -259,6 +264,10 @@ class CurvePainter extends CustomPainter {
   }
 }
 
+Widget divider({bool horizontal = false, double width = 0, double height = 0}) {
+  return horizontal ? SizedBox(width: width) : SizedBox(height: height);
+}
+
 class WeekdaysRow extends StatelessWidget {
   const WeekdaysRow({Key? key}) : super(key: key);
 
@@ -310,8 +319,4 @@ class WeekdaysRow extends StatelessWidget {
       }).toList(),
     );
   }
-}
-
-Widget divider({bool horizontal = false, double width = 0, double height = 0}) {
-  return horizontal ? SizedBox(width: width) : SizedBox(height: height);
 }
