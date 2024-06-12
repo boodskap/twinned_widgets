@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nocode_commons/core/base_state.dart';
-import 'package:twinned_models/multi_device_field_card/multi_device_field_card.dart';
-import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
-import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/grid/grid_widget.dart';
-import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_models/generic_value_card/generic_value_card.dart';
-import 'package:twinned_widgets/twinned_widget_builder.dart';
-import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_models/multi_device_field_card/multi_device_field_card.dart';
+import 'package:twinned_widgets/common/generic_value_card_widget.dart';
+import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class MultiDeviceFieldCardWidget extends StatefulWidget {
   final MultiDeviceFieldCardWidgetConfig config;
@@ -43,7 +39,7 @@ class _MultiDeviceFieldCardWidgetState
   late double fieldSpacing;
   late double fieldElevation;
   late double cardElevation;
-
+  Widget? iconImage;
   @override
   void initState() {
     deviceIds = widget.config.deviceIds;
@@ -83,16 +79,25 @@ class _MultiDeviceFieldCardWidgetState
       children: [
         Expanded(
           child: Card(
+            elevation: cardElevation,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.account_circle_rounded, size: 48),
-                      Divider(),
+                      if (null != iconImage)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                              width: iconWidth,
+                              height: iconHeight,
+                              child: iconImage),
+                        ),
+                      const Divider(),
                       Text(
                         title,
                         style: TextStyle(
@@ -104,7 +109,7 @@ class _MultiDeviceFieldCardWidgetState
                           color: Color(titleFont.fontColor),
                         ),
                       ),
-                      Divider(),
+                      const Divider(),
                       Text(
                         message,
                         style: TextStyle(
@@ -121,19 +126,36 @@ class _MultiDeviceFieldCardWidgetState
                 ),
                 Expanded(
                   flex: 8,
-                  child: ListView.builder(
-                    itemCount: deviceIds.length * fields.length,
-                    itemBuilder: (context, index) {
-                      final deviceIndex = index ~/ fields.length;
-                      final fieldIndex = index % fields.length;
-                      return GenericValueCardWidget(
-                        config: GenericValueCardWidgetConfig(
-                          topLabel: fields[fieldIndex],
-                          deviceId: deviceIds[deviceIndex],
-                          field: fields[fieldIndex],
-                        ),
-                      );
-                    },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: [
+                          for (var deviceIndex = 0;
+                              deviceIndex < deviceIds.length;
+                              deviceIndex++)
+                            for (var fieldIndex = 0;
+                                fieldIndex < fields.length;
+                                fieldIndex++)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: GenericValueCardWidget(
+                                    config: GenericValueCardWidgetConfig(
+                                      topLabel: fields[fieldIndex],
+                                      deviceId: deviceIds[deviceIndex],
+                                      field: fields[fieldIndex],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -144,8 +166,28 @@ class _MultiDeviceFieldCardWidgetState
     );
   }
 
+  Future<void> load() async {
+    if (!isValidConfig) return;
+
+    if (loading) return;
+    loading = true;
+
+    try {} catch (e) {
+    } finally {
+      loading = false;
+    }
+
+    if (iconId.isNotEmpty) {
+      iconImage = TwinImageHelper.getDomainImage(iconId);
+    }
+
+    refresh();
+  }
+
   @override
-  void setup() {}
+  void setup() {
+    load();
+  }
 }
 
 class MultiDeviceFieldCardWidgetBuilder extends TwinnedWidgetBuilder {
