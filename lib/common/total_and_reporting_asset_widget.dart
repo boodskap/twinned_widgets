@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_api/api/twinned.swagger.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_models/twinned_models.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
@@ -45,7 +45,9 @@ class _TotalAndReportingAssetWidgetState
               source: [],
               mustConditions: [terms],
               boolConditions: [],
-              size: 0, conditions: [], queryConditions: []));
+              size: 0,
+              conditions: [],
+              queryConditions: []));
 
       if (validateResponse(sRes)) {
         totalAssets = sRes.body!.total;
@@ -53,7 +55,13 @@ class _TotalAndReportingAssetWidgetState
 
       sRes = await session.twin.queryCountAsset(
           apikey: session.authToken,
-          body: EqlSearch(source: [], mustConditions: [terms], size: 0, conditions: [], queryConditions: [], boolConditions: []));
+          body: EqlSearch(
+              source: [],
+              mustConditions: [terms],
+              size: 0,
+              conditions: [],
+              queryConditions: [],
+              boolConditions: []));
 
       if (validateResponse(sRes)) {
         reportingAssets = sRes.body!.total;
