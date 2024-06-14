@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/dial/dial.dart';
@@ -22,7 +22,7 @@ class _DeviceMultiFieldDialWidgetState
     extends BaseState<DeviceMultiFieldDialWidget> {
   final TextStyle labelStyle =
       const TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-  bool isConfigValid  = false;
+  bool isConfigValid = false;
   late String deviceId;
   late List<String> fields;
   Map<String, dynamic> fieldValues = {};

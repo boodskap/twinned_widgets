@@ -3,14 +3,14 @@ import 'package:twinned_widgets/core/field_sensor_data_widget.dart';
 import 'package:twinned_widgets/core/infra_component_detail_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart' as twinned;
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/grid/grid_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:nocode_commons/util/nocode_utils.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class AssetModelDataGridWidget extends StatefulWidget {
@@ -351,7 +351,7 @@ class _AssetModelDataGridWidgetState
       }
     }
 
-    List<String> allFields = NoCodeUtils.getSortedFields(_models[modelId]!);
+    List<String> allFields = TwinUtils.getSortedFields(_models[modelId]!);
 
     if (widget.config.filterFields.isNotEmpty) {
       allFields.clear();

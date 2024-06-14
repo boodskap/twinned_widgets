@@ -1,8 +1,8 @@
 import 'package:accordion/accordion.dart';
 import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/device_data_accordion/device_data_accordion.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
@@ -160,7 +160,7 @@ class _DeviceDataAccordionWidgetState
 
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
 
-        List<String> deviceFields = NoCodeUtils.getSortedFields(deviceModel);
+        List<String> deviceFields = TwinUtils.getSortedFields(deviceModel);
 
         List<dynamic> values = json['hits']['hits'];
         List<Map<String, String>> fetchedData = [];
@@ -170,10 +170,10 @@ class _DeviceDataAccordionWidgetState
           Map<String, dynamic> data = obj['p_source']['data'];
 
           for (String field in deviceFields) {
-            String label = NoCodeUtils.getParameterLabel(field, deviceModel);
+            String label = TwinUtils.getParameterLabel(field, deviceModel);
             String value = '${data[field] ?? '-'}';
-            String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
-            String iconId = NoCodeUtils.getParameterIcon(field, deviceModel);
+            String unit = TwinUtils.getParameterUnit(field, deviceModel);
+            String iconId = TwinUtils.getParameterIcon(field, deviceModel);
             fieldSuffix[label] = unit;
             fieldIcons[label] = iconId;
 

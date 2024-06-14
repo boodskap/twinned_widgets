@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/twinned_models.dart';
 import 'package:twinned_widgets/palette_category.dart';
@@ -126,7 +126,7 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
                   ),
                 ),
               ),
-               Align(
+              Align(
                 alignment: _getAlignment(widget.config.valueTextAlignment),
                 child: Text(
                   value,
@@ -153,7 +153,6 @@ class _DynamicTextWidgetState extends BaseState<DynamicTextWidget> {
                   ),
                 ),
               ),
-             
             ],
           ),
         ),
