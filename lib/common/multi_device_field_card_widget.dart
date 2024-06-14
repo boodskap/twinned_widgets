@@ -4,7 +4,7 @@ import 'package:twinned_models/generic_value_card/generic_value_card.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/multi_device_field_card/multi_device_field_card.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 

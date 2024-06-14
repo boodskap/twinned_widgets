@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
 typedef OnClientsSelected = void Function(List<twin.Client> items);

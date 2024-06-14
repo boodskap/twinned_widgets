@@ -5,10 +5,10 @@ import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/device_data_accordion/device_data_accordion.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 
@@ -151,11 +151,11 @@ class _DeviceDataAccordionWidgetState
 
       if (validateResponse(qRes)) {
         Device? device =
-            await TwinnedUtils.getDevice(deviceId: widget.config.deviceId);
+            await TwinUtils.getDevice(deviceId: widget.config.deviceId);
         if (null == device) return;
         deviceName = device.name;
         DeviceModel? deviceModel =
-            await TwinnedUtils.getDeviceModel(modelId: device.modelId);
+            await TwinUtils.getDeviceModel(modelId: device.modelId);
         if (null == deviceModel) return;
 
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;

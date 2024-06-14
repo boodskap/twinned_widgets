@@ -3,7 +3,7 @@ import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twin_commons/core/sensor_widget.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twin;
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 
 class FieldSensorWidget extends StatelessWidget {
   final String field;

@@ -4,8 +4,8 @@ import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/field_sensor_data_widget.dart';
 import 'package:twinned_widgets/core/top_bar.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

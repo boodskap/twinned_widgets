@@ -5,7 +5,7 @@ import 'package:twinned_models/range_label_dial/range_label_dial.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_widgets/twinned_widgets.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 

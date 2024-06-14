@@ -9,7 +9,7 @@ import 'package:twinned_widgets/core/multi_client_dropdown.dart';
 import 'package:twinned_widgets/core/multi_role_dropdown.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 
 class BulkAssetUpload extends StatefulWidget {
   final String? selectedPremise;

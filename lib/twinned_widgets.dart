@@ -39,7 +39,6 @@ export 'common/value_distribution_pie_widget.dart';
 export 'common/total_and_reporting_asset_widget.dart';
 export 'twinned_config_builder.dart';
 export 'twinned_widget_builder.dart';
-export 'twinned_session.dart';
 
 final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWTotalValueWidget': TotalValueWidgetBuilder(),
@@ -69,7 +68,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceDataAccordionWidget': DeviceDataAccordionWidgetBuilder(),
   'TWStaticTimelineWidget': StaticTimelineWidgetBuilder(),
   'TWGenericAirQualityWidget': GenericAirQualityWidgetBuilder(),
-   'TWGenericAirQualityLinearWidget': GenericAirQualityLinearWidgetBuilder(),
+  'TWGenericAirQualityLinearWidget': GenericAirQualityLinearWidgetBuilder(),
   'TWMultiDeviceBarChartWidget': MultiDeviceBarChartWidgetBuilder(),
   'TWMultiDeviceFieldCardWidget': MultiDeviceFieldCardWidgetBuilder(),
 };
