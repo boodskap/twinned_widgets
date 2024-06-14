@@ -9,6 +9,7 @@ import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class GenericDayWeatherWidget extends StatefulWidget {
   final GenericDayWeatherWidgetConfig config;
@@ -60,8 +61,8 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
   String formattedSunrise = "--";
   String formattedSunset = "--";
 
-  @override
-  void initState() {
+  void _initState() {
+    initializeDateFormatting();
     deviceId = widget.config.deviceId;
     minTitle = widget.config.minTitle;
     maxTitle = widget.config.maxTitle;
@@ -85,13 +86,12 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
     pressureField = widget.config.pressureField;
     humidityField = widget.config.humidityField;
     isConfigValid = deviceId.isNotEmpty;
-
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // String formattedDate = DateFormat('MMM-dd-yyyy – hh:mm a').format(now);
+    _initState();
 
     if (!isConfigValid) {
       return const Wrap(
@@ -113,12 +113,16 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
               Expanded(
                 flex: 25,
                 child: Card(
-                  color: Colors.grey,
-                  elevation: 3,
+                  color: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
                   child: Column(
                     children: [
                       Expanded(
                         child: Card(
+                          color: Color(widget.config.sunriseColor),
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -165,6 +169,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                       ),
                       Expanded(
                         child: Card(
+                          color: Color(widget.config.sunsetColor),
+                          shadowColor: Colors.transparent,
+                          surfaceTintColor: Colors.transparent,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -216,8 +223,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
               Expanded(
                   flex: 50,
                   child: Card(
-                    color: Colors.grey,
-                    elevation: 3,
+                    color: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -240,6 +248,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                             const Icon(Icons.thermostat_outlined),
                             Expanded(
                               child: Card(
+                                color: Color(widget.config.currentColor),
+                                shadowColor: Colors.transparent,
+                                surfaceTintColor: Colors.transparent,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -275,6 +286,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                             ),
                             Expanded(
                               child: Card(
+                                color: Color(widget.config.feelsLikeColor),
+                                shadowColor: Colors.transparent,
+                                surfaceTintColor: Colors.transparent,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -316,6 +330,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                             const Icon(Icons.thermostat_outlined),
                             Expanded(
                               child: Card(
+                                color: Color(widget.config.minColor),
+                                shadowColor: Colors.transparent,
+                                surfaceTintColor: Colors.transparent,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -351,6 +368,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                             ),
                             Expanded(
                               child: Card(
+                                color: Color(widget.config.maxColor),
+                                shadowColor: Colors.transparent,
+                                surfaceTintColor: Colors.transparent,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -392,12 +412,16 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
               Expanded(
                   flex: 25,
                   child: Card(
-                    color: Colors.grey,
-                    elevation: 3,
+                    color: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
                     child: Column(
                       children: [
                         Expanded(
                           child: Card(
+                            color: Color(widget.config.pressureColor),
+                            shadowColor: Colors.transparent,
+                            surfaceTintColor: Colors.transparent,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -446,6 +470,9 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                         ),
                         Expanded(
                           child: Card(
+                            color: Color(widget.config.humidityColor),
+                            shadowColor: Colors.transparent,
+                            surfaceTintColor: Colors.transparent,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -519,6 +546,8 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
   }
 
   Future<void> load() async {
+    _initState();
+
     if (!isConfigValid) return;
 
     if (loading) return;
@@ -557,29 +586,32 @@ class _GenericDayWeatherWidgetState extends BaseState<GenericDayWeatherWidget> {
                   obj['p_source'] as Map<String, dynamic>;
               Map<String, dynamic> data =
                   source['data'] as Map<String, dynamic>;
-              currentValue = data['current'];
-              pressureValue = data['pressure'];
-              sunsetValue = data['sunset'];
-              sunriseValue = data['sunrise'];
-              feelsLikeValue = data['feelsLike'];
-              minValue = data['max'];
-              maxValue = data['min'];
-              humidityValue = data['humidity'];
+              currentValue = data[widget.config.temperatureField] ?? '-';
+              pressureValue = data[widget.config.pressureField] ?? '-';
+              sunsetValue = data[widget.config.sunsetField] ?? '-';
+              sunriseValue = data[widget.config.sunriseField] ?? '-';
+              feelsLikeValue = data[widget.config.feelsLikeField] ?? '-';
+              minValue = data[widget.config.minField] ?? '-';
+              maxValue = data[widget.config.maxField];
+              humidityValue = data[widget.config.humidityField];
               updatedStampValue = obj['p_source']['updatedStamp'];
 
               if (sunsetValue is int) {
-                DateTime sunsetDateTime =
-                    DateTime.fromMillisecondsSinceEpoch(sunsetValue);
+                DateTime sunsetDateTime = DateTime.fromMillisecondsSinceEpoch(
+                    sunsetValue,
+                    isUtc: false);
+
                 formattedSunset = DateFormat('hh:mm a').format(sunsetDateTime);
               } else {
                 formattedSunset = "--";
               }
 
               if (sunriseValue is int) {
-                DateTime sunriseDateTime =
-                    DateTime.fromMillisecondsSinceEpoch(sunriseValue);
+                DateTime sunriseDateTime = DateTime.fromMillisecondsSinceEpoch(
+                    sunriseValue,
+                    isUtc: false);
                 formattedSunrise =
-                    DateFormat('hh:mm a').format(sunriseDateTime);
+                    DateFormat('hh:mm a', 'in').format(sunriseDateTime);
               } else {
                 formattedSunrise = "--";
               }

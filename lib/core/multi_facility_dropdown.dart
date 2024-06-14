@@ -10,11 +10,13 @@ typedef OnFacilitiesSelected = void Function(List<twin.Facility> item);
 class MultiFacilityDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnFacilitiesSelected onFacilitiesSelected;
+  final bool allowDuplicates;
 
   const MultiFacilityDropdown({
     super.key,
     required this.selectedItems,
     required this.onFacilitiesSelected,
+    required this.allowDuplicates,
   });
 
   @override
@@ -28,6 +30,7 @@ class _MultiFacilityDropdownState extends BaseState<MultiFacilityDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Facility>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Facilities',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {

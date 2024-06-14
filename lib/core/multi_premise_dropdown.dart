@@ -10,11 +10,13 @@ typedef OnPremisesSelected = void Function(List<twin.Premise> item);
 class MultiPremiseDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnPremisesSelected onPremisesSelected;
+  final bool allowDuplicates;
 
   const MultiPremiseDropdown({
     super.key,
     required this.selectedItems,
     required this.onPremisesSelected,
+    required this.allowDuplicates,
   });
 
   @override
@@ -28,6 +30,7 @@ class _MultiPremiseDropdownState extends BaseState<MultiPremiseDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Premise>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Premises',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {

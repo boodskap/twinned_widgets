@@ -10,11 +10,12 @@ typedef OnAssetModelsSelected = void Function(List<twin.AssetModel> item);
 class MultiAssetModelDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnAssetModelsSelected onAssetModelsSelected;
+  final bool allowDuplicates;
 
   const MultiAssetModelDropdown({
     super.key,
     required this.selectedItems,
-    required this.onAssetModelsSelected,
+    required this.onAssetModelsSelected, required this.allowDuplicates,
   });
 
   @override
@@ -29,6 +30,7 @@ class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.AssetModel>(
         key: Key(Uuid().v4()),
+        allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Asset Models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
