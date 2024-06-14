@@ -211,6 +211,7 @@ class _GenericAirQualityLinearWidgetState
                           borderColor: Colors.transparent,
                           shapeType: LinearShapePointerType.triangle,
                           offset: markerOffset,
+                          enableAnimation: gaugeAnimate
                         )
                       ],
                     ),
