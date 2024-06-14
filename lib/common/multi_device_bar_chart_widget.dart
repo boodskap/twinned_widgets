@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/multi_device_bar_chart/multi_device_bar_chart.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:twinned_api/twinned_api.dart';
@@ -161,7 +161,7 @@ class _MultiDeviceBarChartWidgetState
               xValueMapper: (ChartData data, _) =>
                   DateTime.fromMillisecondsSinceEpoch(data.stamp),
               yValueMapper: (ChartData data, _) => data.value,
-                            borderColor: barBorderColor,
+              borderColor: barBorderColor,
               enableTooltip: showTooltip,
               borderRadius: const BorderRadius.all(Radius.circular(0)),
               color: barColor,
@@ -198,7 +198,7 @@ class _MultiDeviceBarChartWidgetState
               xValueMapper: (ChartData data, _) =>
                   DateTime.fromMillisecondsSinceEpoch(data.stamp),
               yValueMapper: (ChartData data, _) => data.value,
-                            borderColor: barBorderColor,
+              borderColor: barBorderColor,
               enableTooltip: showTooltip,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               color: barColor,
@@ -235,7 +235,7 @@ class _MultiDeviceBarChartWidgetState
               xValueMapper: (ChartData data, _) =>
                   DateTime.fromMillisecondsSinceEpoch(data.stamp),
               yValueMapper: (ChartData data, _) => data.value,
-                                       borderColor: barBorderColor,
+              borderColor: barBorderColor,
               enableTooltip: showTooltip,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               color: barColor,

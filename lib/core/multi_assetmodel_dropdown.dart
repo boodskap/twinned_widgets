@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:uuid/uuid.dart';
 
 typedef OnAssetModelsSelected = void Function(List<twin.AssetModel> item);
@@ -15,7 +15,8 @@ class MultiAssetModelDropdown extends StatefulWidget {
   const MultiAssetModelDropdown({
     super.key,
     required this.selectedItems,
-    required this.onAssetModelsSelected, required this.allowDuplicates,
+    required this.onAssetModelsSelected,
+    required this.allowDuplicates,
   });
 
   @override
