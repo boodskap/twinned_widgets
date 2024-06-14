@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
+import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/generic_value_card/generic_value_card.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/multi_device_field_card/multi_device_field_card.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
-import 'package:twin_commons/core/twin_image_helper.dart';
-import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
-import 'package:twinned_api/twinned_api.dart';
 
 class MultiDeviceFieldCardWidget extends StatefulWidget {
   final MultiDeviceFieldCardWidgetConfig config;
@@ -160,23 +159,25 @@ class _MultiDeviceFieldCardWidgetState
                                   child: SizedBox(
                                     height: 200,
                                     width: 200,
-                                     child: GenericValueCardWidget(
+                                    child: GenericValueCardWidget(
                                       config: GenericValueCardWidgetConfig(
                                         topLabel: fields[fieldIndex],
                                         bottomFont: bottomFont.toJson(),
                                         topFont: topFont.toJson(),
-                                        bottomLabelAsSuffix: bottomLabelAsSuffix,
+                                        bottomLabelAsSuffix:
+                                            bottomLabelAsSuffix,
                                         elevation: fieldElevation,
                                         valueFont: valueFont.toJson(),
-                                        
                                         deviceId: deviceIds[deviceIndex],
                                         field: fields[fieldIndex],
                                         iconId:
-                                            fieldIcons[fields[fieldIndex]] ??"",
+                                            fieldIcons[fields[fieldIndex]] ??
+                                                "",
                                         iconHeight: fieldIconHeight,
                                         iconWidth: fieldIconWidth,
                                         bottomLabel:
-                                            fieldSuffix[fields[fieldIndex]] ?? '',
+                                            fieldSuffix[fields[fieldIndex]] ??
+                                                '',
                                       ),
                                     ),
                                   ),
@@ -219,18 +220,18 @@ class _MultiDeviceFieldCardWidgetState
         );
 
         if (validateResponse(qRes)) {
-          Device? device = await TwinnedUtils.getDevice(deviceId: deviceId);
+          Device? device = await TwinUtils.getDevice(deviceId: deviceId);
           if (device == null) return;
 
           deviceName = device.name;
           DeviceModel? deviceModel =
-              await TwinnedUtils.getDeviceModel(modelId: device.modelId);
+              await TwinUtils.getDeviceModel(modelId: device.modelId);
 
           if (deviceModel == null) return;
           Map<String, dynamic> json =
               qRes.body!.result! as Map<String, dynamic>;
 
-          List<String> deviceFields = NoCodeUtils.getSortedFields(deviceModel);
+          List<String> deviceFields = TwinUtils.getSortedFields(deviceModel);
 
           List<dynamic> values = json['hits']['hits'];
           List<Map<String, String>> fetchedData = [];
@@ -239,13 +240,10 @@ class _MultiDeviceFieldCardWidgetState
             Map<String, dynamic> obj = values[0];
             Map<String, dynamic> data = obj['p_source']['data'];
             for (String field in deviceFields) {
-              String label =
-                  NoCodeUtils.getParameterLabel(field, deviceModel);
+              String label = TwinUtils.getParameterLabel(field, deviceModel);
               String value = '${data[field] ?? '-'}';
-              String unit =
-                  NoCodeUtils.getParameterUnit(field, deviceModel);
-              String iconIds =
-                  NoCodeUtils.getParameterIcon(field, deviceModel) ;
+              String unit = TwinUtils.getParameterUnit(field, deviceModel);
+              String iconIds = TwinUtils.getParameterIcon(field, deviceModel);
 
               fieldSuffix[label] = unit;
 
