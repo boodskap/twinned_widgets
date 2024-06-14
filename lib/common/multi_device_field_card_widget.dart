@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:nocode_commons/core/base_state.dart';
+import 'package:nocode_commons/util/nocode_utils.dart';
 import 'package:twinned_models/generic_value_card/generic_value_card.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/multi_device_field_card/multi_device_field_card.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:twinned_api/twinned_api.dart';
 
 class MultiDeviceFieldCardWidget extends StatefulWidget {
   final MultiDeviceFieldCardWidgetConfig config;
@@ -20,6 +26,10 @@ class MultiDeviceFieldCardWidget extends StatefulWidget {
 class _MultiDeviceFieldCardWidgetState
     extends BaseState<MultiDeviceFieldCardWidget> {
   bool isValidConfig = false;
+  String deviceName = '';
+  List<Map<String, String>> deviceData = [];
+  Map<String, String> fieldIcons = <String, String>{};
+  Map<String, String> fieldSuffix = <String, String>{};
 
   late List<String> deviceIds;
   late List<String> fields;
@@ -149,6 +159,11 @@ class _MultiDeviceFieldCardWidgetState
                                       topLabel: fields[fieldIndex],
                                       deviceId: deviceIds[deviceIndex],
                                       field: fields[fieldIndex],
+                                      iconId: fieldIcons[fields[fieldIndex]]!,
+                                      iconHeight: fieldIconHeight,
+                                      iconWidth: fieldIconWidth,
+                                      bottomLabel:
+                                          fieldSuffix[fields[fieldIndex]] ?? '',
                                     ),
                                   ),
                                 ),
@@ -166,27 +181,87 @@ class _MultiDeviceFieldCardWidgetState
     );
   }
 
-  Future<void> load() async {
+  Future<void> load(List<String> deviceIds,
+      {String? filter, String search = '*'}) async {
     if (!isValidConfig) return;
 
     if (loading) return;
     loading = true;
 
-    try {} catch (e) {
-    } finally {
-      loading = false;
-    }
+    await execute(() async {
+      for (String deviceId in deviceIds) {
+        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+          apikey: TwinnedSession.instance.authToken,
+          body: EqlSearch(
+            source: ["data"],
+            page: 0,
+            size: 1,
+            mustConditions: [
+              {
+                "match_phrase": {"deviceId": deviceId}
+              },
+            ],
+          ),
+        );
+
+        if (validateResponse(qRes)) {
+          Device? device = await TwinnedUtils.getDevice(deviceId: deviceId);
+          if (device == null) return;
+
+          deviceName = device.name;
+          DeviceModel? deviceModel =
+              await TwinnedUtils.getDeviceModel(modelId: device.modelId);
+
+          if (deviceModel == null) return;
+          Map<String, dynamic> json =
+              qRes.body!.result! as Map<String, dynamic>;
+
+          List<String> deviceFields = NoCodeUtils.getSortedFields(deviceModel);
+
+          List<dynamic> values = json['hits']['hits'];
+          List<Map<String, String>> fetchedData = [];
+
+          if (values.isNotEmpty) {
+            Map<String, dynamic> obj = values[0];
+            Map<String, dynamic> data = obj['p_source']['data'];
+            for (String field in deviceFields) {
+              String label = NoCodeUtils.getParameterLabel(field, deviceModel);
+              String value = '${data[field] ?? '-'}';
+              String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
+              String iconIds = NoCodeUtils.getParameterIcon(field, deviceModel);
+              fieldSuffix[label] = unit;
+
+              if (iconIds.isEmpty) {
+                fieldIcons[label] = '';
+              } else {
+                fieldIcons[label] = iconIds;
+              }
+
+              fetchedData.add({
+                'field': label,
+                'value': value,
+              });
+            }
+
+            setState(() {
+              deviceData = fetchedData;
+            });
+          }
+        }
+      }
+    });
 
     if (iconId.isNotEmpty) {
       iconImage = TwinImageHelper.getDomainImage(iconId);
     }
 
+    loading = false;
     refresh();
   }
 
   @override
   void setup() {
-    load();
+    load(deviceIds);
   }
 }
 
