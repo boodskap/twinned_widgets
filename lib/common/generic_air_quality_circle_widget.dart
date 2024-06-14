@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/generic_air_quality/generic_air_quality_circle.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twin_commons/core/twinned_session.dart';
+
 
 class GenericAirQualityCircleWidget extends StatefulWidget {
   final GenericAirQualityCircleWidgetConfig config;
@@ -360,15 +361,15 @@ class _GenericAirQualityCircleWidgetState
 
       if (validateResponse(qRes)) {
         Device? device =
-            await TwinnedUtils.getDevice(deviceId: widget.config.deviceId);
+            await TwinUtils.getDevice(deviceId: widget.config.deviceId);
         if (null == device) return;
         DeviceModel? deviceModel =
-            await TwinnedUtils.getDeviceModel(modelId: device.modelId);
+            await TwinUtils.getDeviceModel(modelId: device.modelId);
         if (null == deviceModel) return;
 
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
 
-        List<String> deviceFields = NoCodeUtils.getSortedFields(deviceModel);
+        List<String> deviceFields = TwinUtils.getSortedFields(deviceModel);
 
         List<dynamic> values = json['hits']['hits'];
         List<Map<String, String>> fetchedData = [];
@@ -377,10 +378,10 @@ class _GenericAirQualityCircleWidgetState
           Map<String, dynamic> obj = values[0];
           Map<String, dynamic> data = obj['p_source']['data'];
           for (String field in deviceFields) {
-            String label = NoCodeUtils.getParameterLabel(field, deviceModel);
+            String label = TwinUtils.getParameterLabel(field, deviceModel);
             String value = '${data[field] ?? '-'}';
-            String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
-            dynamic iconId = NoCodeUtils.getParameterIcon(field, deviceModel);
+            String unit = TwinUtils.getParameterUnit(field, deviceModel);
+            dynamic iconId = TwinUtils.getParameterIcon(field, deviceModel);
             if (field != mainField) {
               fetchedData.add({
                 'prefix': label,
