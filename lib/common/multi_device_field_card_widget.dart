@@ -78,123 +78,126 @@ class _MultiDeviceFieldCardWidgetState
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (!isValidConfig) {
-      return const Center(
-        child: Text(
-          'Not configured properly',
-          style: TextStyle(color: Colors.red),
-        ),
-      );
-    }
-    return Column(
-      children: [
-        Expanded(
-          child: Card(
-            elevation: cardElevation,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (null != iconImage)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: SizedBox(
-                              width: iconWidth,
-                              height: iconHeight,
-                              child: iconImage),
-                        ),
-                      const Divider(),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontFamily: titleFont.fontFamily,
-                          fontSize: titleFont.fontSize,
-                          fontWeight: titleFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: Color(titleFont.fontColor),
-                        ),
+ @override
+Widget build(BuildContext context) {
+  if (!isValidConfig) {
+    return const Center(
+      child: Text(
+        'Not configured properly',
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+  }
+  return Column(
+    children: [
+      Expanded(
+        child: Card(
+          elevation: cardElevation,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (null != iconImage)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                            width: iconWidth,
+                            height: iconHeight,
+                            child: iconImage),
                       ),
-                      const Divider(),
-                      Text(
-                        message,
-                        style: TextStyle(
-                          fontFamily: messageFont.fontFamily,
-                          fontSize: messageFont.fontSize,
-                          fontWeight: messageFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: Color(messageFont.fontColor),
-                        ),
+                    const Divider(),
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontFamily: titleFont.fontFamily,
+                        fontSize: titleFont.fontSize,
+                        fontWeight: titleFont.fontBold
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: Color(titleFont.fontColor),
                       ),
-                    ],
-                  ),
+                    ),
+                    const Divider(),
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontFamily: messageFont.fontFamily,
+                        fontSize: messageFont.fontSize,
+                        fontWeight: messageFont.fontBold
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: Color(messageFont.fontColor),
+                      ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  flex: 8,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      child: Wrap(
-                        spacing: 8.0,
-                        runSpacing: 8.0,
-                        children: [
-                          for (var deviceIndex = 0;
-                              deviceIndex < deviceIds.length;
-                              deviceIndex++)
-                            for (var fieldIndex = 0;
-                                fieldIndex < fields.length;
-                                fieldIndex++)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
+              ),
+              Expanded(
+                flex: 8,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: [
+                        for (var deviceIndex = 0;
+                            deviceIndex < deviceIds.length;
+                            deviceIndex++)
+                          for (var fieldIndex = 0;
+                              fieldIndex < fields.length;
+                              fieldIndex++)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                height: 200,
+                                width: 200,
                                 child: Card(
+                                  color: Color(widget.config.cardBgColors[
+                                      deviceIndex * fields.length +
+                                          fieldIndex]),
                                   elevation: cardElevation,
-                                  child: SizedBox(
-                                    height: 200,
-                                    width: 200,
-                                    child: GenericValueCardWidget(
-                                      config: GenericValueCardWidgetConfig(
-                                        topLabel: fields[fieldIndex],
-                                        bottomFont: bottomFont.toJson(),
-                                        topFont: topFont.toJson(),
-                                        bottomLabelAsSuffix:
-                                            bottomLabelAsSuffix,
-                                        elevation: fieldElevation,
-                                        valueFont: valueFont.toJson(),
-                                        deviceId: deviceIds[deviceIndex],
-                                        field: fields[fieldIndex],
-                                        iconId:
-                                            fieldIcons[fields[fieldIndex]] ??
-                                                "",
-                                        iconHeight: fieldIconHeight,
-                                        iconWidth: fieldIconWidth,
-                                        bottomLabel:
-                                            fieldSuffix[fields[fieldIndex]] ??
-                                                '',
-                                      ),
+                                  child: GenericValueCardWidget(
+                                    config: GenericValueCardWidgetConfig(
+                                      topLabel: fields[fieldIndex],
+                                      bottomFont: bottomFont.toJson(),
+                                      topFont: topFont.toJson(),
+                                      bottomLabelAsSuffix:
+                                          bottomLabelAsSuffix,
+                                      elevation: fieldElevation,
+                                      valueFont: valueFont.toJson(),
+                                      deviceId: deviceIds[deviceIndex],
+                                      field: fields[fieldIndex],
+                                      iconId:
+                                          fieldIcons[fields[fieldIndex]] !
+                                              ,
+                                      iconHeight: fieldIconHeight,
+                                      iconWidth: fieldIconWidth,
+                                      bottomLabel:
+                                          fieldSuffix[fields[fieldIndex]] ??
+                                              '',
                                     ),
                                   ),
                                 ),
                               ),
-                        ],
-                      ),
+                            ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 
   Future<void> load(List<String> deviceIds,
       {String? filter, String search = '*'}) async {
