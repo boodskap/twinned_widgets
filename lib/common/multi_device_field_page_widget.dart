@@ -3,9 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:nocode_commons/core/base_state.dart';
 import 'package:twinned_models/multi_device_field_page/multi_device_field_page.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_widgets/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+
 
 class MultiDeviceFieldPageWidget extends StatefulWidget {
   final MultiDeviceFieldPageWidgetConfig config;
@@ -32,6 +35,11 @@ class _MultiDeviceFieldPageWidgetState
   late FontConfig valueFont;
   late FontConfig subTextFont;
   late FontConfig contentTextFont;
+  dynamic updatedStampValue;
+  dynamic geoLocation;
+  dynamic coOrdinates;
+  dynamic value;
+  Map<String, dynamic> additionalFields = {};
 
   void _initState() {
     var config = widget.config;
@@ -103,7 +111,7 @@ class _MultiDeviceFieldPageWidgetState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  DateFormat('EEE, MMM d, hh:mm a').format(DateTime.now()),
+                  updatedStampValue ?? '--',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Color(0XFFFFFAFA),
@@ -115,31 +123,27 @@ class _MultiDeviceFieldPageWidgetState
                       width: 100,
                       height: 100,
                       child: TwinImageHelper.getDomainImage(imageId)),
-                const Row(
+                Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
                       children: [
                         Text(
-                          '2',
+                          value != null ? formatFieldValue(value) : '--',
                           style: TextStyle(
-                            fontSize: 50,
-                            color: Color(0XFFF8F8FF),
-                          ),
-                        ),
-                        Text(
-                          '°',
-                          style: TextStyle(
-                            fontSize: 40,
-                            color: Color(0XFFF8F8FF),
+                            fontSize: valueFont.fontSize,
+                            fontFamily: valueFont.fontFamily,
+                            color: Color(valueFont.fontColor),
+                            fontWeight: valueFont.fontBold
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                // divider(height: 10),
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
@@ -155,7 +159,7 @@ class _MultiDeviceFieldPageWidgetState
                               : FontWeight.normal,
                         ),
                       ),
-                      divider(height: 10),
+                      divider(height: 6),
                       Text(
                         contentText,
                         style: TextStyle(
@@ -170,14 +174,79 @@ class _MultiDeviceFieldPageWidgetState
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                CustomPaint(
-                  size: const Size(400, 50),
-                  painter: CurvePainter(),
-                ),
-                divider(height: 8),
-                const WeekdaysRow(),
-                divider(height: 8),
+                const SizedBox(height: 5),
+                // Additional Fields
+                if (additionalFields.isNotEmpty)
+                  SizedBox(
+                    height: 180,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: GridView.builder(
+                        clipBehavior: Clip.antiAlias,
+                        scrollDirection: Axis.vertical,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 2.0,
+                          mainAxisSpacing: 4.0,
+                          childAspectRatio: 1.6,
+                        ),
+                        itemCount: additionalFields.entries.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final entry =
+                              additionalFields.entries.elementAt(index);
+                          return SizedBox(
+                            width: 60,
+                            height: 80,
+                            child: Card(
+                              // color: Colors.tealAccent,
+                              color: const Color(0xffeeeeee),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      entry.key,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.blueGrey,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      formatFieldValue(entry.value),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.blueGrey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                if (additionalFields.isEmpty)
+                  const Center(
+                    child: Wrap(
+                      spacing: 8,
+                      children: [
+                        Text(
+                          'No other parameter found',
+                          style: TextStyle(
+                              color: Colors.red,
+                              overflow: TextOverflow.ellipsis),
+                        )
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
@@ -186,8 +255,94 @@ class _MultiDeviceFieldPageWidgetState
     );
   }
 
+  Future<void> load() async {
+    _initState();
+
+    if (!isValidConfig) return;
+
+    if (loading) return;
+    loading = true;
+
+    try {
+      await execute(() async {
+        var query = EqlSearch(
+          source: ["data"],
+          page: 0,
+          size: 1,
+          mustConditions: [
+            {
+              "match_phrase": {"deviceId": deviceId}
+            },
+            {
+              "exists": {"field": "data.$field"}
+            },
+          ],
+        );
+
+        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+          apikey: TwinnedSession.instance.authToken,
+          body: query,
+        );
+
+        if (qRes.body != null &&
+            qRes.body!.result != null &&
+            validateResponse(qRes)) {
+          Map<String, dynamic>? json =
+              qRes.body!.result! as Map<String, dynamic>?;
+
+          if (json != null) {
+            List<dynamic> hits = json['hits']['hits'];
+
+            if (hits.isNotEmpty) {
+              Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
+              Map<String, dynamic> source =
+                  obj['p_source'] as Map<String, dynamic>;
+              Map<String, dynamic> data =
+                  source['data'] as Map<String, dynamic>;
+
+              value = obj['p_source']['data'][widget.config.field];
+              updatedStampValue = obj['p_source']['updatedStamp'];
+              
+              additionalFields = Map<String, dynamic>.from(data);
+              additionalFields.remove(widget.config.field);
+
+              if (updatedStampValue is int) {
+                DateTime updatedStampTime =
+                    DateTime.fromMillisecondsSinceEpoch(updatedStampValue);
+                updatedStampValue = DateFormat('MMM-dd-yyyy - hh:mm:ss a')
+                    .format(updatedStampTime);
+              } else {
+                updatedStampValue = "--";
+              }
+            }
+          }
+        }
+      });
+    } catch (e) {
+      // Handle error
+    } finally {
+      loading = false;
+      refresh();
+    }
+  }
+
+  String formatFieldValue(dynamic value) {
+    if (value is int && value.toString().length >= 10) {
+      try {
+        DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(value);
+        return DateFormat('hh:mm:ss a').format(dateTime);
+      } catch (e) {
+        // If parsing fails, return the original value
+        return value.toString();
+      }
+    }
+    return value.toString();
+  }
+
   @override
-  void setup() {}
+  void setup() {
+    load();
+  }
 }
 
 class MultiDeviceFieldPageWidgetBuilder extends TwinnedWidgetBuilder {
@@ -224,99 +379,5 @@ class MultiDeviceFieldPageWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   String getPaletteTooltip() {
     return 'Multi device field page widget';
-  }
-}
-
-class CurvePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint1 = Paint()
-      ..color = const Color(0XFFFFFAFA)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    final path1 = Path();
-    path1.moveTo(0, size.height * 0.4);
-    path1.quadraticBezierTo(
-        size.width / 4, size.height * 0.7, size.width / 2, size.height * 0.4);
-    path1.quadraticBezierTo(
-        size.width * 3 / 4, size.height * 0.1, size.width, size.height * 0.4);
-
-    final paint2 = Paint()
-      ..color = const Color(0XFFFFFAFA)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    final path2 = Path();
-    path2.moveTo(0, size.height * 0.6);
-    path2.quadraticBezierTo(
-        size.width / 4, size.height * 0.9, size.width / 2, size.height * 0.6);
-    path2.quadraticBezierTo(
-        size.width * 3 / 4, size.height * 0.3, size.width, size.height * 0.6);
-
-    canvas.drawPath(path1, paint1);
-    canvas.drawPath(path2, paint2);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-Widget divider({bool horizontal = false, double width = 0, double height = 0}) {
-  return horizontal ? SizedBox(width: width) : SizedBox(height: height);
-}
-
-class WeekdaysRow extends StatelessWidget {
-  const WeekdaysRow({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> days = [
-      {'day': 'Mon', 'icon': Icons.wb_sunny, 'min': '22°', 'max': '28°'},
-      {'day': 'Tue', 'icon': Icons.wb_cloudy, 'min': '18°', 'max': '29°'},
-      {'day': 'Wed', 'icon': Icons.wb_sunny, 'min': '25°', 'max': '39°'},
-      {'day': 'Thu', 'icon': Icons.grain, 'min': '20°', 'max': '36°'},
-      {'day': 'Fri', 'icon': Icons.wb_sunny, 'min': '23°', 'max': '33°'},
-    ];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: days.map((dayInfo) {
-        return Column(
-          children: [
-            Text(
-              dayInfo['day']!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0XFFFFFAFA),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Icon(
-              dayInfo['icon'] as IconData,
-              color: const Color(0XFFFFFAFA),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              dayInfo['min']!,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0XFFFFFAFA),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              dayInfo['max']!,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0XFFDFDFDE),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
-    );
   }
 }
