@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
-import 'package:nocode_commons/sensor_widget.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/sensor_widget.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twin;
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 
 class FieldSensorWidget extends StatelessWidget {
   final String field;
@@ -20,8 +20,8 @@ class FieldSensorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SensorWidgetType type = NoCodeUtils.getSensorWidgetType(field, deviceModel);
-    twin.Parameter? parameter = NoCodeUtils.getParameter(field, deviceModel);
+    SensorWidgetType type = TwinUtils.getSensorWidgetType(field, deviceModel);
+    twin.Parameter? parameter = TwinUtils.getParameter(field, deviceModel);
 
     if (null == parameter) {
       return const SizedBox(
@@ -44,8 +44,8 @@ class FieldSensorWidget extends StatelessWidget {
         icon = SizedBox(
             width: 24, child: TwinImageHelper.getDomainImage(parameter!.icon!));
       }
-      String label = NoCodeUtils.getParameterLabel(field, deviceModel);
-      String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
+      String label = TwinUtils.getParameterLabel(field, deviceModel);
+      String unit = TwinUtils.getParameterUnit(field, deviceModel);
       String value = '${data[field] ?? '-'} $unit';
       sensorWidget = Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_models/generic_air_quality/generic_air_quality.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -96,7 +96,7 @@ class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
         ),
       );
     }
-     if (!apiLoadingStatus) {
+    if (!apiLoadingStatus) {
       return const Center(child: CircularProgressIndicator());
     }
     List<GaugeRange> ranges = [];
@@ -210,27 +210,26 @@ class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
-                          text: value!= null ? value.toString() : '--',
-                          style: TextStyle(
-                            fontSize: valueFont.fontSize,
-                            fontWeight: valueFont.fontBold
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            color: Color(valueFont.fontColor),
-                          )
-                        ),
+                            text: value != null ? value.toString() : '--',
+                            style: TextStyle(
+                              fontSize: valueFont.fontSize,
+                              fontWeight: valueFont.fontBold
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: Color(valueFont.fontColor),
+                            )),
                       ),
                     ),
                     Center(
                       child: Text(
                         airQualityType,
                         style: TextStyle(
-                                fontSize: valueFont.fontSize * 0.55,
-                                fontWeight: valueFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(valueFont.fontColor),
-                              ),
+                          fontSize: valueFont.fontSize * 0.55,
+                          fontWeight: valueFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(valueFont.fontColor),
+                        ),
                       ),
                     ),
                     Center(
