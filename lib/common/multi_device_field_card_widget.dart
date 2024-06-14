@@ -39,8 +39,10 @@ class _MultiDeviceFieldCardWidgetState
   late String message;
   late FontConfig messageFont;
   late String topLabel;
+  late String bottomLabel;
   late FontConfig topFont;
   late FontConfig valueFont;
+  late FontConfig bottomFont;
   late int messageWidth;
   late double iconHeight;
   late double iconWidth;
@@ -49,6 +51,7 @@ class _MultiDeviceFieldCardWidgetState
   late double fieldSpacing;
   late double fieldElevation;
   late double cardElevation;
+  late bool bottomLabelAsSuffix;
   Widget? iconImage;
   @override
   void initState() {
@@ -58,9 +61,11 @@ class _MultiDeviceFieldCardWidgetState
     title = widget.config.title;
     message = widget.config.message;
     topLabel = widget.config.topLabel;
+    bottomLabel = widget.config.bottomLabel;
     titleFont = FontConfig.fromJson(widget.config.titleFont);
     messageFont = FontConfig.fromJson(widget.config.messageFont);
     topFont = FontConfig.fromJson(widget.config.topFont);
+    bottomFont = FontConfig.fromJson(widget.config.bottomFont);
     valueFont = FontConfig.fromJson(widget.config.valueFont);
     messageWidth = widget.config.messageWidth;
     iconHeight = widget.config.iconHeight;
@@ -70,6 +75,7 @@ class _MultiDeviceFieldCardWidgetState
     fieldSpacing = widget.config.fieldSpacing;
     fieldElevation = widget.config.fieldElevation;
     cardElevation = widget.config.cardElevation;
+    bottomLabelAsSuffix = widget.config.bottomLabelAsSuffix;
     isValidConfig =
         deviceIds.isNotEmpty && fields.isNotEmpty && iconId.isNotEmpty;
     super.initState();
@@ -151,19 +157,29 @@ class _MultiDeviceFieldCardWidgetState
                                 fieldIndex++)
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  height: 200,
-                                  width: 200,
-                                  child: GenericValueCardWidget(
-                                    config: GenericValueCardWidgetConfig(
-                                      topLabel: fields[fieldIndex],
-                                      deviceId: deviceIds[deviceIndex],
-                                      field: fields[fieldIndex],
-                                      iconId: fieldIcons[fields[fieldIndex]]!,
-                                      iconHeight: fieldIconHeight,
-                                      iconWidth: fieldIconWidth,
-                                      bottomLabel:
-                                          fieldSuffix[fields[fieldIndex]] ?? '',
+                                child: Card(
+                                  elevation: cardElevation,
+                                  child: SizedBox(
+                                    height: 200,
+                                    width: 200,
+                                     child: GenericValueCardWidget(
+                                      config: GenericValueCardWidgetConfig(
+                                        topLabel: fields[fieldIndex],
+                                        bottomFont: bottomFont.toJson(),
+                                        topFont: topFont.toJson(),
+                                        bottomLabelAsSuffix: bottomLabelAsSuffix,
+                                        elevation: fieldElevation,
+                                        valueFont: valueFont.toJson(),
+                                        
+                                        deviceId: deviceIds[deviceIndex],
+                                        field: fields[fieldIndex],
+                                        iconId:
+                                            fieldIcons[fields[fieldIndex]] ??"",
+                                        iconHeight: fieldIconHeight,
+                                        iconWidth: fieldIconWidth,
+                                        bottomLabel:
+                                            fieldSuffix[fields[fieldIndex]] ?? '',
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -225,14 +241,18 @@ class _MultiDeviceFieldCardWidgetState
             Map<String, dynamic> obj = values[0];
             Map<String, dynamic> data = obj['p_source']['data'];
             for (String field in deviceFields) {
-              String label = NoCodeUtils.getParameterLabel(field, deviceModel);
+              String label =
+                  NoCodeUtils.getParameterLabel(field, deviceModel);
               String value = '${data[field] ?? '-'}';
-              String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
-              String iconIds = NoCodeUtils.getParameterIcon(field, deviceModel);
+              String unit =
+                  NoCodeUtils.getParameterUnit(field, deviceModel);
+              String iconIds =
+                  NoCodeUtils.getParameterIcon(field, deviceModel) ;
+
               fieldSuffix[label] = unit;
 
-              if (iconIds.isEmpty) {
-                fieldIcons[label] = '';
+              if (iconIds.isEmpty || iconIds == '--') {
+                fieldIcons[label] = '--';
               } else {
                 fieldIcons[label] = iconIds;
               }
