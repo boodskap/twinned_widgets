@@ -234,7 +234,7 @@ class MyDataTable extends StatelessWidget {
       spacing: 5.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        if (null == iconId || iconId.isEmpty) const Icon(Icons.menu),
+        if (null == iconId || iconId.isEmpty) const Icon(Icons.developer_board),
         if (null != iconId && iconId.isNotEmpty)
           SizedBox(
               width: 20,
@@ -271,7 +271,17 @@ class MyDataTable extends StatelessWidget {
             color: Color(tableRowFont.fontColor),
           ),
         ),
-        if (null != suffix && suffix.isNotEmpty) Text(suffix),
+        if (null != suffix && suffix.isNotEmpty)
+          Text(
+            suffix,
+            style: TextStyle(
+              fontSize: tableRowFont.fontSize,
+              fontFamily: tableRowFont.fontFamily,
+              fontWeight:
+                  tableRowFont.fontBold ? FontWeight.bold : FontWeight.normal,
+              color: Color(tableRowFont.fontColor),
+            ),
+          ),
       ],
     );
   }
@@ -354,6 +364,6 @@ class DeviceDataAccordionWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteTooltip() {
-    return 'Device Data Accordion';
+    return 'Display the Device Data Based on Device Id';
   }
 }
