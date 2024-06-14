@@ -39,6 +39,8 @@ class _DeviceDataAccordionWidgetState
   List<Map<String, String>> deviceData = [];
   Map<String, String> fieldIcons = <String, String>{};
   Map<String, String> fieldSuffix = <String, String>{};
+  late bool showExpandable;
+  late String imageId;
 
   void _initState() {
     var config = widget.config;
@@ -48,15 +50,17 @@ class _DeviceDataAccordionWidgetState
     accordionTitleFont = FontConfig.fromJson(config.accordionTitleFont);
     tableColumnFont = FontConfig.fromJson(config.tableColumnFont);
     tableRowFont = FontConfig.fromJson(config.tableRowFont);
-    headerOpenedColor = config.headerOpenedColor <= 0
+    headerOpenedColor = config.openedHeaderColor <= 0
         ? Colors.black
-        : Color(config.headerOpenedColor);
-    headerClosedColor = config.headerClosedColor <= 0
+        : Color(config.openedHeaderColor);
+    headerClosedColor = config.closedHeaderColor <= 0
         ? Colors.black
-        : Color(config.headerClosedColor);
+        : Color(config.closedHeaderColor);
     tableContentColor = config.tableContentColor <= 0
         ? Colors.black
         : Color(config.tableContentColor);
+    showExpandable = widget.config.showExpandable;
+    imageId = widget.config.imageId;
     isValidConfig = widget.config.deviceId.isNotEmpty;
   }
 
@@ -103,8 +107,14 @@ class _DeviceDataAccordionWidgetState
         sectionClosingHapticFeedback: SectionHapticFeedback.light,
         children: [
           AccordionSection(
-            isOpen: false,
-            leftIcon: const Icon(Icons.devices_other, color: Colors.white),
+            isOpen: showExpandable,
+            leftIcon: imageId.isNotEmpty
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: TwinImageHelper.getDomainImage(imageId),
+                  )
+                : const Icon(Icons.devices_other, color: Colors.white),
             header: Text(
               deviceName,
               style: TextStyle(
@@ -119,6 +129,8 @@ class _DeviceDataAccordionWidgetState
               deviceData: deviceData,
               fieldIcons: fieldIcons,
               fieldSuffix: fieldSuffix,
+              tableColumnFont: tableColumnFont,
+              tableRowFont: tableRowFont,
             ),
           ),
         ],
@@ -204,12 +216,16 @@ class MyDataTable extends StatelessWidget {
   final List<Map<String, String>> deviceData;
   final Map<String, String> fieldIcons;
   final Map<String, String> fieldSuffix;
+  final FontConfig tableColumnFont;
+  final FontConfig tableRowFont;
 
   const MyDataTable(
       {super.key,
       required this.deviceData,
       required this.fieldIcons,
-      required this.fieldSuffix});
+      required this.fieldSuffix,
+      required this.tableColumnFont,
+      required this.tableRowFont});
 
   Widget _buildParameter(Map<String, String> data, String field) {
     String? iconId = fieldIcons[field];
@@ -218,13 +234,22 @@ class MyDataTable extends StatelessWidget {
       spacing: 5.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        if (null == iconId || iconId.isEmpty) const Icon(Icons.menu),
+        if (null == iconId || iconId.isEmpty) const Icon(Icons.developer_board),
         if (null != iconId && iconId.isNotEmpty)
           SizedBox(
-              width: 32,
-              height: 32,
+              width: 20,
+              height: 20,
               child: TwinImageHelper.getDomainImage(iconId)),
-        Text(data['field'] ?? ''),
+        Text(
+          data['field'] ?? '',
+          style: TextStyle(
+            fontSize: tableRowFont.fontSize,
+            fontFamily: tableRowFont.fontFamily,
+            fontWeight:
+                tableRowFont.fontBold ? FontWeight.bold : FontWeight.normal,
+            color: Color(tableRowFont.fontColor),
+          ),
+        ),
       ],
     );
   }
@@ -236,8 +261,27 @@ class MyDataTable extends StatelessWidget {
       spacing: 5.0,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text(data['value'] ?? ''),
-        if (null != suffix && suffix.isNotEmpty) Text(suffix),
+        Text(
+          data['value'] ?? '',
+          style: TextStyle(
+            fontSize: tableRowFont.fontSize,
+            fontFamily: tableRowFont.fontFamily,
+            fontWeight:
+                tableRowFont.fontBold ? FontWeight.bold : FontWeight.normal,
+            color: Color(tableRowFont.fontColor),
+          ),
+        ),
+        if (null != suffix && suffix.isNotEmpty)
+          Text(
+            suffix,
+            style: TextStyle(
+              fontSize: tableRowFont.fontSize,
+              fontFamily: tableRowFont.fontFamily,
+              fontWeight:
+                  tableRowFont.fontBold ? FontWeight.bold : FontWeight.normal,
+              color: Color(tableRowFont.fontColor),
+            ),
+          ),
       ],
     );
   }
@@ -248,16 +292,31 @@ class MyDataTable extends StatelessWidget {
       sortAscending: true,
       sortColumnIndex: 1,
       showBottomBorder: false,
-      columns: const [
+      columns: [
         DataColumn(
             label: Text(
           'Parameter',
+          style: TextStyle(
+            fontSize: tableColumnFont.fontSize,
+            fontFamily: tableColumnFont.fontFamily,
+            fontWeight:
+                tableColumnFont.fontBold ? FontWeight.bold : FontWeight.normal,
+            color: Color(tableColumnFont.fontColor),
+          ),
         )),
         DataColumn(
-            label: Text(
-              'Value',
+          label: Text(
+            'Value',
+            style: TextStyle(
+              fontSize: tableColumnFont.fontSize,
+              fontFamily: tableColumnFont.fontFamily,
+              fontWeight: tableColumnFont.fontBold
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+              color: Color(tableColumnFont.fontColor),
             ),
-            numeric: true),
+          ),
+        ),
       ],
       rows: deviceData
           .map(
@@ -305,6 +364,6 @@ class DeviceDataAccordionWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteTooltip() {
-    return 'Device Data Accordion';
+    return 'Display the Device Data Based on Device Id';
   }
 }
