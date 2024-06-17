@@ -115,6 +115,7 @@ class _GenericAirQualityCircleWidgetState
       children: [
         SizedBox(height: 20),
         Text(title,
+         softWrap: true,
             style: TextStyle(
                 fontFamily: titleFont.fontFamily,
                 fontSize: titleFont.fontSize,
@@ -220,6 +221,7 @@ class _GenericAirQualityCircleWidgetState
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(mainPrefixValue,
+        overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       fontFamily: prefixMainFont.fontFamily,
                       fontSize: prefixMainFont.fontSize,
@@ -228,6 +230,7 @@ class _GenericAirQualityCircleWidgetState
                           : FontWeight.normal,
                       color: Color(prefixMainFont.fontColor))),
               Text(mainText,
+        overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       fontFamily: mainTextFont.fontFamily,
                       fontSize: mainTextFont.fontSize,
@@ -245,8 +248,9 @@ class _GenericAirQualityCircleWidgetState
                         width: imageSize,
                         height: imageSize,
                         child: TwinImageHelper.getDomainImage(mainIcon)),
-                  SizedBox(width: 5),
+                  SizedBox(width: 1),
                   Text(mainValue.toString(),
+        overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontFamily: valueMainFont.fontFamily,
                           fontSize: valueMainFont.fontSize,
@@ -257,6 +261,7 @@ class _GenericAirQualityCircleWidgetState
                 ],
               ),
               Text(mainSufficValue,
+        overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       fontFamily: suffixMainFont.fontFamily,
                       fontSize: suffixMainFont.fontSize,
@@ -306,8 +311,10 @@ class _GenericAirQualityCircleWidgetState
                         width: imageSize,
                         height: imageSize,
                         child: TwinImageHelper.getDomainImage(iconId)),
-                  SizedBox(width: 5),
+                  SizedBox(width: 1),
                   Text(value.toString(),
+                  softWrap: true,
+        // overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontFamily: valueFont.fontFamily,
                           fontSize: valueFont.fontSize,
@@ -318,6 +325,7 @@ class _GenericAirQualityCircleWidgetState
                 ],
               ),
               Text(suffix,
+        overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       fontFamily: suffixFont.fontFamily,
                       fontSize: suffixFont.fontSize,
@@ -396,6 +404,7 @@ class _GenericAirQualityCircleWidgetState
               mainIcon = iconId ?? "";
             }
           }
+
         }
         setState(() {
           deviceData = fetchedData;
