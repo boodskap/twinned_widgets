@@ -45,14 +45,15 @@ class _MultiDeviceFieldPageWidgetState
   List<Map<String, String>> deviceData = [];
   Map<String, String> fieldIcons = <String, String>{};
   Map<String, String> fieldSuffix = <String, String>{};
+  late List<String> excludeFields;
 
   void _initState() {
     var config = widget.config;
     field = config.field;
+    excludeFields = widget.config.excludeFields;
     deviceId = config.deviceId;
     title = config.title;
     cityName = config.cityName;
-    imageId = config.imageId;
     paraTitle = config.paraTitle;
     paraText = config.paraText;
     titleFont = FontConfig.fromJson(config.titleFont);
@@ -64,6 +65,7 @@ class _MultiDeviceFieldPageWidgetState
     paraTextFont = FontConfig.fromJson(config.paraTextFont);
     startFillColor = Color(config.startFillColor);
     endFillColor = Color(config.endFillColor);
+    // cardBgColor = config.cardBgColor.map((color) => Color(color)).toList();
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
   }
@@ -108,12 +110,12 @@ class _MultiDeviceFieldPageWidgetState
           ),
           // color: fillColor,
           child: Container(
-            decoration:  BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               gradient: LinearGradient(
                 colors: [startFillColor, endFillColor],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
               ),
             ),
             child: Padding(
@@ -122,15 +124,15 @@ class _MultiDeviceFieldPageWidgetState
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Text(
-                  //   cityName,
-                  //   style: const TextStyle(
-                  //     color: Color(0XFFFFFAFA),
-                  //     fontSize: 20,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 8),
+                  Text(
+                    cityName,
+                    style: const TextStyle(
+                      color: Color(0XFFFFFAFA),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  divider(height: 5),
                   Text(
                     updatedStampValue ?? '--',
                     style: TextStyle(
@@ -142,7 +144,7 @@ class _MultiDeviceFieldPageWidgetState
                           : FontWeight.normal,
                     ),
                   ),
-                  divider(height: 8),
+                  divider(height: 5),
                   // if (imageId.isNotEmpty)
                   //   SizedBox(
                   //     width: 100,
@@ -155,7 +157,7 @@ class _MultiDeviceFieldPageWidgetState
                       width: 80,
                       child: TwinImageHelper.getDomainImage(fieldIcons[field]!),
                     ),
-                  divider(height: 8),
+                  divider(height: 5),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     // mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -205,7 +207,7 @@ class _MultiDeviceFieldPageWidgetState
                       ),
                     ],
                   ),
-                  divider(height: 8),
+                  divider(height: 5),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
@@ -369,8 +371,7 @@ class _MultiDeviceFieldPageWidgetState
             Map<String, dynamic> json =
                 qRes.body!.result! as Map<String, dynamic>;
 
-            List<String> deviceFields =
-                TwinUtils.getSortedFields(deviceModel);
+            List<String> deviceFields = TwinUtils.getSortedFields(deviceModel);
 
             List<dynamic> values = json['hits']['hits'];
             List<Map<String, String>> fetchedData = [];
@@ -380,12 +381,10 @@ class _MultiDeviceFieldPageWidgetState
               Map<String, dynamic> data = obj['p_source']['data'];
 
               for (String field in deviceFields) {
-                String label =
-                    TwinUtils.getParameterLabel(field, deviceModel);
+                String label = TwinUtils.getParameterLabel(field, deviceModel);
                 String value = '${data[field] ?? '-'}';
                 String unit = TwinUtils.getParameterUnit(field, deviceModel);
-                String iconId =
-                    TwinUtils.getParameterIcon(field, deviceModel);
+                String iconId = TwinUtils.getParameterIcon(field, deviceModel);
                 fieldSuffix[label] = unit;
                 fieldIcons[label] = iconId;
 
@@ -395,6 +394,7 @@ class _MultiDeviceFieldPageWidgetState
                 });
               }
             }
+            debugPrint('Exclude DATA: $excludeFields');
             // debugPrint('DEVICE DATA: $fetchedData');
             setState(() {
               deviceData = fetchedData;
@@ -416,6 +416,9 @@ class _MultiDeviceFieldPageWidgetState
 
               additionalFields = Map<String, dynamic>.from(data);
               additionalFields.remove(widget.config.field);
+              for (String field in excludeFields) {
+                additionalFields.remove(field);
+              }
 
               if (updatedStampValue is int) {
                 DateTime updatedStampTime =
