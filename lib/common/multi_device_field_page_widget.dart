@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nocode_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/multi_device_field_page/multi_device_field_page.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_widgets/core/twinned_utils.dart';
-import 'package:twinned_widgets/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
@@ -360,18 +359,18 @@ class _MultiDeviceFieldPageWidgetState
 
           if (validateResponse(qRes)) {
             Device? device =
-                await TwinnedUtils.getDevice(deviceId: widget.config.deviceId);
+                await TwinUtils.getDevice(deviceId: widget.config.deviceId);
             if (null == device) return;
             // deviceName = device.name;
             DeviceModel? deviceModel =
-                await TwinnedUtils.getDeviceModel(modelId: device.modelId);
+                await TwinUtils.getDeviceModel(modelId: device.modelId);
             if (null == deviceModel) return;
 
             Map<String, dynamic> json =
                 qRes.body!.result! as Map<String, dynamic>;
 
             List<String> deviceFields =
-                NoCodeUtils.getSortedFields(deviceModel);
+                TwinUtils.getSortedFields(deviceModel);
 
             List<dynamic> values = json['hits']['hits'];
             List<Map<String, String>> fetchedData = [];
@@ -382,11 +381,11 @@ class _MultiDeviceFieldPageWidgetState
 
               for (String field in deviceFields) {
                 String label =
-                    NoCodeUtils.getParameterLabel(field, deviceModel);
+                    TwinUtils.getParameterLabel(field, deviceModel);
                 String value = '${data[field] ?? '-'}';
-                String unit = NoCodeUtils.getParameterUnit(field, deviceModel);
+                String unit = TwinUtils.getParameterUnit(field, deviceModel);
                 String iconId =
-                    NoCodeUtils.getParameterIcon(field, deviceModel);
+                    TwinUtils.getParameterIcon(field, deviceModel);
                 fieldSuffix[label] = unit;
                 fieldIcons[label] = iconId;
 

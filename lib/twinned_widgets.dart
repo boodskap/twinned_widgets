@@ -14,6 +14,7 @@ import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
 import 'package:twinned_widgets/common/dynamic_text_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
+import 'package:twinned_widgets/common/generic_air_quality_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_linear_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
@@ -39,7 +40,6 @@ export 'common/value_distribution_pie_widget.dart';
 export 'common/total_and_reporting_asset_widget.dart';
 export 'twinned_config_builder.dart';
 export 'twinned_widget_builder.dart';
-export 'twinned_session.dart';
 
 final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWTotalValueWidget': TotalValueWidgetBuilder(),
@@ -69,9 +69,10 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceDataAccordionWidget': DeviceDataAccordionWidgetBuilder(),
   'TWStaticTimelineWidget': StaticTimelineWidgetBuilder(),
   'TWGenericAirQualityWidget': GenericAirQualityWidgetBuilder(),
-   'TWGenericAirQualityLinearWidget': GenericAirQualityLinearWidgetBuilder(),
+  'TWGenericAirQualityLinearWidget': GenericAirQualityLinearWidgetBuilder(),
   'TWMultiDeviceBarChartWidget': MultiDeviceBarChartWidgetBuilder(),
   'TWMultiDeviceFieldPageWidget': MultiDeviceFieldPageWidgetBuilder(),
+  'TWGenericAirQualityCircleWidget': GenericAirQualityCircleWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {

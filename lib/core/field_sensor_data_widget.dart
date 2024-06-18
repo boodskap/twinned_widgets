@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
-import 'package:nocode_commons/sensor_widget.dart';
 import 'package:twinned_api/api/twinned.swagger.dart' as twin;
 import 'package:twinned_widgets/core/field_sensor_widget.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
 
 class FieldSensorDataWidget extends StatelessWidget {
   final List<String> fields;
