@@ -50,6 +50,7 @@ class _MultiDeviceFieldCardWidgetState
   late double cardElevation;
   late bool bottomLabelAsSuffix;
   Widget? iconImage;
+
   @override
   void initState() {
     deviceIds = widget.config.deviceIds;
@@ -73,131 +74,123 @@ class _MultiDeviceFieldCardWidgetState
     fieldElevation = widget.config.fieldElevation;
     cardElevation = widget.config.cardElevation;
     bottomLabelAsSuffix = widget.config.bottomLabelAsSuffix;
-    isValidConfig =
-        deviceIds.isNotEmpty && fields.isNotEmpty && iconId.isNotEmpty;
+
+    isValidConfig = deviceIds.isNotEmpty &&
+        fields.isNotEmpty &&
+        iconId.isNotEmpty &&
+        deviceIds.length == fields.length;
     super.initState();
   }
 
- @override
-Widget build(BuildContext context) {
-  if (!isValidConfig) {
-    return const Center(
-      child: Text(
-        'Not configured properly',
-        style: TextStyle(color: Colors.red),
-      ),
-    );
-  }
-  return Column(
-    children: [
-      Expanded(
-        child: Card(
-          elevation: cardElevation,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (null != iconImage)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                            width: iconWidth,
-                            height: iconHeight,
-                            child: iconImage),
+  @override
+  Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not Configured Properly.',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: Card(
+            elevation: cardElevation,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (iconImage != null)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                              width: iconWidth,
+                              height: iconHeight,
+                              child: iconImage),
+                        ),
+                      const Divider(),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontFamily: titleFont.fontFamily,
+                          fontSize: titleFont.fontSize,
+                          fontWeight: titleFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(titleFont.fontColor),
+                        ),
                       ),
-                    const Divider(),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontFamily: titleFont.fontFamily,
-                        fontSize: titleFont.fontSize,
-                        fontWeight: titleFont.fontBold
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: Color(titleFont.fontColor),
+                      const Divider(),
+                      Text(
+                        message,
+                        style: TextStyle(
+                          fontFamily: messageFont.fontFamily,
+                          fontSize: messageFont.fontSize,
+                          fontWeight: messageFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(messageFont.fontColor),
+                        ),
                       ),
-                    ),
-                    const Divider(),
-                    Text(
-                      message,
-                      style: TextStyle(
-                        fontFamily: messageFont.fontFamily,
-                        fontSize: messageFont.fontSize,
-                        fontWeight: messageFont.fontBold
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: Color(messageFont.fontColor),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      spacing: 8.0,
-                      runSpacing: 8.0,
-                      children: [
-                        for (var deviceIndex = 0;
-                            deviceIndex < deviceIds.length;
-                            deviceIndex++)
-                          for (var fieldIndex = 0;
-                              fieldIndex < fields.length;
-                              fieldIndex++)
+                Expanded(
+                  flex: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: [
+                          for (var i = 0; i < deviceIds.length; i++)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
                                 height: 200,
                                 width: 200,
                                 child: Card(
-                                  color: Color(widget.config.cardBgColors[
-                                      deviceIndex * fields.length +
-                                          fieldIndex]),
+                                  color: Color(widget.config.cardBgColors[i]),
                                   elevation: cardElevation,
                                   child: GenericValueCardWidget(
                                     config: GenericValueCardWidgetConfig(
-                                      topLabel: fields[fieldIndex],
+                                      topLabel: fields[i],
                                       bottomFont: bottomFont.toJson(),
                                       topFont: topFont.toJson(),
-                                      bottomLabelAsSuffix:
-                                          bottomLabelAsSuffix,
+                                      bottomLabelAsSuffix: bottomLabelAsSuffix,
                                       elevation: fieldElevation,
                                       valueFont: valueFont.toJson(),
-                                      deviceId: deviceIds[deviceIndex],
-                                      field: fields[fieldIndex],
-                                      iconId:
-                                          fieldIcons[fields[fieldIndex]] !
-                                              ,
+                                      deviceId: deviceIds[i],
+                                      field: fields[i],
+                                      iconId: fieldIcons[fields[i]]!,
                                       iconHeight: fieldIconHeight,
                                       iconWidth: fieldIconWidth,
-                                      bottomLabel:
-                                          fieldSuffix[fields[fieldIndex]] ??
-                                              '',
+                                      bottomLabel: fieldSuffix[fields[i]] ?? '',
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
   Future<void> load(List<String> deviceIds,
       {String? filter, String search = '*'}) async {
