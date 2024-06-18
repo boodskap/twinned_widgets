@@ -170,7 +170,7 @@ class _MultiDeviceFieldCardWidgetState
                                       valueFont: valueFont.toJson(),
                                       deviceId: deviceIds[i],
                                       field: fields[i],
-                                      iconId: fieldIcons[fields[i]]! ?? '',
+                                      iconId: fieldIcons[fields[i]]!,
                                       iconHeight: fieldIconHeight,
                                       iconWidth: fieldIconWidth,
                                       bottomLabel: fieldSuffix[fields[i]] ?? '',
