@@ -32,6 +32,8 @@ class _MultiDeviceFieldPageWidgetState
   late String paraText;
   late Color startFillColor;
   late Color endFillColor;
+  late Color curveBgColor;
+  late Color cardBgColor;
   late FontConfig titleFont;
   late FontConfig timeStampFont;
   late FontConfig valueFont;
@@ -39,6 +41,8 @@ class _MultiDeviceFieldPageWidgetState
   late FontConfig suffixFont;
   late FontConfig paraTitleFont;
   late FontConfig paraTextFont;
+  late FontConfig cardFontText;
+  late double elevation;
   dynamic updatedStampValue;
   dynamic value;
   Map<String, dynamic> additionalFields = {};
@@ -63,8 +67,12 @@ class _MultiDeviceFieldPageWidgetState
     suffixFont = FontConfig.fromJson(config.suffixFont);
     paraTitleFont = FontConfig.fromJson(config.paraTitleFont);
     paraTextFont = FontConfig.fromJson(config.paraTextFont);
+    cardFontText = FontConfig.fromJson(config.cardFontText);
     startFillColor = Color(config.startFillColor);
     endFillColor = Color(config.endFillColor);
+    curveBgColor = Color(config.curveBgColor);
+    cardBgColor = Color(config.cardBgColor);
+    elevation = config.elevation;
     // cardBgColor = config.cardBgColor.map((color) => Color(color)).toList();
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
@@ -241,7 +249,7 @@ class _MultiDeviceFieldPageWidgetState
                         child: Container(
                           padding: const EdgeInsets.only(top: 70),
                           alignment: Alignment.center,
-                          color: const Color(0xffadbbda),
+                          color: curveBgColor,
                           height: 270,
                           // height: MediaQuery.of(context).size.width * 0.11,
                           child: SingleChildScrollView(
@@ -266,8 +274,8 @@ class _MultiDeviceFieldPageWidgetState
                                   // width: 60,
                                   // height: 80,
                                   child: Card(
-                                    elevation: 8,
-                                    color: const Color(0xffadbbda),
+                                    elevation: elevation,
+                                    color: cardBgColor,
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
@@ -277,18 +285,15 @@ class _MultiDeviceFieldPageWidgetState
                                         children: [
                                           Text(
                                             entry.key,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black87,
+                                            style: TwinUtils.getTextStyle(
+                                              cardFontText,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             formatFieldValue(entry.value),
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black54,
-                                            ),
+                                            style: TwinUtils.getTextStyle(
+                                                cardFontText),
                                           ),
                                         ],
                                       ),
