@@ -30,8 +30,6 @@ class _MultiDeviceFieldPageWidgetState
   late String imageId;
   late String paraTitle;
   late String paraText;
-  late Color startFillColor;
-  late Color endFillColor;
   late Color curveBgColor;
   late Color cardBgColor;
   late FontConfig titleFont;
@@ -43,13 +41,14 @@ class _MultiDeviceFieldPageWidgetState
   late FontConfig paraTextFont;
   late FontConfig cardFontText;
   late double elevation;
+  late List<String> excludeFields;
+  late List<Color> gradientBgColor;
   dynamic updatedStampValue;
   dynamic value;
   Map<String, dynamic> additionalFields = {};
   List<Map<String, String>> deviceData = [];
   Map<String, String> fieldIcons = <String, String>{};
   Map<String, String> fieldSuffix = <String, String>{};
-  late List<String> excludeFields;
 
   void _initState() {
     var config = widget.config;
@@ -68,12 +67,11 @@ class _MultiDeviceFieldPageWidgetState
     paraTitleFont = FontConfig.fromJson(config.paraTitleFont);
     paraTextFont = FontConfig.fromJson(config.paraTextFont);
     cardFontText = FontConfig.fromJson(config.cardFontText);
-    startFillColor = Color(config.startFillColor);
-    endFillColor = Color(config.endFillColor);
     curveBgColor = Color(config.curveBgColor);
     cardBgColor = Color(config.cardBgColor);
     elevation = config.elevation;
-    // cardBgColor = config.cardBgColor.map((color) => Color(color)).toList();
+    gradientBgColor =
+        config.gradientBgColor.map((colorInt) => Color(colorInt)).toList();
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
   }
@@ -120,7 +118,7 @@ class _MultiDeviceFieldPageWidgetState
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               gradient: LinearGradient(
-                colors: [startFillColor, endFillColor],
+                colors: gradientBgColor.toList(),
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
               ),
