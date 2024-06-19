@@ -37,6 +37,22 @@ class _MultiDeviceSingleFieldPieChartWidgetState
   late FontConfig valueFont;
   late FontConfig labelFont;
   bool isValidConfig = false;
+  late List<Color> chartColors;
+  late bool legendVisibility;
+  late bool dataLabelVisibility;
+  late bool enableTooltip;
+  late bool explode;
+  
+  late IconType legendIconType;
+  late Color labelBgColor;
+  late Color labelBorderColor;
+  late double angle;
+  late double labelBorderRadius;
+  late double labelBorderWidth;
+  late double labelOpacity;
+  late double opacity;
+  late double chartRadius;
+  late Color strokeColor;
 
   @override
   void initState() {
@@ -47,6 +63,24 @@ class _MultiDeviceSingleFieldPieChartWidgetState
     valueFont = FontConfig.fromJson(widget.config.valueFont);
     labelFont = FontConfig.fromJson(widget.config.labelFont);
     isValidConfig = deviceIds.isNotEmpty && field.isNotEmpty;
+    chartColors =
+        widget.config.chartColors.map((colorInt) => Color(colorInt)).toList();
+    legendVisibility = widget.config.legendVisibility;
+    dataLabelVisibility = widget.config.dataLabelVisibility;
+    // labelPosition = widget.config.labelPosition;
+    legendIconType = widget.config.iconType;
+    labelBgColor = Color(widget.config.labelBgColor);
+    labelBorderColor = Color(widget.config.labelBorderColor);
+    angle = widget.config.angle;
+    labelBorderRadius = widget.config.labelBorderRadius;
+    labelBorderWidth = widget.config.labelBorderWidth;
+    labelOpacity = widget.config.labelOpacity;
+    enableTooltip = widget.config.enableTooltip;
+    explode = widget.config.explode;
+    opacity = widget.config.opacity;
+    chartRadius = widget.config.chartRadius;
+    strokeColor = Color(widget.config.strokeColor);
+
     super.initState();
   }
 
@@ -113,41 +147,42 @@ class _MultiDeviceSingleFieldPieChartWidgetState
           ? const CircularProgressIndicator()
           : SfCircularChart(
               legend: Legend(
-                  isVisible:widget.config.legendVisibility ,
-                  textStyle: TwinUtils.getTextStyle(
-                      FontConfig.fromJson(widget.config.labelFont))),
+                isVisible: legendVisibility,
+                textStyle: TwinUtils.getTextStyle(
+                    FontConfig.fromJson(widget.config.labelFont)),
+              ),
               series: <CircularSeries>[
                 PieSeries<DeviceData, String>(
-                  pointColorMapper: (DeviceData data, _) => Color(
-                    widget.config.chartColors[deviceData.indexOf(data)],
-                  ),
+                  pointColorMapper: (DeviceData data, _) =>
+                      chartColors[deviceData.indexOf(data)],
                   dataSource: deviceData,
                   xValueMapper: (DeviceData data, _) => data.deviceName,
                   yValueMapper: (DeviceData data, _) => data.value,
                   dataLabelMapper: (DeviceData data, _) =>
                       'label: ${data.value}',
-                  dataLabelSettings:  DataLabelSettings(textStyle:TwinUtils.getTextStyle(
-                      FontConfig.fromJson(widget.config.valueFont)) ,
-                    isVisible: widget.config.dataLabelVisibility,
-                    labelPosition: ChartDataLabelPosition.outside,
-                    borderColor: Colors.red,
-                    color: Colors.red,
+                  dataLabelSettings: DataLabelSettings(
+                    textStyle: TwinUtils.getTextStyle(
+                        FontConfig.fromJson(widget.config.valueFont)),
+                    isVisible: dataLabelVisibility,
+                    labelPosition: widget.config.labelPosition,
+                    borderColor: labelBorderColor,
+                    color: labelBgColor,
                     overflowMode: OverflowMode.shift,
                     alignment: ChartAlignment.center,
-                    angle: 0,
-                    borderWidth: 5,
-                    borderRadius: 3,
-                    opacity: 1.0,
+                    angle: angle.toInt(),
+                    borderWidth: labelBorderWidth,
+                    borderRadius: labelBorderRadius,
+                    opacity: labelOpacity,
                   ),
                   enableTooltip: true,
                   explodeIndex: 3,
                   explodeGesture: ActivationMode.singleTap,
                   legendIconType: LegendIconType.rectangle,
-                  explode: true,
-                  opacity: 1,
+                  explode: explode,
+                  opacity: opacity,
                   animationDelay: 100,
-                  radius: "100",
-                  strokeColor: Colors.black87,
+                  radius: chartRadius.toString(),
+                  strokeColor: strokeColor,
                   startAngle: 0,
                 ),
               ],
