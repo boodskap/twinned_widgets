@@ -42,7 +42,7 @@ class _MultiDeviceFieldPageWidgetState
   late FontConfig cardFontText;
   late double elevation;
   late List<String> excludeFields;
-  late List<Color> cardBgColors;
+  late List<Color> gradientBgColor;
   dynamic updatedStampValue;
   dynamic value;
   Map<String, dynamic> additionalFields = {};
@@ -70,8 +70,8 @@ class _MultiDeviceFieldPageWidgetState
     curveBgColor = Color(config.curveBgColor);
     cardBgColor = Color(config.cardBgColor);
     elevation = config.elevation;
-    cardBgColors =
-        config.cardBgColors.map((colorInt) => Color(colorInt)).toList();
+    gradientBgColor =
+        config.gradientBgColor.map((colorInt) => Color(colorInt)).toList();
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
   }
@@ -118,7 +118,7 @@ class _MultiDeviceFieldPageWidgetState
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               gradient: LinearGradient(
-                colors: cardBgColors.toList(),
+                colors: gradientBgColor.toList(),
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
               ),
