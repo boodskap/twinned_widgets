@@ -36,7 +36,7 @@ class MultiDeviceMultiFieldBarChartWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.bar_chart);
+    return const Icon(Icons.all_out_sharp);
   }
 
   @override
