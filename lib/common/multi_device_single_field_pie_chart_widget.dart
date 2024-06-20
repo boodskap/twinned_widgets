@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart' as charts;
 import 'package:twin_commons/core/base_state.dart';
-import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_models/multi_device_single_field_pie_chart/multi_device_single_field_pie_chart.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
-import 'package:twinned_models/models.dart';
 
 class DeviceData {
   final String deviceName;
+  final String assetId;
   final double value;
 
-  DeviceData(this.deviceName, this.value);
+  DeviceData(this.deviceName, this.assetId, this.value);
 }
 
 class MultiDeviceSingleFieldPieChartWidget extends StatefulWidget {
@@ -29,21 +29,20 @@ class MultiDeviceSingleFieldPieChartWidget extends StatefulWidget {
 class _MultiDeviceSingleFieldPieChartWidgetState
     extends BaseState<MultiDeviceSingleFieldPieChartWidget> {
   List<DeviceData> deviceData = [];
-  bool loading = false;
+  bool isValidConfig = false;
   late List<String> deviceIds;
   late String field;
   late String title;
   late FontConfig titleFont;
   late FontConfig valueFont;
   late FontConfig labelFont;
-  bool isValidConfig = false;
   late List<Color> chartColors;
   late bool legendVisibility;
   late bool dataLabelVisibility;
   late bool enableTooltip;
   late bool explode;
-  
   late IconType legendIconType;
+  late charts.LegendPosition legendPosition;
   late Color labelBgColor;
   late Color labelBorderColor;
   late double angle;
@@ -53,6 +52,7 @@ class _MultiDeviceSingleFieldPieChartWidgetState
   late double opacity;
   late double chartRadius;
   late Color strokeColor;
+  String label = "";
 
   @override
   void initState() {
@@ -62,13 +62,13 @@ class _MultiDeviceSingleFieldPieChartWidgetState
     titleFont = FontConfig.fromJson(widget.config.titleFont);
     valueFont = FontConfig.fromJson(widget.config.valueFont);
     labelFont = FontConfig.fromJson(widget.config.labelFont);
-    isValidConfig = deviceIds.isNotEmpty && field.isNotEmpty;
+
     chartColors =
         widget.config.chartColors.map((colorInt) => Color(colorInt)).toList();
     legendVisibility = widget.config.legendVisibility;
     dataLabelVisibility = widget.config.dataLabelVisibility;
-    // labelPosition = widget.config.labelPosition;
     legendIconType = widget.config.iconType;
+    legendPosition = mapLegendPosition(widget.config.legendPosition);
     labelBgColor = Color(widget.config.labelBgColor);
     labelBorderColor = Color(widget.config.labelBorderColor);
     angle = widget.config.angle;
@@ -81,54 +81,121 @@ class _MultiDeviceSingleFieldPieChartWidgetState
     chartRadius = widget.config.chartRadius;
     strokeColor = Color(widget.config.strokeColor);
 
+    isValidConfig = deviceIds.isNotEmpty &&
+        field.isNotEmpty &&
+        (chartColors.length == deviceIds.length);
     super.initState();
   }
 
-  Future loadDeviceData() async {
+  Future<void> load() async {
+    // if (isValidConfig) return;
     if (loading) return;
     loading = true;
 
     List<DeviceData> fetchedData = [];
 
-    for (var deviceId in deviceIds) {
-      var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
-        apikey: TwinnedSession.instance.authToken,
-        body: EqlSearch(
-          source: ["data.$field", "deviceId", "updatedStamp", "deviceName"],
-          page: 0,
-          size: 1,
-          conditions: [],
-          boolConditions: [],
-          queryConditions: [],
-          mustConditions: [
-            {
-              "exists": {"field": "data.$field"}
-            },
-            {
-              "match_phrase": {"deviceId": deviceId}
-            },
-          ],
-          sort: {'updatedStamp': 'desc'},
-        ),
-      );
-      // debugPrint(qRes.body.toString());
-      if (validateResponse(qRes)) {
-        Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
-        List<dynamic> values = json['hits']['hits'];
+    await execute(() async {
+      for (var deviceId in deviceIds) {
+        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+          apikey: TwinnedSession.instance.authToken,
+          body: EqlSearch(
+            source: [
+              "data.$field",
+              "deviceId",
+              "updatedStamp",
+              "deviceName",
+              "asset"
+            ],
+            page: 0,
+            size: 1,
+            conditions: [],
+            boolConditions: [],
+            queryConditions: [],
+            mustConditions: [
+              {
+                "exists": {"field": "data.$field"}
+              },
+              {
+                "match_phrase": {"deviceId": deviceId}
+              },
+            ],
+            sort: {'updatedStamp': 'desc'},
+          ),
+        );
 
-        if (values.isNotEmpty) {
-          var obj = values.first;
-          double value = obj['p_source']['data'][field].toDouble();
-          String deviceName = obj['p_source']['deviceName'];
-          fetchedData.add(DeviceData(deviceName, value));
+        debugPrint(qRes.body.toString());
+
+        if (validateResponse(qRes)) {
+          Map<String, dynamic> json =
+              qRes.body!.result! as Map<String, dynamic>;
+          List<dynamic> values = json['hits']['hits'];
+
+          if (values.isNotEmpty) {
+            var obj = values.first;
+            double value = obj['p_source']['data'][field].toDouble();
+            String deviceName = obj['p_source']['deviceName'];
+            String assetName = obj['p_source']['asset'] ?? "--";
+
+            Device? device = await TwinUtils.getDevice(deviceId: deviceId);
+            if (device == null) continue;
+
+            deviceName = device.name;
+            DeviceModel? deviceModel =
+                await TwinUtils.getDeviceModel(modelId: device.modelId);
+            label = TwinUtils.getParameterLabel(field, deviceModel!);
+
+            fetchedData.add(DeviceData(deviceName, assetName, value));
+          }
         }
       }
-    }
-
+    });
     setState(() {
       deviceData = fetchedData;
-      loading = false;
     });
+    loading = false;
+    refresh();
+  }
+
+  charts.LegendPosition mapLegendPosition(LegendPosition position) {
+    switch (position) {
+      case LegendPosition.top:
+        return charts.LegendPosition.top;
+      case LegendPosition.bottom:
+        return charts.LegendPosition.bottom;
+      case LegendPosition.left:
+        return charts.LegendPosition.left;
+      case LegendPosition.right:
+        return charts.LegendPosition.right;
+      default:
+        return charts.LegendPosition.right;
+    }
+  }
+
+  charts.LegendIconType mapIconType(IconType iconType) {
+    switch (iconType) {
+      case IconType.rectangle:
+        return charts.LegendIconType.rectangle;
+      case IconType.circle:
+        return charts.LegendIconType.circle;
+      case IconType.diamond:
+        return charts.LegendIconType.diamond;
+      case IconType.horizontalLine:
+        return charts.LegendIconType.horizontalLine;
+      case IconType.verticalLine:
+        return charts.LegendIconType.verticalLine;
+      case IconType.image:
+        return charts.LegendIconType.image;
+      case IconType.invertedTriangle:
+        return charts.LegendIconType.invertedTriangle;
+      case IconType.seriesType:
+        return charts.LegendIconType.seriesType;
+      case IconType.triangle:
+        return charts.LegendIconType.triangle;
+      case IconType.pentagon:
+        return charts.LegendIconType.pentagon;
+      default:
+        return charts.LegendIconType.circle;
+    }
   }
 
   @override
@@ -142,57 +209,71 @@ class _MultiDeviceSingleFieldPieChartWidgetState
       );
     }
 
-    return Center(
-      child: loading
-          ? const CircularProgressIndicator()
-          : SfCircularChart(
-              legend: Legend(
-                isVisible: legendVisibility,
-                textStyle: TwinUtils.getTextStyle(
-                    FontConfig.fromJson(widget.config.labelFont)),
-              ),
-              series: <CircularSeries>[
-                PieSeries<DeviceData, String>(
-                  pointColorMapper: (DeviceData data, _) =>
-                      chartColors[deviceData.indexOf(data)],
-                  dataSource: deviceData,
-                  xValueMapper: (DeviceData data, _) => data.deviceName,
-                  yValueMapper: (DeviceData data, _) => data.value,
-                  dataLabelMapper: (DeviceData data, _) =>
-                      'label: ${data.value}',
-                  dataLabelSettings: DataLabelSettings(
+    return Column(
+      children: [
+        Text(
+          title,
+          style: TwinUtils.getTextStyle(titleFont),
+        ),
+        Center(
+          child: loading
+              ? const CircularProgressIndicator()
+              : charts.SfCircularChart(
+                  legend: charts.Legend(
+                    position: legendPosition,
+                    isVisible: legendVisibility,
                     textStyle: TwinUtils.getTextStyle(
-                        FontConfig.fromJson(widget.config.valueFont)),
-                    isVisible: dataLabelVisibility,
-                    labelPosition: widget.config.labelPosition,
-                    borderColor: labelBorderColor,
-                    color: labelBgColor,
-                    overflowMode: OverflowMode.shift,
-                    alignment: ChartAlignment.center,
-                    angle: angle.toInt(),
-                    borderWidth: labelBorderWidth,
-                    borderRadius: labelBorderRadius,
-                    opacity: labelOpacity,
+                        FontConfig.fromJson(widget.config.labelFont)),
                   ),
-                  enableTooltip: true,
-                  explodeIndex: 3,
-                  explodeGesture: ActivationMode.singleTap,
-                  legendIconType: LegendIconType.rectangle,
-                  explode: explode,
-                  opacity: opacity,
-                  animationDelay: 100,
-                  radius: chartRadius.toString(),
-                  strokeColor: strokeColor,
-                  startAngle: 0,
+                  series: <charts.CircularSeries>[
+                    charts.PieSeries<DeviceData, String>(
+                      pointColorMapper: (DeviceData data, _) =>
+                          chartColors[deviceData.indexOf(data)],
+                      dataSource: deviceData,
+                      xValueMapper: (DeviceData data, _) => data.assetId == "--"
+                          ? '${data.deviceName} --'
+                          : '${data.deviceName} -- ${data.assetId}',
+                      yValueMapper: (DeviceData data, _) => data.value,
+                      dataLabelMapper: (DeviceData data, _) =>
+                          '$label: ${data.value}',
+                      dataLabelSettings: charts.DataLabelSettings(
+                        textStyle: TwinUtils.getTextStyle(
+                            FontConfig.fromJson(widget.config.valueFont)),
+                        isVisible: dataLabelVisibility,
+                        labelPosition: widget.config.labelPosition ==
+                                ChartDataLabelPosition.inside
+                            ? charts.ChartDataLabelPosition.inside
+                            : charts.ChartDataLabelPosition.outside,
+                        borderColor: labelBorderColor,
+                        color: labelBgColor,
+                        overflowMode: charts.OverflowMode.shift,
+                        alignment: charts.ChartAlignment.center,
+                        angle: angle.toInt(),
+                        borderWidth: labelBorderWidth,
+                        borderRadius: labelBorderRadius,
+                        opacity: labelOpacity,
+                      ),
+                      enableTooltip: enableTooltip,
+                      explodeIndex: 3,
+                      explodeGesture: charts.ActivationMode.singleTap,
+                      legendIconType: mapIconType(legendIconType),
+                      explode: explode,
+                      opacity: opacity,
+                      animationDelay: 100,
+                      radius: chartRadius.toString(),
+                      strokeColor: strokeColor,
+                      startAngle: 0,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+        ),
+      ],
     );
   }
 
   @override
   void setup() {
-    loadDeviceData();
+    load();
   }
 }
 
