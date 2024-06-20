@@ -25,6 +25,7 @@ import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_page_widget.dart';
 import 'package:twinned_widgets/common/multi_device_single_field_pie_chart_widget.dart';
+import 'package:twinned_widgets/common/multi_device_multi_field_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
 import 'package:twinned_widgets/common/timestamp_widget.dart';
@@ -78,6 +79,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWMultiDeviceFieldCardWidget': MultiDeviceFieldCardWidgetBuilder(),
   'TWMultiDeviceSingleFieldPieChartWidget':
       MultiDeviceSingleFieldPieChartWidgetBuilder(),
+  'TWMultiDeviceMultiFieldBarChartWidget':MultiDeviceMultiFieldBarChartWidgetBuilder(),
+
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
