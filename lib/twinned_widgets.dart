@@ -24,6 +24,7 @@ import 'package:twinned_widgets/common/generic_wind_widget.dart';
 import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_page_widget.dart';
+import 'package:twinned_widgets/common/multi_device_single_field_pie_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_multi_field_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
@@ -37,6 +38,7 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'common/multiple_device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/single_value_slider_widget.dart';
+import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
 export 'common/total_value_widget.dart';
 export 'common/value_distribution_pie_widget.dart';
 export 'common/total_and_reporting_asset_widget.dart';
@@ -76,7 +78,10 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWMultiDeviceFieldPageWidget': MultiDeviceFieldPageWidgetBuilder(),
   'TWGenericAirQualityCircleWidget': GenericAirQualityCircleWidgetBuilder(),
   'TWMultiDeviceFieldCardWidget': MultiDeviceFieldCardWidgetBuilder(),
+  'TWMultiDeviceSingleFieldPieChartWidget':
+      MultiDeviceSingleFieldPieChartWidgetBuilder(),
   'TWMultiDeviceMultiFieldBarChartWidget':MultiDeviceMultiFieldBarChartWidgetBuilder(),
+  'TWMultiLineMinMaxAverageWidget': MultipleLinMinMaxAverageWidgetBuilder(),
 
 };
 
