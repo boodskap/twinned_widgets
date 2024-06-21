@@ -123,8 +123,6 @@ class _MultiDeviceSingleFieldPieChartWidgetState
           ),
         );
 
-        debugPrint(qRes.body.toString());
-
         if (validateResponse(qRes)) {
           Map<String, dynamic> json =
               qRes.body!.result! as Map<String, dynamic>;
