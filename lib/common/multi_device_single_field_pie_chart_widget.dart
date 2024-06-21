@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart' as charts;
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
@@ -41,8 +41,8 @@ class _MultiDeviceSingleFieldPieChartWidgetState
   late bool dataLabelVisibility;
   late bool enableTooltip;
   late bool explode;
-  late IconType legendIconType;
-  late charts.LegendPosition legendPosition;
+  late LegendIconType legendIconType;
+  late LegendPosition legendPosition;
   late Color labelBgColor;
   late Color labelBorderColor;
   late double angle;
@@ -67,8 +67,8 @@ class _MultiDeviceSingleFieldPieChartWidgetState
         widget.config.chartColors.map((colorInt) => Color(colorInt)).toList();
     legendVisibility = widget.config.legendVisibility;
     dataLabelVisibility = widget.config.dataLabelVisibility;
-    legendIconType = widget.config.iconType;
-    legendPosition = mapLegendPosition(widget.config.legendPosition);
+    legendIconType = widget.config.iconType ;
+    legendPosition = widget.config.legendPosition;
     labelBgColor = Color(widget.config.labelBgColor);
     labelBorderColor = Color(widget.config.labelBorderColor);
     angle = widget.config.angle;
@@ -154,48 +154,7 @@ class _MultiDeviceSingleFieldPieChartWidgetState
     refresh();
   }
 
-  charts.LegendPosition mapLegendPosition(LegendPosition position) {
-    switch (position) {
-      case LegendPosition.top:
-        return charts.LegendPosition.top;
-      case LegendPosition.bottom:
-        return charts.LegendPosition.bottom;
-      case LegendPosition.left:
-        return charts.LegendPosition.left;
-      case LegendPosition.right:
-        return charts.LegendPosition.right;
-      default:
-        return charts.LegendPosition.right;
-    }
-  }
-
-  charts.LegendIconType mapIconType(IconType iconType) {
-    switch (iconType) {
-      case IconType.rectangle:
-        return charts.LegendIconType.rectangle;
-      case IconType.circle:
-        return charts.LegendIconType.circle;
-      case IconType.diamond:
-        return charts.LegendIconType.diamond;
-      case IconType.horizontalLine:
-        return charts.LegendIconType.horizontalLine;
-      case IconType.verticalLine:
-        return charts.LegendIconType.verticalLine;
-      case IconType.image:
-        return charts.LegendIconType.image;
-      case IconType.invertedTriangle:
-        return charts.LegendIconType.invertedTriangle;
-      case IconType.seriesType:
-        return charts.LegendIconType.seriesType;
-      case IconType.triangle:
-        return charts.LegendIconType.triangle;
-      case IconType.pentagon:
-        return charts.LegendIconType.pentagon;
-      default:
-        return charts.LegendIconType.circle;
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
@@ -216,15 +175,15 @@ class _MultiDeviceSingleFieldPieChartWidgetState
         Center(
           child: loading
               ? const CircularProgressIndicator()
-              : charts.SfCircularChart(
-                  legend: charts.Legend(
+              : SfCircularChart(
+                  legend: Legend(
                     position: legendPosition,
                     isVisible: legendVisibility,
                     textStyle: TwinUtils.getTextStyle(
                         FontConfig.fromJson(widget.config.labelFont)),
                   ),
-                  series: <charts.CircularSeries>[
-                    charts.PieSeries<DeviceData, String>(
+                  series: <CircularSeries>[
+                    PieSeries<DeviceData, String>(
                       pointColorMapper: (DeviceData data, _) =>
                           chartColors[deviceData.indexOf(data)],
                       dataSource: deviceData,
@@ -234,18 +193,18 @@ class _MultiDeviceSingleFieldPieChartWidgetState
                       yValueMapper: (DeviceData data, _) => data.value,
                       dataLabelMapper: (DeviceData data, _) =>
                           '$label: ${data.value}',
-                      dataLabelSettings: charts.DataLabelSettings(
+                      dataLabelSettings: DataLabelSettings(
                         textStyle: TwinUtils.getTextStyle(
                             FontConfig.fromJson(widget.config.valueFont)),
                         isVisible: dataLabelVisibility,
                         labelPosition: widget.config.labelPosition ==
                                 ChartDataLabelPosition.inside
-                            ? charts.ChartDataLabelPosition.inside
-                            : charts.ChartDataLabelPosition.outside,
+                            ? ChartDataLabelPosition.inside
+                            : ChartDataLabelPosition.outside,
                         borderColor: labelBorderColor,
                         color: labelBgColor,
-                        overflowMode: charts.OverflowMode.shift,
-                        alignment: charts.ChartAlignment.center,
+                        overflowMode: OverflowMode.shift,
+                        alignment: ChartAlignment.center,
                         angle: angle.toInt(),
                         borderWidth: labelBorderWidth,
                         borderRadius: labelBorderRadius,
@@ -253,8 +212,8 @@ class _MultiDeviceSingleFieldPieChartWidgetState
                       ),
                       enableTooltip: enableTooltip,
                       explodeIndex: 3,
-                      explodeGesture: charts.ActivationMode.singleTap,
-                      legendIconType: mapIconType(legendIconType),
+                      explodeGesture: ActivationMode.singleTap,
+                      legendIconType: legendIconType,
                       explode: explode,
                       opacity: opacity,
                       animationDelay: 100,
@@ -274,6 +233,8 @@ class _MultiDeviceSingleFieldPieChartWidgetState
     load();
   }
 }
+
+class IconType {}
 
 class MultiDeviceSingleFieldPieChartWidgetBuilder extends TwinnedWidgetBuilder {
   @override

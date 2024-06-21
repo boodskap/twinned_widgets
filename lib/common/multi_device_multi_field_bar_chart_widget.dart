@@ -27,8 +27,8 @@ class _MultiDeviceMultiFieldBarChartWidgetState
   late FontConfig titleFont;
   late FontConfig legendFont;
   late BarChartDirection chartDirection;
-  late LegendPositions legendPosition;
-  late IconTypes iconType;
+  late LegendPosition legendPosition;
+  late LegendIconType iconType;
   late List<Color> barColors = [];
   late double barWidth;
   late double barRadius;
