@@ -23,17 +23,55 @@ class _DeviceFieldScatterChartWidgetState
     extends BaseState<DeviceFieldScatterChartWidget> {
   final List<SeriesData> _chatSeries = [];
   bool isValidConfig = false;
-  final DateFormat dateFormat = DateFormat('MM/dd HH:mm:ss aa');
+  final DateFormat dateFormat = DateFormat(' HH:mm aa');
   String label = "";
+// bool loading =false;
+  late String deviceId;
+  late String field;
+  late String title;
+  late FontConfig titleFont;
+  late FontConfig tooltipFont;
+  late FontConfig legendFont;
+  late Color bgColor;
+  late Color borderColor;
+  late Color plotAreaBackgroundColor;
+  late Color toolTipColor;
+  late Color toolTipBorderColor;
+  late Color markerColor;
+  late double duration;
+  late bool legendVisibility;
+  late LegendPosition legendPosition;
+  late LegendIconType legendIconType;
+  late DataMarkerType dataMarkerType;
+  late bool dataLabelVisibility;
+  late bool enableTooltip;
+
   @override
   void initState() {
+    field = widget.config.field;
+    deviceId = widget.config.deviceId;
+    title = widget.config.title;
+    titleFont = FontConfig.fromJson(widget.config.titleFont);
+    tooltipFont = FontConfig.fromJson(widget.config.tooltipFont);
+    legendFont = FontConfig.fromJson(widget.config.legendFont);
+    bgColor = Color(widget.config.bgColor);
+    borderColor = Color(widget.config.borderColor);
+    plotAreaBackgroundColor = Color(widget.config.plotAreaBackgroundColor);
+    toolTipColor = Color(widget.config.toolTipColor);
+    toolTipBorderColor = Color(widget.config.toolTipBorderColor);
+    markerColor = Color(widget.config.markerColor);
+    duration = widget.config.duration;
+    legendVisibility = widget.config.legendVisibility;
+    legendPosition = widget.config.legendPosition;
+    legendIconType = widget.config.iconType;
+    dataMarkerType = widget.config.dataMarkerType;
+    dataLabelVisibility = widget.config.dataLabelVisibility;
+    enableTooltip = widget.config.enableTooltip;
     isValidConfig =
         widget.config.field.isNotEmpty && widget.config.deviceId.isNotEmpty;
     super.initState();
   }
 
- 
-  
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
@@ -55,47 +93,66 @@ class _DeviceFieldScatterChartWidgetState
       child: loading
           ? const CircularProgressIndicator()
           : SfCartesianChart(
-              backgroundColor: Color(widget.config.bgColor),
+              backgroundColor: bgColor,
               title: ChartTitle(
-                text: widget.config.title,
-                textStyle: TwinUtils.getTextStyle(
-                    FontConfig.fromJson(widget.config.titleFont)),
+                text: title,
+                textStyle: TwinUtils.getTextStyle(titleFont),
               ),
-              plotAreaBackgroundColor:
-                  Color(widget.config.plotAreaBackgroundColor),
+              plotAreaBackgroundColor: plotAreaBackgroundColor,
               legend: Legend(
-                isVisible: widget.config.legendVisibility,
-                position: widget.config.legendPosition,
+                isVisible: legendVisibility,
+                position: legendPosition,
               ),
               tooltipBehavior: TooltipBehavior(
-                enable: widget.config.enableTooltip,
-                duration: widget.config.duration.toDouble(),
-                borderColor: Color(widget.config.toolTipBorderColor),
-                color: Color(widget.config.toolTipColor),
-
-                // builder: (data, point, series, pointIndex, seriesIndex) => data,
-                textStyle: TwinUtils.getTextStyle(
-                    FontConfig.fromJson(widget.config.valueFont)),
+                enable: enableTooltip,
+                duration: duration,
+                borderColor: toolTipBorderColor,
+                color: toolTipColor,
+                textStyle: TwinUtils.getTextStyle(tooltipFont),
+                format: 'point.tooltipContent',
+                builder: (dynamic data, dynamic point, dynamic series,
+                    int pointIndex, int seriesIndex) {
+                  final SeriesData seriesData = _chatSeries[pointIndex];
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 8),
+                        child: Text('${seriesData.label}: ${seriesData.value}',
+                            style: TwinUtils.getTextStyle(tooltipFont)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 8),
+                        child: Text(dateFormat.format(seriesData.stamp),
+                            style: TwinUtils.getTextStyle(tooltipFont)),
+                      ),
+                    ],
+                  );
+                },
               ),
-              borderColor: Color(widget.config.borderColor),
+              borderColor: borderColor,
               primaryXAxis: const DateTimeAxis(),
               series: [
                 ScatterSeries<SeriesData, DateTime>(
-                  name: widget.config.field,
+                  name: field,
                   dataSource: _chatSeries,
-                  xValueMapper: (SeriesData sales, _) => sales.stamp,
-                  yValueMapper: (SeriesData sales, _) => sales.value,
+                  xValueMapper: (SeriesData data, _) => data.stamp,
+                  yValueMapper: (SeriesData data, _) => data.value,
                   markerSettings: MarkerSettings(
                     isVisible: true,
                     height: 5,
                     width: 5,
-                    shape: DataMarkerType.circle,
+                    shape: dataMarkerType,
                     borderWidth: 3,
-                    borderColor: Color(widget.config.markerColor),
+                    borderColor: markerColor,
                   ),
-                  legendIconType: widget.config.iconType,
-                  dataLabelSettings: DataLabelSettings(
-                      isVisible: widget.config.dataLabelVisibility),
+                  legendIconType: legendIconType,
+                  legendItemText: label,
+                  dataLabelSettings:
+                      DataLabelSettings(isVisible: dataLabelVisibility),
                 ),
               ],
             ),
@@ -119,10 +176,10 @@ class _DeviceFieldScatterChartWidgetState
           source: [],
           mustConditions: [
             {
-              "match_phrase": {"deviceId": widget.config.deviceId}
+              "match_phrase": {"deviceId": deviceId}
             },
             {
-              "exists": {"field": "data.${widget.config.field}"}
+              "exists": {"field": "data.$field"}
             },
           ],
           sort: {'updatedStamp': 'desc'},
@@ -138,26 +195,21 @@ class _DeviceFieldScatterChartWidgetState
           int millis = obj['p_source']['updatedStamp'];
           DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millis);
           String formattedDate = dateFormat.format(dateTime);
-          dynamic value = obj['p_source']['data'][widget.config.field];
-          // double values =
-          //     obj['p_source']['data'][widget.config.field].toDouble();
-          // String deviceName = obj['p_source']['deviceName'];
-          // String assetName = obj['p_source']['asset'] ?? "--";
+          dynamic value = obj['p_source']['data'][field];
 
-          Device? device =
-              await TwinUtils.getDevice(deviceId: widget.config.deviceId);
+          Device? device = await TwinUtils.getDevice(deviceId: deviceId);
           if (device == null) continue;
 
           // deviceName = device.name;
           DeviceModel? deviceModel =
               await TwinUtils.getDeviceModel(modelId: device.modelId);
-          label =
-              TwinUtils.getParameterLabel(widget.config.field, deviceModel!);
+          label = TwinUtils.getParameterLabel(field, deviceModel!);
 
           _chatSeries.add(SeriesData(
             stamp: dateTime,
             formattedStamp: formattedDate,
             value: value,
+            label: label,
           ));
         }
       }
@@ -177,11 +229,13 @@ class SeriesData {
   final DateTime stamp;
   final String formattedStamp;
   final dynamic value;
+  final String label;
 
   SeriesData({
     required this.stamp,
     required this.formattedStamp,
     required this.value,
+    required this.label,
   });
 }
 
