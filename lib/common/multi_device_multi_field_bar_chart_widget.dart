@@ -32,7 +32,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
   late List<Color> barColors = [];
   late double barWidth;
   late double barRadius;
-  late double legendDuration;
+  // late double legendDuration;
   late Color tooltipBgColor;
   late Color chartBgColor;
   late Color chartAreaColor;
@@ -52,7 +52,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
     legendPosition = config.legendPosition;
     barWidth = config.barWidth;
     barRadius = config.barRadius;
-    legendDuration = config.legendDuration;
+    // legendDuration = config.legendDuration;
     tooltipBgColor = Color(config.tooltipBgColor);
     chartBgColor = Color(config.chartBgColor);
     chartAreaColor = Color(config.chartAreaColor);

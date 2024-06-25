@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
+import 'package:twinned_widgets/common/circle_progress_bar_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
@@ -85,6 +86,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
       MultiDeviceMultiFieldBarChartWidgetBuilder(),
   'TWMultiLineMinMaxAverageWidget': MultipleLinMinMaxAverageWidgetBuilder(),
   'TWDeviceFieldScatterChartWidget': DeviceFieldScatterChartWidgetBuilder(),
+  'TWCircularProgressBarWidget': CircularProgressBarWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
