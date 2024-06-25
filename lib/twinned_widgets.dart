@@ -36,6 +36,7 @@ import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/common/static_timeline_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
+import 'package:twinned_widgets/common/vertical_progress_bar_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'common/multiple_device_cartesian_chart_widget.dart';
@@ -87,6 +88,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWMultiLineMinMaxAverageWidget': MultipleLinMinMaxAverageWidgetBuilder(),
   'TWDeviceFieldScatterChartWidget': DeviceFieldScatterChartWidgetBuilder(),
   'TWCircularProgressBarWidget': CircularProgressBarWidgetBuilder(),
+  'TWVerticalProgressBarWidget': VerticalProgressBarWidgetBuilder()
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
