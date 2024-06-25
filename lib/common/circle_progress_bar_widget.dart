@@ -184,6 +184,7 @@ class _CircularProgressBarWidgetState
             dynamic fetchedValue = obj['p_source']['data'];
             refresh(sync: () {
               progressValue = fetchedValue[field] ?? 0;
+              progressValue = double.parse(progressValue.toStringAsFixed(2));
             });
           }
         }

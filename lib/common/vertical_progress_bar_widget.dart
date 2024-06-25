@@ -170,6 +170,7 @@ class _VerticalProgressBarWidgetState
             dynamic fetchedValue = obj['p_source']['data'];
             refresh(sync: () {
               progress = fetchedValue[field] ?? 0;
+               progress = double.parse(progress.toStringAsFixed(2));
             });
           }
         }
