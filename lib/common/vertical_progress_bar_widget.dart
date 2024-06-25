@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_models/models.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/ems/circular_progress_bar.dart';
+import 'package:twinned_models/ems/vertical_progress_bar.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class CircularProgressBarWidget extends StatefulWidget {
-  final CircularProgressBarWidgetConfig config;
-  const CircularProgressBarWidget({Key? key, required this.config})
+class VerticalProgressBarWidget extends StatefulWidget {
+  final VerticalProgressBarWidgetConfig config;
+  const VerticalProgressBarWidget({Key? key, required this.config})
       : super(key: key);
 
   @override
-  State<CircularProgressBarWidget> createState() =>
-      _CircularProgressBarWidgetState();
+  State<VerticalProgressBarWidget> createState() =>
+      _VerticalProgressBarWidgetState();
 }
 
-class _CircularProgressBarWidgetState
-    extends BaseState<CircularProgressBarWidget> {
+class _VerticalProgressBarWidgetState
+    extends BaseState<VerticalProgressBarWidget> {
   bool isValidConfig = false;
   bool apiLoadingStatus = false;
 
@@ -32,11 +30,15 @@ class _CircularProgressBarWidgetState
   late FontConfig titleFont;
   late FontConfig valueFont;
   late Color chartColor;
-  late double width;
+
   late double height;
+  late double dashCount;
+  late double dashHeight;
+  late double dashWidth;
+  late double dashSpace;
   late double opacity;
 
-  double progressValue = 0;
+  double progress = 0;
 
   @override
   void initState() {
@@ -48,8 +50,12 @@ class _CircularProgressBarWidgetState
     unit = config.unit;
     field = config.field;
     deviceId = config.deviceId;
-    width = config.width;
+
     height = config.height;
+    dashCount = config.dashCount;
+    dashHeight = config.dashHeight;
+    dashWidth = config.dashWidth;
+    dashSpace = config.dashSpace;
     opacity = config.opacity;
     titleFont = FontConfig.fromJson(config.titleFont);
     valueFont = FontConfig.fromJson(config.valueFont);
@@ -91,63 +97,43 @@ class _CircularProgressBarWidgetState
       }
     }
 
-    double _maxValue = determineMax(progressValue);
+    double calculateProgress(double input) {
+      double maxInputValue = determineMax(input.toDouble());
+      return (input / maxInputValue) * 100;
+    }
 
     return Center(
       child: SizedBox(
-        width: width,
         height: height,
-        child: SfRadialGauge(
-          title: GaugeTitle(
-              text: title,
-              textStyle: TextStyle(
-                  fontFamily: titleFont.fontFamily,
-                  fontSize: titleFont.fontSize,
+        child: Column(
+          children: [
+            Text(title,
+                style: TextStyle(
+                    fontFamily: titleFont.fontFamily,
+                    fontSize: titleFont.fontSize,
+                    fontWeight: titleFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(titleFont.fontColor))),
+            Text(
+              '$progress $unit',
+              style: TextStyle(
+                  fontFamily: valueFont.fontFamily,
+                  fontSize: valueFont.fontSize,
                   fontWeight:
-                      titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                  color: Color(titleFont.fontColor))),
-          axes: <RadialAxis>[
-            RadialAxis(
-              minimum: 0,
-              maximum: _maxValue,
-              showLabels: false,
-              showTicks: false,
-              startAngle: 270,
-              endAngle: 270,
-              axisLineStyle: AxisLineStyle(
-                thicknessUnit: GaugeSizeUnit.factor,
-                thickness: 0.37,
-                dashArray: const <double>[3, 2],
-                color: chartColor.withOpacity(opacity),
-              ),
-              pointers: <GaugePointer>[
-                RangePointer(
-                  value: progressValue,
-                  width: 0.37,
-                  sizeUnit: GaugeSizeUnit.factor,
-                  color: chartColor,
-                  enableAnimation: true,
-                  animationDuration: 1000,
-                  dashArray: const <double>[3, 2],
-                ),
-              ],
-              annotations: <GaugeAnnotation>[
-                GaugeAnnotation(
-                  angle: 90,
-                  positionFactor: 0.2,
-                  widget: Text(
-                    '$progressValue $unit',
-                    style: TextStyle(
-                        fontFamily: valueFont.fontFamily,
-                        fontSize: valueFont.fontSize,
-                        fontWeight: valueFont.fontBold
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: Color(valueFont.fontColor)),
-                  ),
-                ),
-              ],
+                      valueFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  color: Color(valueFont.fontColor)),
             ),
+            Expanded(
+                child: CustomPaint(
+              painter: DashedLinePainter(
+                  progress: progress,
+                  dashCount: dashCount,
+                  dashHeight: dashHeight,
+                  dashWidth: dashWidth,
+                  dashSpace: dashSpace,
+                  chartColor: chartColor, opacity: opacity),
+            )),
           ],
         ),
       ),
@@ -183,7 +169,7 @@ class _CircularProgressBarWidgetState
           for (Map<String, dynamic> obj in values) {
             dynamic fetchedValue = obj['p_source']['data'];
             refresh(sync: () {
-              progressValue = fetchedValue[field] ?? 0;
+              progress = fetchedValue[field] ?? 0;
             });
           }
         }
@@ -201,11 +187,54 @@ class _CircularProgressBarWidgetState
   }
 }
 
-class CircularProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
+class DashedLinePainter extends CustomPainter {
+  final double progress;
+  final double dashCount;
+  final double dashHeight;
+  final double dashWidth;
+  final double dashSpace;
+  final Color chartColor;
+  final double opacity;
+
+  DashedLinePainter(
+      {required this.progress,
+      required this.dashCount,
+      required this.dashHeight,
+      required this.dashWidth,
+      required this.dashSpace,
+      required this.chartColor,
+      required this.opacity
+      });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..strokeWidth = dashHeight;
+
+    double startY = size.height;
+
+    for (int i = 0; i < dashCount; i++) {
+      if (i < (progress / 100 * dashCount)) {
+        paint.color = chartColor;
+      } else {
+        paint.color = chartColor.withOpacity(opacity);
+      }
+      startY -= (dashHeight + dashSpace);
+      canvas.drawLine(Offset((size.width - dashWidth) / 2.5, startY),
+          Offset((size.width + dashWidth) / 2.5, startY), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class VerticalProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return CircularProgressBarWidget(
-        config: CircularProgressBarWidgetConfig.fromJson(config));
+    return VerticalProgressBarWidget(
+        config: VerticalProgressBarWidgetConfig.fromJson(config));
   }
 
   @override
@@ -215,24 +244,24 @@ class CircularProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.cloud_circle);
+    return const Icon(Icons.vertical_distribute);
   }
 
   @override
   String getPaletteName() {
-    return "Circular Progress Bar";
+    return "Vertical Progress Bar";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return CircularProgressBarWidgetConfig.fromJson(config);
+      return VerticalProgressBarWidgetConfig.fromJson(config);
     }
-    return CircularProgressBarWidgetConfig();
+    return VerticalProgressBarWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return "Graph based on device field in circular representaion";
+    return "Graph based on device field in vertical representaion";
   }
 }
