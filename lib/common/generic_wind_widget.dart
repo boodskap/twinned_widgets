@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_models/generic_wind/generic_wind.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -95,10 +95,10 @@ class _GenericWindInfoWidgetState extends BaseState<GenericWindInfoWidget> {
         ),
       );
     }
-     if (!apiLoadingStatus) {
+    if (!apiLoadingStatus) {
       return const Center(child: CircularProgressIndicator());
     }
-    
+
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

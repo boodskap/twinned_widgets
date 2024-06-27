@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
+import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_models/generic_air_quality/generic_air_quality.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -19,211 +19,270 @@ class GenericAirQualityWidget extends StatefulWidget {
 
 class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
   bool isValidConfig = false;
+  bool apiLoadingStatus = false;
+  late String field;
+  late String deviceId;
+  late String title;
+  late String subTitle;
   late FontConfig titleFont;
-  late Color titleFontColor;
-  late FontConfig valueFont;
-  late Color valueFontColor;
   late FontConfig labelFont;
-  late Color labelFontColor;
-  String title = "";
-  String deviceId = "";
-  String qualityField = "";
-  double airQualityValue = 0;
+  late FontConfig valueFont;
+  late Color titleBgColor;
+  late bool gaugeAnimate;
+  late double positionFactor;
+  late double radiusFactor;
+  late double dialStartWidth;
+  late double dialEndWidth;
+  late double angle;
+  late double axisThickness;
+  late bool showLabel;
+  late double interval;
+  late double markerBorderWidth;
+  late double markerSize;
+  late Color markerBorderColor;
+  dynamic value;
   String airQualityType = "";
-   bool apiLoadingStatus = false;
-    String subTitle = "";
-  final List<LabelDetails> _labels = [
-    LabelDetails(0, '0'),
-    LabelDetails(20, '20'),
-    LabelDetails(40, '40'),
-    LabelDetails(60, '60'),
-    LabelDetails(80, '80'),
-    LabelDetails(100, '100')
-  ];
-
+  List<dynamic> rangeLabel = [];
   @override
   void initState() {
     var config = widget.config;
-
+    field = config.field;
+    deviceId = config.deviceId;
+    title = config.title;
+    subTitle = config.subTitle;
+    titleBgColor = Color(config.titleBgColor);
+    markerBorderColor = Color(config.markerBorderColor);
+    gaugeAnimate = config.gaugeAnimate;
+    positionFactor = config.positionFactor;
+    radiusFactor = config.radiusFactor;
+    dialStartWidth = config.dialStartWidth;
+    dialEndWidth = config.dialEndWidth;
+    axisThickness = config.axisThickness;
+    angle = config.angle;
+    showLabel = config.showLabel;
+    interval = config.interval;
+    markerBorderWidth = config.markerBorderWidth;
+    markerSize = config.markerSize;
     titleFont = FontConfig.fromJson(config.titleFont);
-    titleFontColor =
-        titleFont.fontColor <= 0 ? Colors.black : Color(titleFont.fontColor);
-
-    valueFont = FontConfig.fromJson(config.valueFont);
-    valueFontColor =
-        valueFont.fontColor <= 0 ? Colors.black : Color(valueFont.fontColor);
-
     labelFont = FontConfig.fromJson(config.labelFont);
-    labelFontColor =
-        labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
-    title = widget.config.title;
-    subTitle = widget.config.subTitle;
-    deviceId = widget.config.deviceId;
-    qualityField = widget.config.qualityField;
-    isValidConfig = widget.config.deviceId.isNotEmpty &&
-        widget.config.qualityField.isNotEmpty;
-
-    super.initState();
-  }
-
-  String _getAirQualityStatus(double value) {
-    if (value <= 20) {
-      return "POOR";
-    } else if (value <= 40) {
-      return "LOW";
-    } else if (value <= 60) {
-      return "MODERATE";
-    } else if (value <= 80) {
-      return "GOOD";
-    } else {
-      return "EXCELLENT";
+    valueFont = FontConfig.fromJson(config.valueFont);
+    rangeLabel = config.ranges;
+    if (radiusFactor > 1 && positionFactor > 1) {
+      radiusFactor = 1;
+      positionFactor = 1;
     }
+    if (radiusFactor < 0 && positionFactor < 0) {
+      radiusFactor = 0;
+      positionFactor = 0;
+    }
+
+    isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
       return const Center(
-        child: Text(
-          'Not configured properly',
-          style: TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+        child: Wrap(
+          spacing: 8.0,
+          children: [
+            Text(
+              'Not configured properly',
+              style:
+                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+            ),
+          ],
         ),
       );
     }
-   if (!apiLoadingStatus) {
+    if (!apiLoadingStatus) {
       return const Center(child: CircularProgressIndicator());
+    }
+    List<GaugeRange> ranges = [];
+    int i = 0;
+    late Range begin;
+    late Range end;
+    for (dynamic val in widget.config.ranges) {
+      Range range = Range.fromJson(val);
+      if (i == 0) {
+        begin = range;
+      }
+      end = range;
+      ++i;
+      ranges.add(
+        GaugeRange(
+          labelStyle: GaugeTextStyle(
+            fontFamily: labelFont.fontFamily,
+            color: Color(labelFont.fontColor),
+            fontSize: labelFont.fontSize,
+            fontWeight:
+                labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          ),
+          startWidth: dialStartWidth,
+          endWidth: dialEndWidth,
+          startValue: range.from ?? double.minPositive,
+          endValue: range.to ?? double.maxFinite,
+          color: Color(range.color ?? Colors.black.value),
+          label: showLabel ? range.label : "",
+        ),
+      );
     }
 
     return SfRadialGauge(
+      enableLoadingAnimation: gaugeAnimate,
       title: GaugeTitle(
+        backgroundColor: titleBgColor,
         text: title,
         textStyle: TextStyle(
-            fontWeight:
-                titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
-            fontSize: titleFont.fontSize,
-            color: titleFontColor),
+          fontFamily: titleFont.fontFamily,
+          fontSize: titleFont.fontSize,
+          fontWeight: titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          color: Color(titleFont.fontColor),
+        ),
       ),
-      axes: <RadialAxis>[
+      axes: [
         RadialAxis(
-          minimum: 0,
-          maximum: 100,
-          startAngle: 130,
-          endAngle: 50,
-          maximumLabels: 100,
-          canScaleToFit: true,
-          showFirstLabel: false,
-          interval: 1,
-          onLabelCreated: _handleLabelCreated,
-          canRotateLabels: true,
-          labelsPosition: ElementsPosition.outside,
-          showTicks: false,
-          axisLineStyle: const AxisLineStyle(
-            thickness: 15,
-            thicknessUnit: GaugeSizeUnit.logicalPixel,
-            cornerStyle: CornerStyle.bothCurve,
-          ),
-          pointers: <GaugePointer>[
+          pointers: [
             MarkerPointer(
-              value: airQualityValue,
+              enableAnimation: gaugeAnimate,
+              value: value ?? 0.0,
               enableDragging: false,
               color: Colors.white,
-              borderColor: Colors.black,
-              borderWidth: 2,
+              borderColor: markerBorderColor,
+              borderWidth: markerBorderWidth,
               markerType: MarkerType.circle,
-              markerHeight: 8,
-              markerWidth: 8,
+              markerHeight: markerSize,
+              markerWidth: markerSize,
               overlayRadius: 0,
+              offsetUnit: GaugeSizeUnit.factor,
+              markerOffset: 0.065,
             )
           ],
-          ranges: _buildRanges(),
-          annotations: <GaugeAnnotation>[
+          annotations: [
             GaugeAnnotation(
               angle: 130,
               horizontalAlignment: GaugeAlignment.far,
-              positionFactor: 0.90,
+              positionFactor: positionFactor,
               verticalAlignment: GaugeAlignment.near,
               widget: Padding(
-                padding: EdgeInsets.only(top: 0),
+                padding: EdgeInsets.only(top: 5),
                 child: Text(
-                  "0",
+                  begin.from != null ? begin.from.toString() : '0',
                   style: TextStyle(
-                      fontWeight: labelFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontSize: labelFont.fontSize,
-                      color: labelFontColor),
+                    fontSize: labelFont.fontSize,
+                    fontWeight: labelFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(labelFont.fontColor),
+                  ),
                 ),
               ),
             ),
             GaugeAnnotation(
               angle: 50,
-              horizontalAlignment: GaugeAlignment.near,
-              positionFactor: 0.90,
+              horizontalAlignment: GaugeAlignment.far,
+              positionFactor: positionFactor,
               verticalAlignment: GaugeAlignment.near,
               widget: Padding(
-                padding: EdgeInsets.only(top: 0),
+                padding: EdgeInsets.only(top: 5),
                 child: Text(
-                  "100",
+                  end.to != null ? end.to.toString() : '100',
                   style: TextStyle(
-                      fontWeight: labelFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      fontSize: labelFont.fontSize,
-                      color: labelFontColor),
+                    fontSize: labelFont.fontSize,
+                    fontWeight: labelFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(labelFont.fontColor),
+                  ),
                 ),
               ),
             ),
             GaugeAnnotation(
-              widget: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: '${airQualityValue.round()}\n',
-                        style: TextStyle(
-                            fontWeight: valueFont.fontBold
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                            fontSize: valueFont.fontSize,
-                            color: valueFontColor),
-                        children: [
-                          TextSpan(
-                            text: airQualityType,
+              horizontalAlignment: GaugeAlignment.center,
+              verticalAlignment: GaugeAlignment.center,
+              widget: Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: value != null ? value.toString() : '--',
                             style: TextStyle(
-                                fontWeight: valueFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                fontSize: valueFont.fontSize * 0.55,
-                                color: valueFontColor),
-                          ),
-                        ],
+                              fontSize: valueFont.fontSize,
+                              fontWeight: valueFont.fontBold
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color: Color(valueFont.fontColor),
+                            )),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 5),
-                  Center(
-                    child: Text(
-                      subTitle,
-                      style: TextStyle(
+                    Center(
+                      child: Text(
+                        airQualityType,
+                        style: TextStyle(
+                          fontSize: valueFont.fontSize * 0.55,
                           fontWeight: valueFont.fontBold
                               ? FontWeight.bold
                               : FontWeight.normal,
-                          fontSize: valueFont.fontSize * 0.4,
-                          color: valueFontColor.withOpacity(0.8)),
+                          color: Color(valueFont.fontColor),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    Center(
+                      child: Text(
+                        subTitle,
+                        style: TextStyle(
+                          fontSize: valueFont.fontSize * 0.4,
+                          fontWeight: valueFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(valueFont.fontColor).withOpacity(0.8),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
           ],
+          axisLineStyle: AxisLineStyle(
+            thickness: axisThickness + 10,
+            cornerStyle: CornerStyle.bothCurve,
+          ),
+          minimum: begin.from ?? 0,
+          maximum: end.to ?? 100,
+          showLabels: showLabel,
+          radiusFactor: radiusFactor,
+          ranges: ranges,
+          showFirstLabel: false,
+          interval: interval,
+          labelsPosition: ElementsPosition.outside,
+          axisLabelStyle: GaugeTextStyle(
+              fontSize: labelFont.fontSize,
+              fontWeight:
+                  labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+              color: Color(labelFont.fontColor)),
+          showTicks: false,
         ),
       ],
     );
   }
 
-  Future _load({String? filter, String search = '*'}) async {
+  String getLabelForValue(int value) {
+    for (var range in rangeLabel) {
+      if (value >= range['from'] &&
+          (range['to'] == null || value <= range['to'])) {
+        return range['label'];
+      }
+    }
+    return "";
+  }
+
+  Future _load() async {
     if (!isValidConfig) return;
 
     if (loading) return;
@@ -240,6 +299,9 @@ class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
             {
               "match_phrase": {"deviceId": widget.config.deviceId}
             },
+            {
+              "exists": {"field": "data.$field"}
+            },
           ],
           sort: {'updatedStamp': 'desc'},
         ),
@@ -253,13 +315,8 @@ class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
           for (Map<String, dynamic> obj in values) {
             dynamic fetchedValue = obj['p_source']['data'];
             refresh(sync: () {
-              airQualityValue = fetchedValue[qualityField] ?? 0;
-              if (airQualityValue < 0) {
-                airQualityValue = 0;
-              } else if (airQualityValue > 100) {
-                airQualityValue = 100;
-              }
-              airQualityType = _getAirQualityStatus(airQualityValue);
+              value = fetchedValue[field] ?? 0;
+              airQualityType = getLabelForValue(value);
             });
           }
         }
@@ -275,59 +332,6 @@ class _GenericAirQualityWidgetState extends BaseState<GenericAirQualityWidget> {
   void setup() {
     _load();
   }
-
-  void _handleLabelCreated(AxisLabelCreatedArgs args) {
-    for (int i = 0; i < _labels.length; i++) {
-      LabelDetails details = _labels[i];
-      if (details.labelPoint == int.parse(args.text)) {
-        args.text = details.customizedLabel;
-        args.labelStyle = GaugeTextStyle(
-            fontWeight:
-                labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
-            fontSize: labelFont.fontSize,
-            color: labelFontColor);
-        return;
-      }
-    }
-
-    args.text = '';
-  }
-
-  List<GaugeRange> _buildRanges() {
-    List<GaugeRange> ranges = [];
-    ranges.add(GaugeRange(
-      startValue: 0,
-      endValue: 20,
-      color: Color(0xFFE51F1F),
-    ));
-    ranges.add(GaugeRange(
-      startValue: 20.5,
-      endValue: 40,
-      color: Color(0xFFF2A134),
-    ));
-    ranges.add(GaugeRange(
-      startValue: 40.5,
-      endValue: 60,
-      color: Color(0xFFF7E379),
-    ));
-    ranges.add(GaugeRange(
-      startValue: 60.5,
-      endValue: 80,
-      color: Color(0XFFBBDB44),
-    ));
-    ranges.add(GaugeRange(
-      startValue: 80.5,
-      endValue: 100,
-      color: Color(0XFF44CE1B),
-    ));
-    return ranges;
-  }
-}
-
-class LabelDetails {
-  LabelDetails(this.labelPoint, this.customizedLabel);
-  int labelPoint;
-  String customizedLabel;
 }
 
 class GenericAirQualityWidgetBuilder extends TwinnedWidgetBuilder {
@@ -344,12 +348,12 @@ class GenericAirQualityWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.air);
+    return const Icon(Icons.speed);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Air Quality";
+    return "Generic Air Quality Gauge";
   }
 
   @override
@@ -362,6 +366,6 @@ class GenericAirQualityWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Air Quality';
+    return 'Generic Air Quality Gauge';
   }
 }

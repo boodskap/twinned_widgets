@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:nocode_commons/core/base_state.dart';
-import 'package:nocode_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/generic_value_card/generic_value_card.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_widgets/core/twin_image_helper.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/core/twinned_utils.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
-import 'package:twinned_widgets/twinned_session.dart';
+import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
 
 class GenericValueCardWidget extends StatefulWidget {
@@ -93,7 +93,7 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
               children: [
                 Text(
                   topLabel,
-                  style: TwinnedUtils.getTextStyle(topFont),
+                  style: TwinUtils.getTextStyle(topFont),
                 ),
                 divider(),
                 Container(
@@ -110,12 +110,12 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
                       children: [
                         Text(
                           '${value ?? ''}',
-                          style: TwinnedUtils.getTextStyle(valueFont),
+                          style: TwinUtils.getTextStyle(valueFont),
                         ),
                         if (widget.config.bottomLabelAsSuffix)
                           Text(
                             bottomLabel,
-                            style: TwinnedUtils.getTextStyle(bottomFont),
+                            style: TwinUtils.getTextStyle(bottomFont),
                           ),
                       ],
                     ),
@@ -125,7 +125,7 @@ class _GenericValueCardWidgetState extends BaseState<GenericValueCardWidget> {
                 if (!widget.config.bottomLabelAsSuffix)
                   Text(
                     bottomLabel,
-                    style: TwinnedUtils.getTextStyle(bottomFont),
+                    style: TwinUtils.getTextStyle(bottomFont),
                   ),
               ],
             ),
