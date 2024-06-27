@@ -191,7 +191,7 @@ class _MultipleFieldStatsWidgetState
                   scrollDirection: Axis.vertical,
                   child: SizedBox(
                     width: width,
-                    height: height + 150,
+                    height: height+74,
                     child: Column(
                       children: [
                         SizedBox(
