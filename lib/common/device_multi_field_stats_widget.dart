@@ -641,7 +641,7 @@ class SeriesData {
   });
 }
 
-class MultipleFieldStatsWidgetWidgetBuilder extends TwinnedWidgetBuilder {
+class MultipleFieldStatsWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
     return MultipleFieldStatsWidget(
