@@ -90,7 +90,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldScatterChartWidget': DeviceFieldScatterChartWidgetBuilder(),
   'TWCircularProgressBarWidget': CircularProgressBarWidgetBuilder(),
   'TWVerticalProgressBarWidget': VerticalProgressBarWidgetBuilder(),
-  'TWMultipleFieldStatsWidgetWidget': MultipleFieldStatsWidgetWidgetBuilder()
+  'TWMultipleFieldStatsWidget': MultipleFieldStatsWidgetBuilder()
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {

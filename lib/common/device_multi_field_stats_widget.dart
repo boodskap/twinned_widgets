@@ -191,7 +191,7 @@ class _MultipleFieldStatsWidgetState
                   scrollDirection: Axis.vertical,
                   child: SizedBox(
                     width: width,
-                    height: height + 150,
+                    height: height+74,
                     child: Column(
                       children: [
                         SizedBox(
@@ -641,7 +641,7 @@ class SeriesData {
   });
 }
 
-class MultipleFieldStatsWidgetWidgetBuilder extends TwinnedWidgetBuilder {
+class MultipleFieldStatsWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
     return MultipleFieldStatsWidget(

@@ -97,10 +97,12 @@ class _VerticalProgressBarWidgetState
       }
     }
 
-    double calculateProgress(double input) {
-      double maxInputValue = determineMax(input.toDouble());
-      return (input / maxInputValue) * 100;
-    }
+    //  double maxInputValue = determineMax(value);
+
+    // double calculateProgress(double input) {
+    //   double maxInputValue = determineMax(input.toDouble());
+    //   return (input / maxInputValue) * 100;
+    // }
 
     return Center(
       child: SizedBox(
@@ -212,9 +214,22 @@ class DashedLinePainter extends CustomPainter {
     final paint = Paint()..strokeWidth = dashHeight;
 
     double startY = size.height;
-
+     double determineMax(double value) {
+      if (value <= 100) {
+        return 100;
+      } else if (value <= 1000) {
+        return 1000;
+      } else if (value <= 10000) {
+        return 10000;
+      } else if (value <= 100000) {
+        return 100000;
+      } else {
+        return value;
+      }
+    }
+    double maxInputValue = determineMax(progress);
     for (int i = 0; i < dashCount; i++) {
-      if (i < (progress / 100 * dashCount)) {
+      if (i < (progress / maxInputValue * dashCount)) {
         paint.color = chartColor;
       } else {
         paint.color = chartColor.withOpacity(opacity);
