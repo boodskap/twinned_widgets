@@ -94,236 +94,238 @@ class _MultiDeviceFieldPageWidgetState
         ),
       );
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: titleFont.fontSize,
-              color: Color(titleFont.fontColor),
-              fontFamily: titleFont.fontFamily,
-              fontWeight:
-                  titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ),
-        Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              gradient: LinearGradient(
-                colors: gradientBgColor.toList(),
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: titleFont.fontSize,
+                color: Color(titleFont.fontColor),
+                fontFamily: titleFont.fontFamily,
+                fontWeight:
+                    titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
               ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                divider(height: 5),
-                if (cityName.isNotEmpty)
+          ),
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0),
+                gradient: LinearGradient(
+                  colors: gradientBgColor.toList(),
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  divider(height: 5),
+                  if (cityName.isNotEmpty)
+                    Text(
+                      cityName,
+                      style: const TextStyle(
+                        color: Color(0XFFFFFAFA),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  if (cityName.isEmpty) const SizedBox.shrink(),
+                  divider(height: 5),
                   Text(
-                    cityName,
-                    style: const TextStyle(
-                      color: Color(0XFFFFFAFA),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                    updatedStampValue ?? '--',
+                    style: TextStyle(
+                      fontSize: timeStampFont.fontSize,
+                      fontFamily: timeStampFont.fontFamily,
+                      color: Color(timeStampFont.fontColor),
+                      fontWeight: timeStampFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
-                if (cityName.isEmpty) const SizedBox.shrink(),
-                divider(height: 5),
-                Text(
-                  updatedStampValue ?? '--',
-                  style: TextStyle(
-                    fontSize: timeStampFont.fontSize,
-                    fontFamily: timeStampFont.fontFamily,
-                    color: Color(timeStampFont.fontColor),
-                    fontWeight: timeStampFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                  ),
-                ),
-                divider(height: 5),
-
-                if (fieldIcons[field] != null)
-                  SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: TwinImageHelper.getDomainImage(fieldIcons[field]!),
-                  ),
-                divider(height: 5),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Wrap(
-                      verticalDirection: VerticalDirection.down,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 5,
-                      children: [
-                        Text(
-                          field,
-                          style: TextStyle(
-                            fontSize: labelFont.fontSize,
-                            fontFamily: labelFont.fontFamily,
-                            color: Color(labelFont.fontColor),
-                            fontWeight: labelFont.fontBold
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                        divider(horizontal: true, width: 8),
-                        Text(
-                          value != null ? formatFieldValue(value) : '--',
-                          style: TextStyle(
-                            fontSize: valueFont.fontSize,
-                            fontFamily: valueFont.fontFamily,
-                            color: Color(valueFont.fontColor),
-                            fontWeight: valueFont.fontBold
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                        divider(horizontal: true, width: 8),
-                        if (fieldSuffix[field] != null)
+                  divider(height: 5),
+      
+                  if (fieldIcons[field] != null)
+                    SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: TwinImageHelper.getDomainImage(fieldIcons[field]!),
+                    ),
+                  divider(height: 5),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Wrap(
+                        verticalDirection: VerticalDirection.down,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 5,
+                        children: [
                           Text(
-                            fieldSuffix[field]!,
+                            field,
                             style: TextStyle(
-                              fontSize: suffixFont.fontSize,
-                              fontFamily: suffixFont.fontFamily,
-                              color: Color(suffixFont.fontColor),
-                              fontWeight: suffixFont.fontBold
+                              fontSize: labelFont.fontSize,
+                              fontFamily: labelFont.fontFamily,
+                              color: Color(labelFont.fontColor),
+                              fontWeight: labelFont.fontBold
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                             ),
                           ),
-                      ],
-                    ),
-                  ],
-                ),
-                divider(height: 5),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        paraTitle,
-                        style: TextStyle(
-                          fontSize: paraTitleFont.fontSize,
-                          color: Color(paraTitleFont.fontColor),
-                          fontFamily: paraTitleFont.fontFamily,
-                          fontWeight: paraTitleFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                      ),
-                      divider(height: 6),
-                      Text(
-                        paraText,
-                        style: TextStyle(
-                          fontSize: paraTextFont.fontSize,
-                          fontFamily: paraTextFont.fontFamily,
-                          color: Color(paraTextFont.fontColor),
-                          fontWeight: paraTextFont.fontBold
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
+                          divider(horizontal: true, width: 8),
+                          Text(
+                            value != null ? formatFieldValue(value) : '--',
+                            style: TextStyle(
+                              fontSize: valueFont.fontSize,
+                              fontFamily: valueFont.fontFamily,
+                              color: Color(valueFont.fontColor),
+                              fontWeight: valueFont.fontBold
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                          divider(horizontal: true, width: 8),
+                          if (fieldSuffix[field] != null)
+                            Text(
+                              fieldSuffix[field]!,
+                              style: TextStyle(
+                                fontSize: suffixFont.fontSize,
+                                fontFamily: suffixFont.fontFamily,
+                                color: Color(suffixFont.fontColor),
+                                fontWeight: suffixFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
-                ),
-                // Additional Fields
-                if (additionalFields.isNotEmpty)
-                  Stack(
-                    children: [
-                      ClipPath(
-                        clipper: WaveClipper(),
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 70),
-                          alignment: Alignment.center,
-                          color: curveBgColor,
-                          height: 270,
-                          // height: MediaQuery.of(context).size.width * 0.11,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: GridView.builder(
-                              clipBehavior: Clip.antiAlias,
+                  divider(height: 5),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          paraTitle,
+                          style: TextStyle(
+                            fontSize: paraTitleFont.fontSize,
+                            color: Color(paraTitleFont.fontColor),
+                            fontFamily: paraTitleFont.fontFamily,
+                            fontWeight: paraTitleFont.fontBold
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                        divider(height: 6),
+                        Text(
+                          paraText,
+                          style: TextStyle(
+                            fontSize: paraTextFont.fontSize,
+                            fontFamily: paraTextFont.fontFamily,
+                            color: Color(paraTextFont.fontColor),
+                            fontWeight: paraTextFont.fontBold
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Additional Fields
+                  if (additionalFields.isNotEmpty)
+                    Stack(
+                      children: [
+                        ClipPath(
+                          clipper: WaveClipper(),
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 70),
+                            alignment: Alignment.center,
+                            color: curveBgColor,
+                            height: 270,
+                            // height: MediaQuery.of(context).size.width * 0.11,
+                            child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 2.0,
-                                mainAxisSpacing: 4.0,
-                                childAspectRatio: 1.6,
-                              ),
-                              itemCount: additionalFields.entries.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final entry =
-                                    additionalFields.entries.elementAt(index);
-                                return SizedBox(
-                                  // width: 60,
-                                  // height: 80,
-                                  child: Card(
-                                    elevation: elevation,
-                                    color: cardBgColor,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            entry.key,
-                                            style: TwinUtils.getTextStyle(
-                                              cardFontText,
+                              child: GridView.builder(
+                                clipBehavior: Clip.antiAlias,
+                                scrollDirection: Axis.vertical,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 2.0,
+                                  mainAxisSpacing: 4.0,
+                                  childAspectRatio: 1.6,
+                                ),
+                                itemCount: additionalFields.entries.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final entry =
+                                      additionalFields.entries.elementAt(index);
+                                  return SizedBox(
+                                    // width: 60,
+                                    // height: 80,
+                                    child: Card(
+                                      elevation: elevation,
+                                      color: cardBgColor,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              entry.key,
+                                              style: TwinUtils.getTextStyle(
+                                                cardFontText,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            formatFieldValue(entry.value),
-                                            style: TwinUtils.getTextStyle(
-                                                cardFontText),
-                                          ),
-                                        ],
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              formatFieldValue(entry.value),
+                                              style: TwinUtils.getTextStyle(
+                                                  cardFontText),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                if (additionalFields.isEmpty)
-                  const Center(
-                    child: Wrap(
-                      spacing: 8,
-                      children: [
-                        Text(
-                          'No other parameter found',
-                          style: TextStyle(
-                              color: Colors.red,
-                              overflow: TextOverflow.ellipsis),
-                        )
                       ],
                     ),
-                  ),
-              ],
+                  if (additionalFields.isEmpty)
+                    const Center(
+                      child: Wrap(
+                        spacing: 8,
+                        children: [
+                          Text(
+                            'No other parameter found',
+                            style: TextStyle(
+                                color: Colors.red,
+                                overflow: TextOverflow.ellipsis),
+                          )
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
