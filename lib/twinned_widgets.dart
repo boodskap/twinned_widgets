@@ -19,6 +19,7 @@ import 'package:twinned_widgets/common/dynamic_text_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_linear_widget.dart';
+import 'package:twinned_widgets/common/generic_card_image_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
@@ -90,7 +91,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldScatterChartWidget': DeviceFieldScatterChartWidgetBuilder(),
   'TWCircularProgressBarWidget': CircularProgressBarWidgetBuilder(),
   'TWVerticalProgressBarWidget': VerticalProgressBarWidgetBuilder(),
-  'TWMultipleFieldStatsWidget': MultipleFieldStatsWidgetBuilder()
+  'TWMultipleFieldStatsWidget': MultipleFieldStatsWidgetBuilder(),
+  'TWGenericCardImageWidget': GenericCardImageWidgetBuilder()
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
