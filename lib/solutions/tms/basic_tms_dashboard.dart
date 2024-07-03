@@ -50,7 +50,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
         body: const FilterSearchReq(search: "*", page: 0, size: 100),
       );
 
-      // debugPrint(qRes.bodyString.toString());
+     
 
       if (validateResponse(qRes)) {
         final jsonResponse = jsonDecode(qRes.body.toString());
@@ -168,7 +168,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                       flex: 30,
                       child: SphericalTank(
                         config: DeviceFieldSphericalTankWidgetConfig(
-                          deviceId: deviceId!,
+                          deviceId: deviceId ?? "",
                           field: field,
                           valueFont: {
                             "fontSize": 40,
@@ -214,47 +214,11 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                 ),
               ),
-              // Expanded(
-              //   flex: 50,
-              //   child: TemperatureWidget(),
-              //   // child: WeekWidgetHumidity(
-              //   //   config: VisibilityAirQualityWidgetConfig(
-              //   //     deviceId: deviceId!,
-              //   //   ),
-              //   // ),
-              // ),
               Expanded(
                 flex: 50,
                 child: Row(
                   children: [
                     Expanded(
-                      //   child: DeviceFieldRadialGaugeWidget(
-                      //     config: DeviceFieldRangeGaugeWidgetConfig(
-                      //       deviceId: deviceId!,
-                      //       field: "temperature",
-                      //       gradientColors: [0xff429ed6, 0xff47b582, 0xffd17c6b],
-                      //       valueFont: {
-                      //         "fontSize": 20,
-                      //         "fontColor": 0xff000000,
-                      //         "fontBold": true,
-                      //       },
-                      //       titleFont: {
-                      //         "fontSize": 12,
-                      //         "fontColor": 0xff000000,
-                      //         "fontBold": true,
-                      //       },
-                      //       subTitleFont: {
-                      //         "fontSize": 12,
-                      //         "fontColor": 0xff000000,
-                      //         "fontBold": false,
-                      //       },
-                      //       labelFont: {
-                      //         "fontSize": 12,
-                      //         "fontColor": 0xff000000,
-                      //         "fontBold": true,
-                      //       },
-                      //     ),
-                      //   ),
                       child: DeviceFieldTemperatureGaugeWidget(
                         deviceId: deviceId ?? "",
                         field: "temperature",
@@ -300,7 +264,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                     Expanded(
                       child: DeviceFieldRadialGaugeWidget(
                         config: DeviceFieldRangeGaugeWidgetConfig(
-                          deviceId: deviceId!,
+                          deviceId: deviceId ?? "",
                           field: "distance",
                           minimum: 0,
                           maximum: 200,
@@ -333,7 +297,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                     Expanded(
                       child: DeviceFieldRadialGaugeWidget(
                         config: DeviceFieldRangeGaugeWidgetConfig(
-                          deviceId: deviceId!,
+                          deviceId: deviceId ?? "",
                           field: "battery",
                           minimum: 2000,
                           maximum: 6000,

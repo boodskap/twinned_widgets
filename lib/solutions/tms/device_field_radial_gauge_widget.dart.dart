@@ -98,14 +98,15 @@ class _DeviceFieldRadialGaugeWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Container( decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(4), // Border radius
-    border: Border.all(
-      color: Colors.white, // Border color
-      width: 1, // Border width
-    ),
-  ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4), // Border radius
+        border: Border.all(
+          color: Colors.white, // Border color
+          width: 1, // Border width
+        ),
+      ),
       child: Card(
         elevation: 0, // Elevation can be adjusted as needed
         color: Colors.transparent,
@@ -155,7 +156,7 @@ class _DeviceFieldRadialGaugeWidgetState
                         markerOffset: 10,
                         markerHeight: 20,
                         elevation: 5,
-                        color: Color(0xff000000),
+                        color: const Color(0xff000000),
                         text: 'Current Value',
                       )
                     ],
@@ -218,7 +219,6 @@ class _DeviceFieldRadialGaugeWidgetState
 
         DeviceModel? deviceModel =
             await TwinUtils.getDeviceModel(modelId: device.modelId);
-        // print(deviceModel);
 
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
