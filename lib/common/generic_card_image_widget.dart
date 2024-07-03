@@ -165,15 +165,18 @@ class _GenericCardImageWidgetState extends BaseState<GenericCardImageWidget> {
                             : const Icon(Icons.devices_other,
                                 color: Colors.white),
                         SizedBox(width: 5),
-                        Text(
-                          content,
-                          style: TextStyle(
-                              fontFamily: contentFont.fontFamily,
-                              fontSize: contentFont.fontSize,
-                              fontWeight: contentFont.fontBold
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: Color(contentFont.fontColor)),
+                        Flexible(
+                          child: Text(
+                            content,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontFamily: contentFont.fontFamily,
+                                fontSize: contentFont.fontSize,
+                                fontWeight: contentFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(contentFont.fontColor)),
+                          ),
                         ),
                       ],
                     ),

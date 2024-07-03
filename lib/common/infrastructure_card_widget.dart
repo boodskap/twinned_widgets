@@ -50,7 +50,7 @@ class _InfrastructureCardWidgetState
   @override
   void initState() {
     var config = widget.config;
-    isValidConfig = widget.config.deviceModelId.isNotEmpty &&
+    isValidConfig = 
         widget.config.deviceId.isNotEmpty;
     deviceModelId = config.deviceModelId;
     deviceId = config.deviceId;
@@ -108,17 +108,19 @@ class _InfrastructureCardWidgetState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                        fontFamily: titleFont.fontFamily,
-                        fontSize: titleFont.fontSize,
-                        fontWeight: titleFont.fontBold
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: Color(titleFont.fontColor)),
- ),
+                  Flexible(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        overflow: TextOverflow.ellipsis,
+                          fontFamily: titleFont.fontFamily,
+                          fontSize: titleFont.fontSize,
+                          fontWeight: titleFont.fontBold
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: Color(titleFont.fontColor)),
+                     ),
+                  ),
                            titleIcon.isNotEmpty
                       ? SizedBox(
                           width: titleFont.fontSize,
