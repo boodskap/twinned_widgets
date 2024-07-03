@@ -25,6 +25,7 @@ import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
+import 'package:twinned_widgets/common/infrastructure_card_widget.dart';
 import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_page_widget.dart';
@@ -92,7 +93,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWCircularProgressBarWidget': CircularProgressBarWidgetBuilder(),
   'TWVerticalProgressBarWidget': VerticalProgressBarWidgetBuilder(),
   'TWMultipleFieldStatsWidget': MultipleFieldStatsWidgetBuilder(),
-  'TWGenericCardImageWidget': GenericCardImageWidgetBuilder()
+  'TWGenericCardImageWidget': GenericCardImageWidgetBuilder(),
+  'TWInfrastructureCardWidget': InfrastructureCardWidgetBuilder()
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
