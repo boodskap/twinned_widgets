@@ -7,6 +7,8 @@ import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
 import 'package:twinned_models/models.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class DeviceFieldRadialGaugeWidget extends StatefulWidget {
   final DeviceFieldRangeGaugeWidgetConfig config;
@@ -101,14 +103,14 @@ class _DeviceFieldRadialGaugeWidgetState
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4), // Border radius
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: Colors.white, // Border color
-          width: 1, // Border width
+          color: Colors.white,
+          width: 1,
         ),
       ),
       child: Card(
-        elevation: 0, // Elevation can be adjusted as needed
+        elevation: 0,
         color: Colors.transparent,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -252,5 +254,41 @@ class _DeviceFieldRadialGaugeWidgetState
   @override
   void setup() {
     load();
+  }
+}
+
+class DeviceFieldRadialGaugeWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return DeviceFieldRadialGaugeWidget(
+        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.speed_sharp);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Device Field Radial Gauge";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+    }
+    return DeviceFieldRangeGaugeWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'device field min max avg values';
   }
 }

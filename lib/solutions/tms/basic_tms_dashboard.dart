@@ -50,8 +50,6 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
         body: const FilterSearchReq(search: "*", page: 0, size: 100),
       );
 
-     
-
       if (validateResponse(qRes)) {
         final jsonResponse = jsonDecode(qRes.body.toString());
         final values = jsonResponse['values'] as List<dynamic>;
@@ -113,8 +111,6 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          final deviceData = snapshot.data;
-
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -134,7 +130,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                     onSelected: (value) {
                       setState(() {
                         selectedDeviceName = value;
-                        deviceId = deviceNameToIdMap[value!];
+                        deviceId = deviceNameToIdMap[value];
                         deviceDataFuture = loadDeviceData();
                       });
                     },
@@ -166,7 +162,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                   children: [
                     Expanded(
                       flex: 30,
-                      child: SphericalTank(
+                      child: DeviceFieldSphericalTankWidget(
                         config: DeviceFieldSphericalTankWidgetConfig(
                           deviceId: deviceId ?? "",
                           field: field,
@@ -191,7 +187,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                     divider(horizontal: true),
                     Expanded(
                       flex: 70,
-                      child: DeviceFieldSplineAreaChartWidget(
+                      child: MultiFieldDeviceSplineChartWidget(
                         config: MultiFieldDeviceSplineChartWidgetConfig(
                           deviceId: deviceId ?? '',
                           field: [
