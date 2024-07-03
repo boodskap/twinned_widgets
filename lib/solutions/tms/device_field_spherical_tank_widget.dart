@@ -34,16 +34,17 @@ class SphericalTankState extends BaseState<SphericalTank>
   double maxValue = 100;
   bool isValidConfig = true;
   String subtitle = "";
- late String field ;
- late String deviceId ;
+  late String field;
+  late String deviceId;
   String unit = "";
   String label = "";
   late FontConfig titleFont;
   late FontConfig valueFont;
   late FontConfig subTitleFont;
   @override
-  void initState() {deviceId=widget.config.deviceId;
-  field=widget.config.field;
+  void initState() {
+    deviceId = widget.config.deviceId;
+    field = widget.config.field;
     titleFont = FontConfig.fromJson(widget.config.titleFont);
     subTitleFont = FontConfig.fromJson(widget.config.subTitleFont);
     valueFont = FontConfig.fromJson(widget.config.valueFont);
@@ -51,28 +52,30 @@ class SphericalTankState extends BaseState<SphericalTank>
     load();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     int percent = (liquidLevel * 100).toInt();
     return Container(
-       decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(4), // Border radius
-    border: Border.all(
-      color: Colors.white, // Border color
-      width: 1, // Border width
-    ),
-  ),
-      child: Card( elevation: 0, // Elevation can be adjusted as needed
-      color: Colors.transparent,
-        child: Column(mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: Colors.white,
+          width: 1,
+        ),
+      ),
+      child: Card(
+        elevation: 0,
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     label,
@@ -114,7 +117,8 @@ class SphericalTankState extends BaseState<SphericalTank>
                       ),
                       Text(
                         '$unit ',
-                        style: TwinUtils.getTextStyle(titleFont).copyWith(fontSize: 20),
+                        style: TwinUtils.getTextStyle(titleFont)
+                            .copyWith(fontSize: 20),
                       ),
                     ],
                   ),
@@ -172,7 +176,7 @@ class SphericalTankState extends BaseState<SphericalTank>
               liquidLevel = value / 100;
               unit = TwinUtils.getParameterUnit(field, deviceModel!);
               subtitle = _getUpdatedTimeAgo(obj['p_source']['updatedStamp']);
-              label = TwinUtils.getParameterLabel(field, deviceModel!);
+              label = TwinUtils.getParameterLabel(field, deviceModel);
             });
           }
         }

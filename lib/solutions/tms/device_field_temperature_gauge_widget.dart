@@ -23,7 +23,6 @@ class DeviceFieldTemperatureGaugeWidget extends StatefulWidget {
     super.key,
     this.minimum = 0,
     this.maximum = 150,
-    
     this.temperatureValue = 0,
     required this.deviceId,
     required this.field,
@@ -95,11 +94,14 @@ class _DeviceFieldTemperatureGaugeWidgetState
             children: [
               Text(
                 fieldName,
-               style: const TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Color(0xff000000)),
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff000000)),
               ),
               Text(
                 subtitle,
-               style: const TextStyle(fontSize: 12,color: Color(0xff000000)),
+                style: const TextStyle(fontSize: 12, color: Color(0xff000000)),
               ),
               Expanded(
                 child: SfLinearGauge(
@@ -108,7 +110,7 @@ class _DeviceFieldTemperatureGaugeWidgetState
                   interval: 30,
                   isMirrored: true,
                   minorTicksPerInterval: 20,
-                  axisTrackExtent:1,
+                  axisTrackExtent: 1,
                   axisTrackStyle: LinearAxisTrackStyle(
                     thickness: 12,
                     color: widget.gaugeColor,
@@ -152,7 +154,8 @@ class _DeviceFieldTemperatureGaugeWidgetState
                         decoration: BoxDecoration(
                           border: const Border(
                             left: BorderSide(width: 2.0, color: Colors.black),
-                            right: BorderSide(width: 2.0, color: Colors.blueAccent),
+                            right: BorderSide(
+                                width: 2.0, color: Colors.blueAccent),
                           ),
                           color: value > widget.temperatureValue
                               ? widget.aboveTemperatureColor

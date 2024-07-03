@@ -23,7 +23,9 @@ class SeriesData {
 
 class DeviceFieldSplineAreaChartWidget extends StatefulWidget {
   final MultiFieldDeviceSplineChartWidgetConfig config;
-  const DeviceFieldSplineAreaChartWidget({super.key, required this.config});
+  int size;
+  DeviceFieldSplineAreaChartWidget(
+      {super.key, required this.config, this.size = 100});
 
   @override
   _DeviceFieldSplineAreaChartWidgetState createState() =>
@@ -61,9 +63,11 @@ class _DeviceFieldSplineAreaChartWidgetState
   String selectedDateRange = 'Today';
   DateTime? customStartDate;
   DateTime? customEndDate;
+  int? size;
 
   @override
   void initState() {
+    size = widget.size;
     duration = widget.config.duration;
     deviceId = widget.config.deviceId;
     fields = widget.config.field;
@@ -254,7 +258,6 @@ class _DeviceFieldSplineAreaChartWidgetState
     return seriesList;
   }
 
-  @override
   Future<void> load({String? filter, String search = '*'}) async {
     if (!isValidConfig || loading) return;
 
@@ -269,9 +272,10 @@ class _DeviceFieldSplineAreaChartWidgetState
 
     switch (selectedDateRange) {
       case 'Yesterday':
-        startDate = endDate.subtract(const Duration(days: 1));
-        endDate = endDate
-            .subtract(const Duration(days: 1))
+        startDate = DateTime(endDate.year, endDate.month, endDate.day)
+            .subtract(const Duration(days: 1));
+
+        endDate = startDate
             .add(const Duration(days: 1))
             .subtract(const Duration(seconds: 1));
         break;
@@ -283,7 +287,6 @@ class _DeviceFieldSplineAreaChartWidgetState
           startDate = customStartDate!;
           endDate = customEndDate!;
         } else {
-          // Fallback to default if custom dates are not set
           startDate = DateTime(endDate.year, endDate.month, endDate.day);
           endDate = DateTime(endDate.year, endDate.month, endDate.day)
               .add(const Duration(days: 1))
@@ -315,7 +318,7 @@ class _DeviceFieldSplineAreaChartWidgetState
       apikey: TwinnedSession.instance.authToken,
       body: EqlSearch(
         page: 0,
-        size: 100,
+        size: widget.size,
         source: [],
         mustConditions: [
           {
