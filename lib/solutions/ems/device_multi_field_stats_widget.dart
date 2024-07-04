@@ -24,7 +24,6 @@ class _MultipleFieldStatsWidgetState
   final List<SeriesData> _chartSeries = [];
   bool isValidConfig = false;
   bool loading = false;
-  bool  showTodayData = false;
   final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
   late Map<String, dynamic> aggsData = {};
@@ -49,6 +48,7 @@ class _MultipleFieldStatsWidgetState
   late bool showStats;
   late bool showTotalValue;
   late bool showTooltip;
+  late bool showTodayData;
   late String minLabelText;
   late String maxLabelText;
   late String avgLabelText;
@@ -101,6 +101,7 @@ class _MultipleFieldStatsWidgetState
     showStats = config.showStats;
     showTotalValue = config.showTotalValue;
     showTooltip = config.showTooltip;
+    showTodayData = config.showTodayData;
     minLabelText = config.minLabelText;
     maxLabelText = config.maxLabelText;
     avgLabelText = config.avgLabelText;
