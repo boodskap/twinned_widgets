@@ -24,6 +24,7 @@ class _MultipleFieldStatsWidgetState
   final List<SeriesData> _chartSeries = [];
   bool isValidConfig = false;
   bool loading = false;
+  bool  showTodayData = false;
   final DateFormat dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
   late Map<String, dynamic> aggsData = {};
@@ -591,9 +592,9 @@ class _MultipleFieldStatsWidgetState
           sort: {'updatedStamp': 'desc'},
           conditions: [stats],
           queryConditions: [],
-          boolConditions: [
+          boolConditions: showTodayData ? [
          filterRange
-          ],
+          ] : [],
         ),
       );
 
