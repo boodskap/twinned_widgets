@@ -2,11 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:twin_commons/core/base_state.dart';
-import 'package:twinned_widgets/common/circle_progress_bar_widget.dart';
-import 'package:twinned_widgets/common/device_multi_field_stats_widget.dart';
-import 'package:twinned_widgets/common/generic_card_image_widget.dart';
-import 'package:twinned_widgets/common/infrastructure_card_widget.dart';
-import 'package:twinned_widgets/common/vertical_progress_bar_widget.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_models/ems/multiple_field_stats.dart';
 import 'package:twinned_models/ems/circular_progress_bar.dart';
@@ -14,6 +9,11 @@ import 'package:twinned_models/ems/vertical_progress_bar.dart';
 import 'package:twinned_models/ems/generic_card_image.dart';
 import 'package:twinned_models/ems/infrastructure_card.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_widgets/solutions/ems/circle_progress_bar_widget.dart';
+import 'package:twinned_widgets/solutions/ems/device_multi_field_stats_widget.dart';
+import 'package:twinned_widgets/solutions/ems/generic_card_image_widget.dart';
+import 'package:twinned_widgets/solutions/ems/infrastructure_card_widget.dart';
+import 'package:twinned_widgets/solutions/ems/vertical_progress_bar_widget.dart';
 
 class EMSDashboard extends StatefulWidget {
   const EMSDashboard({super.key, required this.title});
@@ -279,7 +279,9 @@ class _EMSDashboardState extends BaseState<EMSDashboard> {
                                     showTotalValue: false,
                                     showAvgValue: true,
                                     showTooltip: true,
-                                    showLegend: true)),
+                                    showLegend: true,
+                                    showTodayData: false,
+                                    )),
                           ),
                         ),
                       ),
@@ -341,7 +343,9 @@ class _EMSDashboardState extends BaseState<EMSDashboard> {
                                     showTotalValue: false,
                                     showAvgValue: true,
                                     showTooltip: true,
-                                    showLegend: true)),
+                                    showLegend: true,
+                                    showTodayData: false,
+                                    )),
                           ),
                         ),
                       ),
@@ -458,7 +462,9 @@ class _EMSDashboardState extends BaseState<EMSDashboard> {
                                     showTotalValue: true,
                                     showAvgValue: true,
                                     showTooltip: true,
-                                    showLegend: true)),
+                                    showLegend: true,
+                                    showTodayData: false,
+                                    )),
                           ),
                         ),
                       ),
