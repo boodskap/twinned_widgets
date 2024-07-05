@@ -199,7 +199,8 @@ class _MultipleFieldStatsWidgetState
                           child: SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
                               isVisible: true,
-                              dateFormat: DateFormat.Hm(),
+                              dateFormat: DateFormat('MM/dd/yyyy HH:mm'),
+                              // dateFormat: DateFormat.Hm(),
                               majorGridLines: const MajorGridLines(width: 0),
                               minorGridLines: const MinorGridLines(width: 0),
                               minorTickLines: MinorTickLines(width: 0),
@@ -281,6 +282,7 @@ class _MultipleFieldStatsWidgetState
             yValueMapper: (SeriesData data, _) => data.fields[fieldName],
             color: Color(color),
             yAxisName: fieldName,
+            width:0.4,
             name: TwinUtils.getParameterLabel(fieldName, deviceModel!),
             dataLabelSettings: DataLabelSettings(
               isVisible: showLabel,
@@ -571,7 +573,14 @@ class _MultipleFieldStatsWidgetState
       };
 
       EqlCondition stats = EqlCondition(name: 'aggs', condition: aggs);
-
+     EqlCondition filterRange = const EqlCondition(name: 'filter', condition: {
+        "range": {
+          "updatedStamp": {
+            "gte": "now/d",
+            "lte": "now+1d/d"
+          }
+        }
+      });
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
         apikey: TwinnedSession.instance.authToken,
         body: EqlSearch(
@@ -582,7 +591,9 @@ class _MultipleFieldStatsWidgetState
           sort: {'updatedStamp': 'desc'},
           conditions: [stats],
           queryConditions: [],
-          boolConditions: [],
+          boolConditions: [
+         filterRange
+          ],
         ),
       );
 
