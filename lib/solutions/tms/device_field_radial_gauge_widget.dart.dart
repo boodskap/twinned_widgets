@@ -146,7 +146,7 @@ class _DeviceFieldRadialGaugeWidgetState
                     labelsPosition: ElementsPosition.outside,
                     labelOffset: 20,
                     axisLineStyle: AxisLineStyle(
-                      thickness: 15,
+                      thickness: 25,
                       gradient: SweepGradient(
                         colors: gradientColors,
                       ),
