@@ -101,7 +101,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: FutureBuilder<Map<String, dynamic>?>(
         future: deviceDataFuture,
         builder: (context, snapshot) {
