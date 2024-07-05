@@ -10,23 +10,25 @@ import 'package:twinned_api/twinned_api.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:twinned_models/device_field_spherical_tank/device_field_spherical_tank.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class SphericalTank extends StatefulWidget {
+class DeviceFieldSphericalTankWidget extends StatefulWidget {
   final bool shouldAnimate;
 
   final DeviceFieldSphericalTankWidgetConfig config;
 
-  const SphericalTank({
+  const DeviceFieldSphericalTankWidget({
     super.key,
     this.shouldAnimate = false,
     required this.config,
   });
 
   @override
-  SphericalTankState createState() => SphericalTankState();
+  DeviceFieldSphericalTankWidgetState createState() => DeviceFieldSphericalTankWidgetState();
 }
 
-class SphericalTankState extends BaseState<SphericalTank>
+class DeviceFieldSphericalTankWidgetState extends BaseState<DeviceFieldSphericalTankWidget>
     with TickerProviderStateMixin, LiquidContainer {
   double liquidLevel = 0;
   double value = 0;
@@ -276,5 +278,41 @@ class CircleTankPainter extends WaterBottlePainter {
     path.lineTo(capR, capTop);
     path.close();
     canvas.drawPath(path, paint);
+  }
+}
+
+class DeviceFieldSphericalTankWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return DeviceFieldSphericalTankWidget(
+        config: DeviceFieldSphericalTankWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.circle_sharp);
+  }
+
+  @override
+  String getPaletteName() {
+    return "DeviceField Spherical Tank";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return DeviceFieldSphericalTankWidgetConfig.fromJson(config);
+    }
+    return DeviceFieldSphericalTankWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'DeviceField Spherical Tank';
   }
 }

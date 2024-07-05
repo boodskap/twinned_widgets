@@ -50,7 +50,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
         body: const FilterSearchReq(search: "*", page: 0, size: 100),
       );
 
-     
+      // debugPrint(qRes.bodyString.toString());
 
       if (validateResponse(qRes)) {
         final jsonResponse = jsonDecode(qRes.body.toString());
@@ -118,47 +118,58 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      "Fill Level",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  PopupMenuButton<String>(
-                    tooltip: "Select Device",
-                    onSelected: (value) {
-                      setState(() {
-                        selectedDeviceName = value;
-                        deviceId = deviceNameToIdMap[value!];
-                        deviceDataFuture = loadDeviceData();
-                      });
-                    },
-                    itemBuilder: (context) {
-                      return deviceNames.map((deviceName) {
-                        return PopupMenuItem<String>(
-                          value: deviceName,
-                          child: Text(deviceName),
-                        );
-                      }).toList();
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          selectedDeviceName ?? 'Select Device',
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black),
+              Container(
+                color: const Color(0XFF005583),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "Tank Monitoring System",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0XFFFFFFFF),
+                          fontWeight: FontWeight.bold,
                         ),
-                        const Icon(Icons.arrow_drop_down),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                    PopupMenuButton<String>(
+                      tooltip: "Select Device",
+                      onSelected: (value) {
+                        setState(() {
+                          selectedDeviceName = value;
+                          deviceId = deviceNameToIdMap[value!];
+                          deviceDataFuture = loadDeviceData();
+                        });
+                      },
+                      itemBuilder: (context) {
+                        return deviceNames.map((deviceName) {
+                          return PopupMenuItem<String>(
+                            value: deviceName,
+                            child: Text(deviceName),
+                          );
+                        }).toList();
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            selectedDeviceName ?? 'Select Device',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0XFFFFFFFF),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            color: Color(0XFFFFFFFF),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 flex: 50,
@@ -166,10 +177,10 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                   children: [
                     Expanded(
                       flex: 30,
-                      child: SphericalTank(
+                      child: DeviceFieldSphericalTankWidget(
                         config: DeviceFieldSphericalTankWidgetConfig(
                           deviceId: deviceId ?? "",
-                          field: field,
+                          field: "volume",
                           valueFont: {
                             "fontSize": 40,
                             "fontColor": 0xff000000,
@@ -191,7 +202,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                     divider(horizontal: true),
                     Expanded(
                       flex: 70,
-                      child: DeviceFieldSplineAreaChartWidget(
+                      child: MultiFieldDeviceSplineChartWidget(
                         config: MultiFieldDeviceSplineChartWidgetConfig(
                           deviceId: deviceId ?? '',
                           field: [

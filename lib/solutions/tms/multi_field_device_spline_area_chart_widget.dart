@@ -8,6 +8,8 @@ import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/multi_field_device_spline_chart/multi_field_device_spline_chart.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class SeriesData {
   final DateTime stamp;
@@ -21,19 +23,19 @@ class SeriesData {
   });
 }
 
-class DeviceFieldSplineAreaChartWidget extends StatefulWidget {
+class MultiFieldDeviceSplineChartWidget extends StatefulWidget {
   final MultiFieldDeviceSplineChartWidgetConfig config;
   int size;
-  DeviceFieldSplineAreaChartWidget(
+  MultiFieldDeviceSplineChartWidget(
       {super.key, required this.config, this.size = 100});
 
   @override
-  _DeviceFieldSplineAreaChartWidgetState createState() =>
-      _DeviceFieldSplineAreaChartWidgetState();
+  _MultiFieldDeviceSplineChartWidgetState createState() =>
+      _MultiFieldDeviceSplineChartWidgetState();
 }
 
-class _DeviceFieldSplineAreaChartWidgetState
-    extends BaseState<DeviceFieldSplineAreaChartWidget> {
+class _MultiFieldDeviceSplineChartWidgetState
+    extends BaseState<MultiFieldDeviceSplineChartWidget> {
   final List<SeriesData> _chartSeries = [];
   late List<String> fields;
   late String deviceId;
@@ -409,5 +411,41 @@ class _DeviceFieldSplineAreaChartWidgetState
   @override
   void setup() {
     load();
+  }
+}
+
+class MultiFieldDeviceSplineChartWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return MultiFieldDeviceSplineChartWidget(
+        config: MultiFieldDeviceSplineChartWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.area_chart_outlined);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Device Fields Area Chart";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (null != config) {
+      return MultiFieldDeviceSplineChartWidgetConfig.fromJson(config);
+    }
+    return MultiFieldDeviceSplineChartWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Device Fields Area Chart';
   }
 }
