@@ -48,6 +48,7 @@ class _MultipleFieldStatsWidgetState
   late bool showStats;
   late bool showTotalValue;
   late bool showTooltip;
+  late bool showTodayData;
   late String minLabelText;
   late String maxLabelText;
   late String avgLabelText;
@@ -100,6 +101,7 @@ class _MultipleFieldStatsWidgetState
     showStats = config.showStats;
     showTotalValue = config.showTotalValue;
     showTooltip = config.showTooltip;
+    showTodayData = config.showTodayData;
     minLabelText = config.minLabelText;
     maxLabelText = config.maxLabelText;
     avgLabelText = config.avgLabelText;
@@ -591,9 +593,9 @@ class _MultipleFieldStatsWidgetState
           sort: {'updatedStamp': 'desc'},
           conditions: [stats],
           queryConditions: [],
-          boolConditions: [
+          boolConditions: showTodayData ? [
          filterRange
-          ],
+          ] : [],
         ),
       );
 
