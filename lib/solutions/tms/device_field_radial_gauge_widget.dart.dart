@@ -94,8 +94,6 @@ class _DeviceFieldRadialGaugeWidgetState
     valueFont = FontConfig.fromJson(widget.config.valueFont);
 
     super.initState();
-
-    load();
   }
 
   @override
