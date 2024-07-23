@@ -14,7 +14,8 @@ import 'package:twinned_widgets/solutions/tms/device_field_temperature_gauge_wid
 import 'package:twinned_widgets/solutions/tms/multi_field_device_spline_area_chart_widget.dart';
 
 class BasicTMSDashboardScreen extends StatefulWidget {
-  const BasicTMSDashboardScreen({super.key});
+  final DeviceData deviceData;
+  const BasicTMSDashboardScreen({super.key, required this.deviceData});
 
   @override
   State<BasicTMSDashboardScreen> createState() =>
@@ -24,8 +25,9 @@ class BasicTMSDashboardScreen extends StatefulWidget {
 class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
   String field = "volume";
   String? deviceId;
+  String? modelId;
 
-  bool loading = false;
+  // bool loading = false;
 
   List<String> deviceNames = [];
   String? selectedDeviceName;
@@ -35,8 +37,10 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
 
   @override
   void initState() {
+    var dd = widget.deviceData;
+    modelId = dd.modelId;
     super.initState();
-    loadDevices();
+    // loadDevices();
   }
 
   Future<void> loadDevices() async {
@@ -46,7 +50,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
     await execute(() async {
       var qRes = await TwinnedSession.instance.twin.searchRecentDeviceData(
         apikey: TwinnedSession.instance.authToken,
-        modelId: "b3c13b14-1f0e-499e-83d0-3db6e184eaf1",
+        modelId: modelId,
         body: const FilterSearchReq(search: "*", page: 0, size: 100),
       );
 
@@ -123,6 +127,18 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Tooltip(
+                      message: 'Home',
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(
+                          Icons.keyboard_backspace,
+                          color: Color(0XFFFFFFFF),
+                        ),
+                      ),
+                    ),
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
