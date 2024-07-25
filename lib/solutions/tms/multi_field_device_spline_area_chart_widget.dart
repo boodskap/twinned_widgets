@@ -43,7 +43,7 @@ class _MultiFieldDeviceSplineChartWidgetState
   late Color chartBorderColor;
   Map<String, String> fieldLabels = {};
   bool isValidConfig = false;
-  bool loading = false;
+  // bool loading = false;
   final DateFormat dateFormat = DateFormat('MM/dd hh:mm aa');
   late double duration;
   late bool enableTooltip;
@@ -93,7 +93,7 @@ class _MultiFieldDeviceSplineChartWidgetState
 
     super.initState();
 
-    load();
+    // load();
   }
 
   @override
@@ -262,10 +262,7 @@ class _MultiFieldDeviceSplineChartWidgetState
 
   Future<void> load({String? filter, String search = '*'}) async {
     if (!isValidConfig || loading) return;
-
-    setState(() {
-      loading = true;
-    });
+    loading = true;
 
     _chartSeries.clear();
 
