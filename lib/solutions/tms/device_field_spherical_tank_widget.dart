@@ -51,7 +51,7 @@ class DeviceFieldSphericalTankWidgetState extends BaseState<DeviceFieldSpherical
     subTitleFont = FontConfig.fromJson(widget.config.subTitleFont);
     valueFont = FontConfig.fromJson(widget.config.valueFont);
     super.initState();
-    load();
+    // load();
   }
 
   @override

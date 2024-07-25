@@ -41,7 +41,7 @@ class DeviceFieldTemperatureGaugeWidget extends StatefulWidget {
 class _DeviceFieldTemperatureGaugeWidgetState
     extends BaseState<DeviceFieldTemperatureGaugeWidget> {
   bool isValidConfig = false;
-  bool loading = false;
+  // bool loading = false;
 
   late String deviceId;
   late String field;
@@ -52,14 +52,10 @@ class _DeviceFieldTemperatureGaugeWidgetState
 
   @override
   void initState() {
-    super.initState();
     deviceId = widget.deviceId;
     field = widget.field;
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
-
-    if (isValidConfig) {
-      load();
-    }
+    super.initState();
   }
 
   @override
@@ -194,10 +190,7 @@ class _DeviceFieldTemperatureGaugeWidgetState
 
   Future<void> load() async {
     if (!isValidConfig || loading) return;
-
-    setState(() {
-      loading = true;
-    });
+    loading = true;
 
     await execute(() async {
       var qRes = await TwinnedSession.instance.twin.queryDeviceData(
