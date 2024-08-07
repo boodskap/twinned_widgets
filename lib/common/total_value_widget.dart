@@ -26,6 +26,11 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
   late Color labelFontColor;
   late String field;
   late List<String> modelIds;
+  late List<String> assetModelIds;
+  late List<String> premiseIds;
+  late List<String> facilityIds;
+  late List<String> floorIds;
+  late List<String> assetIds;
   bool isValidConfig = false;
   int? value;
   int _counter = 0;
@@ -41,8 +46,13 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
     borderStyle = config.borderStyle;
     headerFont = FontConfig.fromJson(config.headerFont);
     labelFont = FontConfig.fromJson(config.labelFont);
-    field = widget.config.field;
-    modelIds = widget.config.modelIds;
+    field = config.field;
+    modelIds = config.modelIds;
+    assetModelIds = config.assetModelIds;
+    premiseIds = config.premiseIds;
+    facilityIds = config.facilityIds;
+    floorIds = config.floorIds;
+    assetIds = config.assetIds;
 
     headerFontColor =
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
@@ -50,7 +60,6 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
         labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
 
     isValidConfig = field.isNotEmpty;
-    isValidConfig = isValidConfig && modelIds.isNotEmpty;
 
     super.initState();
   }
@@ -115,14 +124,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
 
     EqlCondition stats = EqlCondition(name: 'aggs', condition: {
       "stats": {
-        "filter": {
-          "terms": {"modelId": modelIds}
-        },
-        "aggs": {
-          "sum": {
-            "sum": {"field": "data.$field"}
-          }
-        }
+        "sum": {"field": "data.$field"}
       }
     });
     await execute(() async {
@@ -136,11 +138,36 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
               size: 0,
               queryConditions: [],
               boolConditions: [],
-              mustConditions: []));
+              mustConditions: [
+                if (modelIds.isNotEmpty)
+                  {
+                    "terms": {"modelId": modelIds}
+                  },
+                if (assetModelIds.isNotEmpty)
+                  {
+                    "terms": {"assetModelId": assetModelIds}
+                  },
+                if (premiseIds.isNotEmpty)
+                  {
+                    "terms": {"premiseId": premiseIds}
+                  },
+                if (facilityIds.isNotEmpty)
+                  {
+                    "terms": {"facilityId": facilityIds}
+                  },
+                if (floorIds.isNotEmpty)
+                  {
+                    "terms": {"floorId": floorIds}
+                  },
+                if (assetIds.isNotEmpty)
+                  {
+                    "terms": {"assetId": assetIds}
+                  },
+              ]));
 
       if (validateResponse(sRes)) {
         var json = sRes.body!.result! as Map<String, dynamic>;
-        value = json['aggregations']['stats']['sum']["value"];
+        value = json['aggregations']['stats']["value"];
       }
     });
     refresh();
