@@ -31,7 +31,6 @@ class _ValueDistributionPieChartWidgetState
   late FontConfig labelFont;
   late Color labelFontColor;
   late String field;
-  late List<String> modelIds;
   bool isValidConfig = false;
   int? value;
   List<Range> segments = [];
@@ -44,7 +43,6 @@ class _ValueDistributionPieChartWidgetState
     headerFont = FontConfig.fromJson(config.headerFont as Map<String, Object?>);
     labelFont = FontConfig.fromJson(config.labelFont as Map<String, Object?>);
     field = config.field;
-    modelIds = config.modelIds;
 
     headerFontColor =
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
@@ -52,7 +50,6 @@ class _ValueDistributionPieChartWidgetState
         labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
 
     isValidConfig = field.isNotEmpty;
-    isValidConfig = isValidConfig && modelIds.isNotEmpty;
 
     super.initState();
   }
@@ -252,7 +249,32 @@ class _ValueDistributionPieChartWidgetState
           body: EqlSearch(
               source: [],
               conditions: [aggs],
-              mustConditions: [terms],
+              mustConditions: [
+                if (widget.config.modelIds.isNotEmpty)
+                  {
+                    "terms": {"modelId": widget.config.modelIds}
+                  },
+                if (widget.config.assetModelIds.isNotEmpty)
+                  {
+                    "terms": {"assetModelId": widget.config.assetModelIds}
+                  },
+                if (widget.config.premiseIds.isNotEmpty)
+                  {
+                    "terms": {"premiseId": widget.config.premiseIds}
+                  },
+                if (widget.config.facilityIds.isNotEmpty)
+                  {
+                    "terms": {"facilityId": widget.config.facilityIds}
+                  },
+                if (widget.config.floorIds.isNotEmpty)
+                  {
+                    "terms": {"floorId": widget.config.floorIds}
+                  },
+                if (widget.config.assetIds.isNotEmpty)
+                  {
+                    "terms": {"assetId": widget.config.assetIds}
+                  },
+              ],
               size: 0,
               queryConditions: [],
               boolConditions: []));
