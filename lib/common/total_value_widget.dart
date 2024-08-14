@@ -31,6 +31,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
   late List<String> facilityIds;
   late List<String> floorIds;
   late List<String> assetIds;
+  late List<String> clientIds;
   bool isValidConfig = false;
   int? value;
   int _counter = 0;
@@ -53,6 +54,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
     facilityIds = config.facilityIds;
     floorIds = config.floorIds;
     assetIds = config.assetIds;
+    clientIds = config.clientIds;
 
     headerFontColor =
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
@@ -162,6 +164,10 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
                 if (assetIds.isNotEmpty)
                   {
                     "terms": {"assetId": assetIds}
+                  },
+                if (clientIds.isNotEmpty)
+                  {
+                    "terms": {"clientIds.keyword": clientIds}
                   },
               ]));
 

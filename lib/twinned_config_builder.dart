@@ -12,6 +12,7 @@ import 'package:twinned_widgets/core/image_upload_field.dart';
 import 'package:twinned_widgets/core/list_of_objects.dart';
 import 'package:twinned_widgets/core/multi_asset_dropdown.dart';
 import 'package:twinned_widgets/core/multi_assetmodel_dropdown.dart';
+import 'package:twinned_widgets/core/multi_client_dropdown.dart';
 import 'package:twinned_widgets/core/multi_device_dropdown.dart';
 import 'package:twinned_widgets/core/enumerated_field.dart';
 import 'package:twinned_widgets/core/font_field.dart';
@@ -379,6 +380,14 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             onFloorsSelected: (models) {
               _parameters[parameter] = models.map((i) => i.id).toList();
             });
+      case HintType.clientId:
+        return MultiClientDropdown(
+          selectedItems: toList(_parameters[parameter]),
+          allowDuplicates: widget.config.canDuplicate(parameter),
+          onClientsSelected: (models) {
+            _parameters[parameter] = models.map((i) => i.id).toList();
+          },
+        );
       case HintType.userId:
       // TODO: Handle this case.
       case HintType.none:
