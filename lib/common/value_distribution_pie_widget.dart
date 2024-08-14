@@ -274,6 +274,10 @@ class _ValueDistributionPieChartWidgetState
                   {
                     "terms": {"assetId": widget.config.assetIds}
                   },
+                if (widget.config.clientIds.isNotEmpty)
+                  {
+                    "terms": {"clientIds.keyword": widget.config.clientIds}
+                  },
               ],
               size: 0,
               queryConditions: [],
