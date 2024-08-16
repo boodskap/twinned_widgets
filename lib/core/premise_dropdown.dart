@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -9,9 +10,14 @@ typedef OnPremiseSelected = void Function(twin.Premise? premise);
 class PremiseDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnPremiseSelected onPremiseSelected;
+  final TextStyle style;
 
-  const PremiseDropdown(
-      {super.key, required this.selectedItem, required this.onPremiseSelected});
+  const PremiseDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onPremiseSelected,
+    this.style = const TextStyle(),
+  });
 
   @override
   State<PremiseDropdown> createState() => _PremiseDropdownState();
@@ -38,7 +44,24 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Premise entity = value;
-        return Text('${entity.name} ${entity.description}');
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 64,
+                  height: 48,
+                  child: (entity.images?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.images!.first)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              '${entity.name}, ${entity.description}',
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -66,9 +89,24 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
           }
           items.add(DropdownMenuItem<twin.Premise>(
               value: entity,
-              child: Text(
-                '${entity.name} ${entity.description}',
-                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
               )));
         }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/twin_commons.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -9,9 +10,14 @@ typedef OnAssetSelected = void Function(twin.Asset? asset);
 class AssetDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnAssetSelected onAssetSelected;
+  final TextStyle style;
 
-  const AssetDropdown(
-      {super.key, required this.selectedItem, required this.onAssetSelected});
+  const AssetDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onAssetSelected,
+    this.style = const TextStyle(),
+  });
 
   @override
   State<AssetDropdown> createState() => _AssetDropdownState();
@@ -38,8 +44,24 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Asset entity = value;
-        return Text(
-            '${entity.name} ${entity.description} (${entity.devices?.length ?? 0} devices)');
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 64,
+                  height: 48,
+                  child: (entity.images?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.images!.first)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              '${entity.name}, ${entity.description}',
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -66,7 +88,26 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
             _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.Asset>(
-              value: entity, child: Text(entity.name)));
+              value: entity,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
+              )));
         }
 
         total = pRes.body!.total;

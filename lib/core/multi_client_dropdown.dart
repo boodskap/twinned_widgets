@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twin_commons/core/twinned_session.dart';
@@ -11,12 +12,14 @@ class MultiClientDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnClientsSelected onClientsSelected;
   final bool allowDuplicates;
+  final TextStyle style;
 
   const MultiClientDropdown({
     super.key,
     required this.selectedItems,
     required this.onClientsSelected,
     required this.allowDuplicates,
+    this.style = const TextStyle(),
   });
 
   @override
@@ -37,8 +40,26 @@ class _MultiClientDropdownState extends BaseState<MultiClientDropdown> {
           widget.onClientsSelected(selectedItems as List<twin.Client>);
         },
         itemSearchFunc: _search,
-        itemLabelFunc: (item) {
-          return Text('${item.name}');
+        itemLabelFunc: (value) {
+          twin.Client entity = value;
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width: 64,
+                    height: 48,
+                    child: (entity.icon?.isNotEmpty ?? false)
+                        ? TwinImageHelper.getDomainImage(entity.icon!)
+                        : const Icon(Icons.image)),
+              ),
+              divider(horizontal: true),
+              Text(
+                '${entity.name}, ${entity.description}',
+                style: widget.style,
+              ),
+            ],
+          );
         },
         itemIdFunc: (item) {
           return item.id;
