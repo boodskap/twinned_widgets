@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -10,12 +11,15 @@ class FacilityDropdown extends StatefulWidget {
   final String? selectedItem;
   final String? selectedPremise;
   final OnFacilitySelected onFacilitySelected;
+  final TextStyle style;
 
-  const FacilityDropdown(
-      {super.key,
-      required this.selectedItem,
-      required this.selectedPremise,
-      required this.onFacilitySelected});
+  const FacilityDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.selectedPremise,
+    required this.onFacilitySelected,
+    this.style = const TextStyle(),
+  });
 
   @override
   State<FacilityDropdown> createState() => _FacilityDropdownState();
@@ -42,7 +46,24 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Facility entity = value;
-        return Text('${entity.name} ${entity.description}');
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 64,
+                  height: 48,
+                  child: (entity.images?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.images!.first)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              '${entity.name}, ${entity.description}',
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -71,9 +92,24 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
           }
           items.add(DropdownMenuItem<twin.Facility>(
               value: entity,
-              child: Text(
-                '${entity.name} ${entity.description}',
-                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
               )));
         }
 

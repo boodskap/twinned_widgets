@@ -48,8 +48,8 @@ class _ClientDropdownState extends BaseState<ClientDropdown> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
-                  width: 32,
-                  height: 32,
+                  width: 64,
+                  height: 48,
                   child: (entity.icon?.isNotEmpty ?? false)
                       ? TwinImageHelper.getDomainImage(entity.icon!)
                       : const Icon(Icons.image)),
@@ -93,8 +93,8 @@ class _ClientDropdownState extends BaseState<ClientDropdown> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
-                        width: 32,
-                        height: 32,
+                        width: 64,
+                        height: 48,
                         child: (entity.icon?.isNotEmpty ?? false)
                             ? TwinImageHelper.getDomainImage(entity.icon!)
                             : const Icon(Icons.image)),

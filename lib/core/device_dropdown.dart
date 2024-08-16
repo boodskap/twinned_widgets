@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/twin_commons.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -9,9 +10,14 @@ typedef OnDeviceSelected = void Function(twin.Device? device);
 class DeviceDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceSelected onDeviceSelected;
+  final TextStyle style;
 
-  const DeviceDropdown(
-      {super.key, required this.selectedItem, required this.onDeviceSelected});
+  const DeviceDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onDeviceSelected,
+    this.style = const TextStyle(),
+  });
 
   @override
   State<DeviceDropdown> createState() => _DeviceDropdownState();
@@ -37,8 +43,25 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
       dialogBox: true,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
-        twin.Device device = value;
-        return Text('${device.name}, SN:${device.deviceId}');
+        twin.Device entity = value;
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 64,
+                  height: 48,
+                  child: (entity.images?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.images!.first)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              '${entity.name}, ${entity.description}',
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -67,9 +90,24 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
           }
           items.add(DropdownMenuItem<twin.Device>(
               value: entity,
-              child: Text(
-                '${entity.name}, SN:${entity.deviceId} ${entity.description}',
-                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
               )));
         }
 

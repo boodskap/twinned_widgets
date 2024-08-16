@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twin_commons/core/twinned_session.dart';
@@ -11,12 +12,14 @@ class MultiFacilityDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnFacilitiesSelected onFacilitiesSelected;
   final bool allowDuplicates;
+  final TextStyle style;
 
   const MultiFacilityDropdown({
     super.key,
     required this.selectedItems,
     required this.onFacilitiesSelected,
     required this.allowDuplicates,
+    this.style = const TextStyle(),
   });
 
   @override
@@ -37,8 +40,26 @@ class _MultiFacilityDropdownState extends BaseState<MultiFacilityDropdown> {
           widget.onFacilitiesSelected(selectedItems as List<twin.Facility>);
         },
         itemSearchFunc: _search,
-        itemLabelFunc: (item) {
-          return Text('${item.name}');
+        itemLabelFunc: (value) {
+          twin.Facility entity = value;
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width: 64,
+                    height: 48,
+                    child: (entity.images?.isNotEmpty ?? false)
+                        ? TwinImageHelper.getDomainImage(entity.images!.first)
+                        : const Icon(Icons.image)),
+              ),
+              divider(horizontal: true),
+              Text(
+                '${entity.name}, ${entity.description}',
+                style: widget.style,
+              ),
+            ],
+          );
         },
         itemIdFunc: (item) {
           return item.id;
