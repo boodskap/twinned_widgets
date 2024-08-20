@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
+import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
@@ -50,6 +51,7 @@ export 'common/value_distribution_pie_widget.dart';
 export 'common/total_and_reporting_asset_widget.dart';
 export 'twinned_config_builder.dart';
 export 'twinned_widget_builder.dart';
+export 'package:twinned_widgets/common/current_day_widget.dart';
 
 final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWTotalValueWidget': TotalValueWidgetBuilder(),
@@ -94,7 +96,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWVerticalProgressBarWidget': VerticalProgressBarWidgetBuilder(),
   'TWMultipleFieldStatsWidget': MultipleFieldStatsWidgetBuilder(),
   'TWGenericCardImageWidget': GenericCardImageWidgetBuilder(),
-  'TWInfrastructureCardWidget': InfrastructureCardWidgetBuilder()
+  'TWInfrastructureCardWidget': InfrastructureCardWidgetBuilder(),
+  'TWCurrentDayTemperatureWidget': CurrentDayTemperatureWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
