@@ -51,7 +51,6 @@ export 'common/value_distribution_pie_widget.dart';
 export 'common/total_and_reporting_asset_widget.dart';
 export 'twinned_config_builder.dart';
 export 'twinned_widget_builder.dart';
-export 'package:twinned_widgets/common/current_day_widget.dart';
 
 final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWTotalValueWidget': TotalValueWidgetBuilder(),
