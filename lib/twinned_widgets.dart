@@ -24,6 +24,7 @@ import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
+import 'package:twinned_widgets/common/humidity_progress_widget.dart';
 import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_page_widget.dart';
@@ -31,12 +32,14 @@ import 'package:twinned_widgets/common/multi_device_single_field_pie_chart_widge
 import 'package:twinned_widgets/common/multi_device_multi_field_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
+import 'package:twinned_widgets/common/thermometer_widget.dart';
 import 'package:twinned_widgets/common/timestamp_widget.dart';
 import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/common/static_timeline_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
+import 'package:twinned_widgets/common/week_humidity_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/solutions/ems/circle_progress_bar_widget.dart';
 import 'package:twinned_widgets/solutions/ems/device_multi_field_stats_widget.dart';
@@ -99,6 +102,9 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWInfrastructureCardWidget': InfrastructureCardWidgetBuilder(),
   'TWCurrentDayTemperatureWidget': CurrentDayTemperatureWidgetBuilder(),
   'TWDeviceFieldSplineAreaChartWidget': DeviceFieldSplineAreaChartWidgetBuilder(),
+  'TWThermometerWidget':ThermometerWidgetBuilder(),
+  'TWHumidityProgressBarWidget': HumidityProgressBarWidgetBuilder(),
+  'TWHumidityWeekWidget' : HumidityWeekWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
