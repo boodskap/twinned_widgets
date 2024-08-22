@@ -10,11 +10,13 @@ typedef OnRolesSelected = void Function(List<twin.Role> items);
 class MultiRoleDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnRolesSelected onRolesSelected;
+  final TextStyle style;
 
   const MultiRoleDropdown({
     super.key,
     required this.selectedItems,
     required this.onRolesSelected,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -37,7 +39,10 @@ class _MultiRoleDropdownState extends BaseState<MultiRoleDropdown> {
         },
         itemSearchFunc: _search,
         itemLabelFunc: (item) {
-          return Text('${item.name}');
+          return Text(
+            '${item.name}',
+            style: widget.style,
+          );
         },
         itemIdFunc: (item) {
           return item.name;
