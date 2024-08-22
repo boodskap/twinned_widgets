@@ -56,7 +56,7 @@ class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

@@ -59,7 +59,7 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

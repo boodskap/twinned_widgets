@@ -61,7 +61,7 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
             ),
             divider(horizontal: true),
             Text(
-              '${entity.name}, ${entity.description}',
+              entity.name,
               style: widget.style,
             ),
           ],

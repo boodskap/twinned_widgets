@@ -67,7 +67,7 @@ class _FieldDropdownState extends BaseState<FieldDropdown> {
                   ),
                   divider(horizontal: true),
                   Text(
-                    '${entity.name}, ${entity.description}',
+                    entity.name,
                     style: widget.style,
                   ),
                 ],

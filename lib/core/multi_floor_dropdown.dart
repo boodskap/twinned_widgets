@@ -55,7 +55,7 @@ class _MultiFloorDropdownState extends BaseState<MultiFloorDropdown> {
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

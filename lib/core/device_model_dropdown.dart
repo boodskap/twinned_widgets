@@ -57,7 +57,7 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
             ),
             divider(horizontal: true),
             Text(
-              '${entity.name}, ${entity.description}',
+              entity.name,
               style: widget.style,
             ),
           ],

@@ -56,9 +56,11 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
                       : const Icon(Icons.image)),
             ),
             divider(horizontal: true),
-            Text(
-              '${entity.name}, ${entity.description}',
-              style: widget.style,
+            Flexible(
+              child: Text(
+                entity.name,
+                style: widget.style,
+              ),
             ),
           ],
         );

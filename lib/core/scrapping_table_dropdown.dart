@@ -47,7 +47,7 @@ class _ScrappingTableDropdownState extends BaseState<ScrappingTableDropdown> {
       selectedValueWidgetFn: (value) {
         twin.ScrappingTable entity = value;
         return Text(
-          '${entity.name} ${entity.description} (${entity.attributes.length} parameters)',
+          entity.name,
           style: widget.style,
         );
       },

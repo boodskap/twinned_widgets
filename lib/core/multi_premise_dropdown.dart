@@ -55,7 +55,7 @@ class _MultiPremiseDropdownState extends BaseState<MultiPremiseDropdown> {
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

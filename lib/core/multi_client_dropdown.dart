@@ -55,7 +55,7 @@ class _MultiClientDropdownState extends BaseState<MultiClientDropdown> {
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

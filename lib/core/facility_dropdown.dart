@@ -59,7 +59,7 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
             ),
             divider(horizontal: true),
             Text(
-              '${entity.name}, ${entity.description}',
+              entity.name,
               style: widget.style,
             ),
           ],
