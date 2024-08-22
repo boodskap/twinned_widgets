@@ -19,7 +19,7 @@ class MultiAssetModelDropdown extends StatefulWidget {
     required this.selectedItems,
     required this.onAssetModelsSelected,
     required this.allowDuplicates,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -48,8 +48,8 @@ class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                    width: 64,
-                    height: 48,
+                    width: 32,
+                    height: 32,
                     child: (entity.images?.isNotEmpty ?? false)
                         ? TwinImageHelper.getDomainImage(entity.images!.first)
                         : const Icon(Icons.image)),

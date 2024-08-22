@@ -19,7 +19,7 @@ class MultiDeviceModelDropdown extends StatefulWidget {
     required this.selectedItems,
     required this.onDeviceModelsSelected,
     required this.allowDuplicates,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -50,8 +50,8 @@ class _MultiDeviceModelDropdownState
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                    width: 64,
-                    height: 48,
+                    width: 32,
+                    height: 32,
                     child: (entity.images?.isNotEmpty ?? false)
                         ? TwinImageHelper.getDomainImage(entity.images!.first)
                         : const Icon(Icons.image)),
