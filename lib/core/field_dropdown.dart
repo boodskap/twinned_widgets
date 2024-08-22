@@ -15,7 +15,7 @@ class FieldDropdown extends StatefulWidget {
     super.key,
     required this.selectedField,
     required this.onFieldSelected,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -59,8 +59,8 @@ class _FieldDropdownState extends BaseState<FieldDropdown> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
-                        width: 64,
-                        height: 48,
+                        width: 32,
+                        height: 32,
                         child: (entity.icon?.isNotEmpty ?? false)
                             ? TwinImageHelper.getDomainImage(entity.icon!)
                             : const Icon(Icons.image)),

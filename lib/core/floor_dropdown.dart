@@ -20,7 +20,7 @@ class FloorDropdown extends StatefulWidget {
     required this.selectedPremise,
     required this.selectedFacility,
     required this.onFloorSelected,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -53,8 +53,8 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
-                  width: 64,
-                  height: 48,
+                  width: 32,
+                  height: 32,
                   child: (entity.floorPlan?.isNotEmpty ?? false)
                       ? TwinImageHelper.getDomainImage(entity.floorPlan!)
                       : const Icon(Icons.image)),

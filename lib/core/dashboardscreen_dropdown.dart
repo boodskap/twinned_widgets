@@ -9,11 +9,14 @@ typedef OnDashboardScreenSelected = void Function(twin.DashboardScreen? device);
 class DashboardScreenDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDashboardScreenSelected onDashboardScreenSelected;
+  final TextStyle style;
 
-  const DashboardScreenDropdown(
-      {super.key,
-      required this.selectedItem,
-      required this.onDashboardScreenSelected});
+  const DashboardScreenDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onDashboardScreenSelected,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
+  });
 
   @override
   State<DashboardScreenDropdown> createState() =>
@@ -39,9 +42,11 @@ class _DashboardScreenDropdownState extends BaseState<DashboardScreenDropdown> {
       },
       dialogBox: true,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
-      selectedValueWidgetFn: (value) {
-        twin.DashboardScreen device = value;
-        return Text(device.name);
+      selectedValueWidgetFn: (twin.DashboardScreen? value) {
+        return Text(
+          value?.name ?? '',
+          style: widget.style,
+        );
       },
       onChanged: (selected) {
         setState(() {
