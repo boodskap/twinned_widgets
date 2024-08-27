@@ -309,13 +309,12 @@ class _MyHomePageState extends BaseState<MyHomePage> {
     loading = true;
 
     TwinnedSession.instance.init(
-      debug: true,
-      host: 'twinned.digital',
-      authToken: '',
-      domainKey: '',
-      noCodeAuthToken: '',
-      orgId: '',
-    );
+        orgId: 'a154b385-fe1f-4c64-a768-686203ba0504',
+        debug: true,
+        host: 'twinned.digital',
+        authToken: '',
+        domainKey: '',
+        noCodeAuthToken: '');
 
     loading = false;
     refresh();
