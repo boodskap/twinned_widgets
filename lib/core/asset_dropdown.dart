@@ -16,7 +16,7 @@ class AssetDropdown extends StatefulWidget {
     super.key,
     required this.selectedItem,
     required this.onAssetSelected,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -49,15 +49,15 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
-                  width: 64,
-                  height: 48,
+                  width: 32,
+                  height: 32,
                   child: (entity.images?.isNotEmpty ?? false)
                       ? TwinImageHelper.getDomainImage(entity.images!.first)
                       : const Icon(Icons.image)),
             ),
             divider(horizontal: true),
             Text(
-              '${entity.name}, ${entity.description}',
+              entity.name,
               style: widget.style,
             ),
           ],

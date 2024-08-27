@@ -19,7 +19,7 @@ class MultiPremiseDropdown extends StatefulWidget {
     required this.selectedItems,
     required this.onPremisesSelected,
     required this.allowDuplicates,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -32,7 +32,7 @@ class _MultiPremiseDropdownState extends BaseState<MultiPremiseDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Premise>(
-        key: Key(Uuid().v4()),
+        key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Premises',
         selectedItems: _selectedItems,
@@ -47,15 +47,15 @@ class _MultiPremiseDropdownState extends BaseState<MultiPremiseDropdown> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                    width: 64,
-                    height: 48,
+                    width: 32,
+                    height: 32,
                     child: (entity.images?.isNotEmpty ?? false)
                         ? TwinImageHelper.getDomainImage(entity.images!.first)
                         : const Icon(Icons.image)),
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

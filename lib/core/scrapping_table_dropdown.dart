@@ -11,12 +11,14 @@ class ScrappingTableDropdown extends StatefulWidget {
   final String? selectedItem;
   final List<String>? filterTags;
   final OnScrappingTableSelected onScrappingTableSelected;
+  final TextStyle style;
 
   const ScrappingTableDropdown({
     super.key,
     required this.selectedItem,
     required this.onScrappingTableSelected,
     this.filterTags,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -45,7 +47,9 @@ class _ScrappingTableDropdownState extends BaseState<ScrappingTableDropdown> {
       selectedValueWidgetFn: (value) {
         twin.ScrappingTable entity = value;
         return Text(
-            '${entity.name} ${entity.description} (${entity.attributes.length} parameters)');
+          entity.name,
+          style: widget.style,
+        );
       },
       onChanged: (selected) {
         setState(() {

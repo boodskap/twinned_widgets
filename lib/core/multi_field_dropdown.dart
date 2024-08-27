@@ -19,7 +19,7 @@ class MultiFieldDropdown extends StatefulWidget {
     required this.selectedItems,
     required this.onFieldsSelected,
     required this.allowDuplicates,
-    this.style = const TextStyle(),
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -33,7 +33,7 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Parameter>(
-        key: Key(Uuid().v4()),
+        key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Fields',
         selectedItems: _selectedItems,
@@ -51,15 +51,15 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                    width: 64,
-                    height: 48,
+                    width: 32,
+                    height: 32,
                     child: (entity.icon?.isNotEmpty ?? false)
                         ? TwinImageHelper.getDomainImage(entity.icon!)
                         : const Icon(Icons.image)),
               ),
               divider(horizontal: true),
               Text(
-                '${entity.name}, ${entity.description}',
+                entity.name,
                 style: widget.style,
               ),
             ],

@@ -508,20 +508,25 @@ class _InfraComponentDetailWidgetState
         break;
       case TwinInfraType.facility:
         await _loadFacility(true, widget.componentId);
-        await _loadPremise(false, _facility!.premiseId);
+        if ((null != _facility!.premiseId))
+          await _loadPremise(false, _facility!.premiseId!);
         title = 'Facility - ${_facility?.name}';
         break;
       case TwinInfraType.floor:
         await _loadFloor(true, widget.componentId);
-        await _loadFacility(false, _floor!.facilityId);
-        await _loadPremise(false, _facility!.premiseId);
+        if (null != _floor!.facilityId)
+          await _loadFacility(false, _floor!.facilityId!);
+        if (null != _facility!.premiseId)
+          await _loadPremise(false, _facility!.premiseId!);
         title = 'Floor - ${_floor?.name}';
         break;
       case TwinInfraType.asset:
         await _loadAsset(true, widget.componentId);
-        await _loadFloor(false, _asset!.floorId);
-        await _loadFacility(false, _floor!.facilityId);
-        await _loadPremise(false, _facility!.premiseId);
+        if (null != _asset!.floorId) await _loadFloor(false, _asset!.floorId!);
+        if (null != _floor!.facilityId)
+          await _loadFacility(false, _floor!.facilityId!);
+        if (null != _facility!.premiseId)
+          await _loadPremise(false, _facility!.premiseId!);
         title = 'Asset - ${_asset?.name}';
         break;
       case TwinInfraType.device:
@@ -537,9 +542,11 @@ class _InfraComponentDetailWidgetState
 
       if (null != dd.assetId) {
         await _loadAsset(false, dd.assetId!);
-        await _loadFloor(false, _asset!.floorId);
-        await _loadFacility(false, _floor!.facilityId);
-        await _loadPremise(false, _facility!.premiseId);
+        if (null != _asset!.floorId) await _loadFloor(false, _asset!.floorId!);
+        if (null != _floor!.facilityId)
+          await _loadFacility(false, _floor!.facilityId!);
+        if (null != _facility!.premiseId)
+          await _loadPremise(false, _facility!.premiseId!);
       }
     }
 

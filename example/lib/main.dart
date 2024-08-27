@@ -70,7 +70,7 @@ class _MyHomePageState extends BaseState<MyHomePage> {
                             debugPrint(jsonEncode(data));
                           }));
                 },
-                child: Icon(Icons.settings)),
+                child: const Icon(Icons.settings)),
             SizedBox(
               width: 200,
               height: 200,
@@ -309,7 +309,6 @@ class _MyHomePageState extends BaseState<MyHomePage> {
     loading = true;
 
     TwinnedSession.instance.init(
-        orgId: 'a154b385-fe1f-4c64-a768-686203ba0504',
         debug: true,
         host: 'twinned.digital',
         authToken: '',
