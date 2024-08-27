@@ -30,7 +30,6 @@ class _CurrentDayTemperatureWidgetState
   String _currentTime = '';
   double currentTemperature = 0;
   double humidityValue = 0;
-  double windSpeed = 0;
   bool isValidConfig = false;
   late String deviceId;
   late List<String> fields;
@@ -183,15 +182,12 @@ class _CurrentDayTemperatureWidgetState
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             currentTemperature = obj['p_source']['data'][fields[0]];
             humidityValue = obj['p_source']['data'][fields[1]];
-            windSpeed = obj['p_source']['data'][fields[2]];
             // debugPrint(currentTemperature.toString());
             // debugPrint(humidityValue.toString());
-            // debugPrint(windSpeed.toString());
 
             setState(() {
               currentTemperature = currentTemperature;
               humidityValue = humidityValue;
-              windSpeed = windSpeed;
             });
           }
         }
