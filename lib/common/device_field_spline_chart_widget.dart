@@ -47,7 +47,7 @@ class _DeviceFieldSplineAreaChartWidgetState
   DateTime? customStartDate;
   DateTime? customEndDate;
 
-  bool loading = false;
+  // bool loading = false;
   String fieldName = '--';
   String unit = '--';
 
@@ -58,7 +58,7 @@ class _DeviceFieldSplineAreaChartWidgetState
     field = config.field;
     title = config.title;
     subTitle = config.subTitle;
-    chartColor = Color(config.charColor);
+    chartColor = Color(config.chartColor);
     chartAreaColor = Color(config.chartAreaColor);
     chartAreaBorderColor = Color(config.chartAreaBorderColor);
     titleFont = FontConfig.fromJson(config.titleFont);
