@@ -115,22 +115,19 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
 
                     // Get the appropriate image for the humidity level
                     String imageAsset;
-                    if (data['humidity'] <= 60) {
-                      imageAsset = 'assets/sunny.png';
-                    } else if (data['humidity'] > 45 &&
-                        data['humidity'] <= 60) {
+                    if (data['humidity'] <= 65) {
+                      imageAsset = 'assets/stormy.png';
+                    } else if (data['humidity'] > 40 &&
+                        data['humidity'] <= 65) {
                       imageAsset = 'assets/rainy.png';
-                    } else if (data['humidity'] > 35 &&
-                        data['humidity'] <= 45) {
-                      imageAsset = 'assets/cloud.png';
-                    } else if (data['humidity'] > 20 &&
-                        data['humidity'] <= 35) {
+                    } else if (data['humidity'] > 25 &&
+                        data['humidity'] <= 40) {
                       imageAsset = 'assets/windy.png';
                     } else if (data['humidity'] > 10 &&
-                        data['humidity'] <= 20) {
+                        data['humidity'] <= 25) {
                       imageAsset = 'assets/weather.png';
                     } else {
-                      imageAsset = 'assets/stormy.png';
+                      imageAsset = 'assets/sunny.png';
                     }
 
                     String climateDescription =
