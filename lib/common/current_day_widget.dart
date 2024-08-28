@@ -143,6 +143,22 @@ class _CurrentDayTemperatureWidgetState
                     ),
                   ],
                 ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(
+                      'Humidity',
+                      style: TwinUtils.getTextStyle(labelFont).copyWith(
+                          color: Colors.red,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    divider(),
+                    Text('$humidityValue',
+                    style: TwinUtils.getTextStyle(valueFont).copyWith(),)
+                  ],
+                )
               ],
             ),
             divider(height: 8),
