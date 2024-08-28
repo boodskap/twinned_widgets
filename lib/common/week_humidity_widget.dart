@@ -8,6 +8,7 @@ import 'package:twinned_models/range_gauge/range_gauge.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_models/humidity_week_widget/humidity_week_widget.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 
 class HumidityWeekWidget extends StatefulWidget {
   final HumidityWeekWidgetConfig config;
@@ -18,16 +19,23 @@ class HumidityWeekWidget extends StatefulWidget {
 }
 
 class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
-  bool loading = false;
   bool isValidConfig = true;
   late String deviceId;
+  late String title;
   String field = "humidity";
+  late Color cardColor;
+  late FontConfig titleFont;
+  late FontConfig valueFont;
   List<Map<String, dynamic>> humidityData = [];
 
   @override
   void initState() {
     var config = widget.config;
     deviceId = config.deviceId;
+    title = config.title;
+    cardColor = Color(config.cardColor);
+    titleFont = FontConfig.fromJson(config.titleFont);
+    valueFont = FontConfig.fromJson(config.valueFont);
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
   }
@@ -88,18 +96,13 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
         elevation: 0,
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: EdgeInsets.all(2.0),
+                padding: const EdgeInsets.all(2.0),
                 child: Text(
-                  'Last 7 days Humidity Level',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
+                    title.isEmpty ? 'Last 7 days Humidity Level' : title,
+                    style: TwinUtils.getTextStyle(titleFont)),
               ),
             ),
             Expanded(
@@ -112,22 +115,19 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
 
                     // Get the appropriate image for the humidity level
                     String imageAsset;
-                    if (data['humidity'] <= 60) {
-                      imageAsset = 'assets/sunny.png';
-                    } else if (data['humidity'] > 45 &&
-                        data['humidity'] <= 60) {
+                    if (data['humidity'] <= 65) {
+                      imageAsset = 'assets/stormy.png';
+                    } else if (data['humidity'] > 40 &&
+                        data['humidity'] <= 65) {
                       imageAsset = 'assets/rainy.png';
-                    } else if (data['humidity'] > 35 &&
-                        data['humidity'] <= 45) {
-                      imageAsset = 'assets/cloud.png';
-                    } else if (data['humidity'] > 20 &&
-                        data['humidity'] <= 35) {
+                    } else if (data['humidity'] > 25 &&
+                        data['humidity'] <= 40) {
                       imageAsset = 'assets/windy.png';
                     } else if (data['humidity'] > 10 &&
-                        data['humidity'] <= 20) {
+                        data['humidity'] <= 25) {
                       imageAsset = 'assets/weather.png';
                     } else {
-                      imageAsset = 'assets/stormy.png';
+                      imageAsset = 'assets/sunny.png';
                     }
 
                     String climateDescription =
@@ -138,7 +138,7 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                       margin: const EdgeInsets.symmetric(
                           horizontal: 4.0, vertical: 4),
                       child: Card(
-                        color: isToday ? const Color(0XFF5596F6) : Colors.white,
+                        color: isToday ? const Color(0XFF5596F6) : cardColor,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
@@ -173,12 +173,15 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     climateDescription,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: isToday
-                                          ? Colors.white
-                                          : Colors.black54,
-                                    ),
+                                    style: isToday
+                                        ? TextStyle(
+                                            fontWeight: valueFont.fontBold
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: valueFont.fontSize,
+                                            color: Colors.white,
+                                          )
+                                        : TwinUtils.getTextStyle(valueFont),
                                   ),
                                 ),
                               ),
@@ -190,13 +193,15 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                                       flex: 2,
                                       child: Text(
                                         'Humidity ${data['humidity'].toStringAsFixed(2)}%',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: isToday
-                                              ? Colors.white
-                                              : Colors.black87,
-                                        ),
+                                        style: isToday
+                                            ? TextStyle(
+                                                fontWeight: valueFont.fontBold
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                                fontSize: valueFont.fontSize,
+                                                color: Colors.white,
+                                              )
+                                            : TwinUtils.getTextStyle(valueFont),
                                       ),
                                     ),
                                     Icon(
