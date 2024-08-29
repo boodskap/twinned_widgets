@@ -22,7 +22,7 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
   bool isValidConfig = true;
   late String deviceId;
   late String title;
-  String field = "humidity";
+  late String field;
   late Color cardColor;
   late FontConfig titleFont;
   late FontConfig valueFont;
@@ -33,6 +33,7 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
     var config = widget.config;
     deviceId = config.deviceId;
     title = config.title;
+    field = config.field;
     cardColor = Color(config.cardColor);
     titleFont = FontConfig.fromJson(config.titleFont);
     valueFont = FontConfig.fromJson(config.valueFont);
@@ -57,18 +58,16 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
   }
 
   String getClimateDescription(double humidity) {
-    if (humidity > 70) {
-      return 'Very Humid: Expect a sticky and oppressive atmosphere, typical of tropical climates.';
-    } else if (humidity > 50) {
-      return 'Humid: The air feels heavy, making it warmer and slightly uncomfortable.';
+    if (humidity > 80) {
+      return 'Stormy: High levels of moisture in the air, often leading to storms and heavy rainfall.';
+    } else if (humidity > 60) {
+      return 'Rainy: The air is quite humid, with frequent rain showers and overcast skies.';
     } else if (humidity > 40) {
-      return 'Mildly Humid: The air is moist, but still fairly comfortable for most people.';
+      return 'Windy: Moderate humidity with a likelihood of windy conditions, making it feel cooler.';
     } else if (humidity > 20) {
-      return 'Moderate: Pleasant weather with a balance of moisture, ideal for outdoor activities.';
-    } else if (humidity > 10) {
-      return 'Dry: The air feels crisp and cool, often found in desert or winter climates.';
+      return 'Weather: Mild and comfortable with balanced humidity, suitable for most activities.';
     } else {
-      return 'Very Dry: Extremely low moisture, often resulting in dry skin and static electricity.';
+      return 'Sunny: Low humidity with clear skies, ideal for outdoor activities and sunny weather.';
     }
   }
 
@@ -115,19 +114,19 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
 
                     // Get the appropriate image for the humidity level
                     String imageAsset;
-                    if (data['humidity'] <= 65) {
-                      imageAsset = 'assets/stormy.png';
+                    if (data['humidity'] > 80) {
+                      imageAsset = 'assets/images/stormy.png';
+                    } else if (data['humidity'] > 60 &&
+                        data['humidity'] <= 80) {
+                      imageAsset = 'assets/images/rainy.png';
                     } else if (data['humidity'] > 40 &&
-                        data['humidity'] <= 65) {
-                      imageAsset = 'assets/rainy.png';
-                    } else if (data['humidity'] > 25 &&
+                        data['humidity'] <= 60) {
+                      imageAsset = 'assets/images/windy.png';
+                    } else if (data['humidity'] > 20 &&
                         data['humidity'] <= 40) {
-                      imageAsset = 'assets/windy.png';
-                    } else if (data['humidity'] > 10 &&
-                        data['humidity'] <= 25) {
-                      imageAsset = 'assets/weather.png';
+                      imageAsset = 'assets/images/weather.png';
                     } else {
-                      imageAsset = 'assets/sunny.png';
+                      imageAsset = 'assets/images/sunny.png';
                     }
 
                     String climateDescription =
