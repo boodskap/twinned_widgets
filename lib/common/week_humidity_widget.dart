@@ -8,6 +8,7 @@ import 'package:twinned_models/range_gauge/range_gauge.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_models/humidity_week_widget/humidity_week_widget.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 
 class HumidityWeekWidget extends StatefulWidget {
   final HumidityWeekWidgetConfig config;
@@ -18,16 +19,24 @@ class HumidityWeekWidget extends StatefulWidget {
 }
 
 class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
-  bool loading = false;
   bool isValidConfig = true;
   late String deviceId;
-  String field = "humidity";
+  late String title;
+  late String field;
+  late Color cardColor;
+  late FontConfig titleFont;
+  late FontConfig valueFont;
   List<Map<String, dynamic>> humidityData = [];
 
   @override
   void initState() {
     var config = widget.config;
     deviceId = config.deviceId;
+    title = config.title;
+    field = config.field;
+    cardColor = Color(config.cardColor);
+    titleFont = FontConfig.fromJson(config.titleFont);
+    valueFont = FontConfig.fromJson(config.valueFont);
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
   }
@@ -49,18 +58,16 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
   }
 
   String getClimateDescription(double humidity) {
-    if (humidity > 70) {
-      return 'Very Humid: Expect a sticky and oppressive atmosphere, typical of tropical climates.';
-    } else if (humidity > 50) {
-      return 'Humid: The air feels heavy, making it warmer and slightly uncomfortable.';
+    if (humidity > 80) {
+      return 'Stormy: High levels of moisture in the air, often leading to storms and heavy rainfall.';
+    } else if (humidity > 60) {
+      return 'Rainy: The air is quite humid, with frequent rain showers and overcast skies.';
     } else if (humidity > 40) {
-      return 'Mildly Humid: The air is moist, but still fairly comfortable for most people.';
+      return 'Windy: Moderate humidity with a likelihood of windy conditions, making it feel cooler.';
     } else if (humidity > 20) {
-      return 'Moderate: Pleasant weather with a balance of moisture, ideal for outdoor activities.';
-    } else if (humidity > 10) {
-      return 'Dry: The air feels crisp and cool, often found in desert or winter climates.';
+      return 'Weather: Mild and comfortable with balanced humidity, suitable for most activities.';
     } else {
-      return 'Very Dry: Extremely low moisture, often resulting in dry skin and static electricity.';
+      return 'Sunny: Low humidity with clear skies, ideal for outdoor activities and sunny weather.';
     }
   }
 
@@ -88,18 +95,13 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
         elevation: 0,
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: EdgeInsets.all(2.0),
+                padding: const EdgeInsets.all(2.0),
                 child: Text(
-                  'Last 7 days Humidity Level',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
+                    title.isEmpty ? 'Last 7 days Humidity Level' : title,
+                    style: TwinUtils.getTextStyle(titleFont)),
               ),
             ),
             Expanded(
@@ -112,22 +114,19 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
 
                     // Get the appropriate image for the humidity level
                     String imageAsset;
-                    if (data['humidity'] <= 60) {
-                      imageAsset = 'assets/sunny.png';
-                    } else if (data['humidity'] > 45 &&
+                    if (data['humidity'] > 80) {
+                      imageAsset = 'assets/images/stormy.png';
+                    } else if (data['humidity'] > 60 &&
+                        data['humidity'] <= 80) {
+                      imageAsset = 'assets/images/rainy.png';
+                    } else if (data['humidity'] > 40 &&
                         data['humidity'] <= 60) {
-                      imageAsset = 'assets/rainy.png';
-                    } else if (data['humidity'] > 35 &&
-                        data['humidity'] <= 45) {
-                      imageAsset = 'assets/cloud.png';
+                      imageAsset = 'assets/images/windy.png';
                     } else if (data['humidity'] > 20 &&
-                        data['humidity'] <= 35) {
-                      imageAsset = 'assets/windy.png';
-                    } else if (data['humidity'] > 10 &&
-                        data['humidity'] <= 20) {
-                      imageAsset = 'assets/weather.png';
+                        data['humidity'] <= 40) {
+                      imageAsset = 'assets/images/weather.png';
                     } else {
-                      imageAsset = 'assets/stormy.png';
+                      imageAsset = 'assets/images/sunny.png';
                     }
 
                     String climateDescription =
@@ -138,7 +137,7 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                       margin: const EdgeInsets.symmetric(
                           horizontal: 4.0, vertical: 4),
                       child: Card(
-                        color: isToday ? const Color(0XFF5596F6) : Colors.white,
+                        color: isToday ? const Color(0XFF5596F6) : cardColor,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
@@ -173,12 +172,15 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     climateDescription,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: isToday
-                                          ? Colors.white
-                                          : Colors.black54,
-                                    ),
+                                    style: isToday
+                                        ? TextStyle(
+                                            fontWeight: valueFont.fontBold
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            fontSize: valueFont.fontSize,
+                                            color: Colors.white,
+                                          )
+                                        : TwinUtils.getTextStyle(valueFont),
                                   ),
                                 ),
                               ),
@@ -190,13 +192,15 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                                       flex: 2,
                                       child: Text(
                                         'Humidity ${data['humidity'].toStringAsFixed(2)}%',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: isToday
-                                              ? Colors.white
-                                              : Colors.black87,
-                                        ),
+                                        style: isToday
+                                            ? TextStyle(
+                                                fontWeight: valueFont.fontBold
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                                fontSize: valueFont.fontSize,
+                                                color: Colors.white,
+                                              )
+                                            : TwinUtils.getTextStyle(valueFont),
                                       ),
                                     ),
                                     Icon(
