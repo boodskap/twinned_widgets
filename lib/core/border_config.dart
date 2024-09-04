@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_widgets/core/color_picker_field.dart';
-import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:twinned_widgets/core/radius_config.dart';
+
 
 typedef OnBorderConfigured = void Function(BorderConfig? config);
 
 class BorderConfigWidget extends StatefulWidget {
   final BorderConfig? borderConfig;
   final OnBorderConfigured onBorderConfigured;
+  final TextStyle? style;
   const BorderConfigWidget(
-      {super.key, this.borderConfig, required this.onBorderConfigured});
+      {super.key,
+      this.borderConfig,
+      this.style,
+      required this.onBorderConfigured});
 
   @override
   State<BorderConfigWidget> createState() => _BorderConfigWidgetState();
 }
 
 class _BorderConfigWidgetState extends State<BorderConfigWidget> {
-  static const labelStyle =
-      TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
-
   BorderConfig? _borderConfig;
   BorderConfigType? borderConfigType;
   final Map<String, dynamic> _borderProperties = <String, dynamic>{
@@ -28,6 +31,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
     'width': 1.0,
   };
 
+  @override
   void initState() {
     _borderConfig = widget.borderConfig;
     super.initState();
@@ -36,7 +40,12 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
   @override
   Widget build(BuildContext context) {
     int borderColor = _borderConfig?.color ?? Colors.black.value;
-
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +54,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Border',
               style: labelStyle,
             ),
@@ -78,7 +87,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Border Color',
                 style: labelStyle,
               ),
@@ -102,7 +111,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Border Width',
                 style: labelStyle,
               ),
@@ -110,7 +119,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(
+                  child: SpinBox(  textStyle: labelStyle,
                     min: 1,
                     max: 100,
                     value: _borderConfig?.width ?? 1.0,
@@ -132,7 +141,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Border Type',
                 style: labelStyle,
               ),
@@ -142,39 +151,39 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                   items: [
                     DropdownMenuItem<String>(
                         value: BorderConfigType.zero.name,
-                        child: const Text(
+                        child: Text(
                           'Zero',
-                          style: labelStyle,
+                         style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.all.name,
-                        child: const Text(
+                        child: Text(
                           'All',
-                          style: labelStyle,
+                          style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.circular.name,
-                        child: const Text(
+                        child: Text(
                           'Circular',
-                          style: labelStyle,
+                         style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.vertical.name,
-                        child: const Text(
+                        child: Text(
                           'Vertical',
-                          style: labelStyle,
+                        style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.horizontal.name,
-                        child: const Text(
+                        child: Text(
                           'Horizontal',
-                          style: labelStyle,
+                          style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.only.name,
-                        child: const Text(
+                        child: Text(
                           'Only',
-                          style: labelStyle,
+                          style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                         )),
                   ],
                   onChanged: (type) {
@@ -257,6 +266,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
         if (null != _borderConfig &&
             _borderConfig!.type == BorderConfigType.all)
           RadiusConfigWidget(
+              style: widget.style,
               radiusConfig: _borderConfig!.allRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -270,6 +280,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
               title: 'Top Left',
+              style: widget.style,
               radiusConfig: _borderConfig!.topLeftRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -284,6 +295,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
               title: 'Top Right',
+              style: widget.style,
               radiusConfig: _borderConfig!.topRightRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -298,6 +310,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
               title: 'Bottom Left',
+              style: widget.style,
               radiusConfig: _borderConfig!.bottomLeftRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -312,6 +325,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.only)
           RadiusConfigWidget(
               title: 'Bottom Right',
+              style: widget.style,
               radiusConfig: _borderConfig!.bottomRightRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -326,6 +340,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.horizontal)
           RadiusConfigWidget(
               title: 'Left',
+              style: widget.style,
               radiusConfig: _borderConfig!.leftRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -339,6 +354,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.horizontal)
           RadiusConfigWidget(
               title: 'Right',
+              style: widget.style,
               radiusConfig: _borderConfig!.rightRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -352,6 +368,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.vertical)
           RadiusConfigWidget(
               title: 'Top',
+              style: widget.style,
               radiusConfig: _borderConfig!.topRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -365,6 +382,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             _borderConfig!.type == BorderConfigType.vertical)
           RadiusConfigWidget(
               title: 'Bottom',
+              style: widget.style,
               radiusConfig: _borderConfig!.bottomRadius ??
                   const RadiusConfig(
                       radType: RadiusConfigRadType.circular, rad: 45),
@@ -380,14 +398,14 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Radius',
                 style: labelStyle,
               ),
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(
+                  child: SpinBox(  textStyle: labelStyle,
                     min: 1,
                     max: 180,
                     value: _borderConfig?.circularRadius ?? 45.0,
