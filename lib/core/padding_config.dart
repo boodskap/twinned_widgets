@@ -23,8 +23,8 @@ class PaddingConfigWidget extends StatefulWidget {
 }
 
 class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
-  static const labelStyle =
-      TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
+  // static const labelStyle =
+  //     TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
 
   PaddingConfig? _paddingConfig;
 
