@@ -33,7 +33,6 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
       hint: 'Select Device',
       style: widget.style,
       searchHint: 'Select Device',
-      style: widget.style,
       searchInputDecoration: InputDecoration(
         hintStyle: widget.style,
         errorStyle: widget.style,
