@@ -33,6 +33,7 @@ class _FieldDropdownState extends BaseState<FieldDropdown> {
     }
 
     return DropdownMenu<twin.Parameter>(
+        textStyle: widget.style,
         onSelected: (param) {
           widget.onFieldSelected(param);
         },

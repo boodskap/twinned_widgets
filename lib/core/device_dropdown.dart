@@ -31,6 +31,7 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
     return SearchChoices<twin.Device>.single(
       value: _selectedItem,
       hint: 'Select Device',
+      style: widget.style,
       searchHint: 'Select Device',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
