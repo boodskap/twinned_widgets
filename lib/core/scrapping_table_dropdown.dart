@@ -34,6 +34,12 @@ class _ScrappingTableDropdownState extends BaseState<ScrappingTableDropdown> {
       value: _selectedItem,
       hint: 'Select Scrapping Table',
       searchHint: 'Search Scrapping Tables',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
