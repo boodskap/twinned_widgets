@@ -32,6 +32,12 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       value: _selectedItem,
       hint: 'Select Device Model',
       searchHint: 'Select Device Model',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {

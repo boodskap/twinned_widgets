@@ -32,7 +32,7 @@ class _MultiAssetDropdownState extends BaseState<MultiAssetDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Asset>(
-        key: Key(Uuid().v4()),
+        key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Assets',
         selectedItems: _selectedItems,

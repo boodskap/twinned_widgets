@@ -30,6 +30,12 @@ class _ClientDropdownState extends BaseState<ClientDropdown> {
     return SearchChoices<twin.Client>.single(
       value: _selectedItem,
       hint: 'Select a Client',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       searchHint: 'Search Clients',
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
