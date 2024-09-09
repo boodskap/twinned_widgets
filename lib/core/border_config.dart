@@ -6,7 +6,6 @@ import 'package:twinned_widgets/core/color_picker_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:twinned_widgets/core/radius_config.dart';
 
-
 typedef OnBorderConfigured = void Function(BorderConfig? config);
 
 class BorderConfigWidget extends StatefulWidget {
@@ -43,7 +42,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
     final TextStyle labelStyle = widget.style ??
         GoogleFonts.lato(
           // fontSize: 18,
-          fontWeight: FontWeight.bold,
+          // fontWeight: FontWeight.bold,
           color: Colors.black,
         );
     return Column(
@@ -93,6 +92,7 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
               ),
               divider(horizontal: true),
               ColorPickerField(
+                style: labelStyle,
                 config: _borderProperties,
                 parameter: 'color',
                 changeNotifier: () {
@@ -119,7 +119,8 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(  textStyle: labelStyle,
+                  child: SpinBox(
+                    textStyle: labelStyle,
                     min: 1,
                     max: 100,
                     value: _borderConfig?.width ?? 1.0,
@@ -153,37 +154,43 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
                         value: BorderConfigType.zero.name,
                         child: Text(
                           'Zero',
-                         style: labelStyle.copyWith(fontWeight:FontWeight.normal),
+                          style: labelStyle.copyWith(
+                              fontWeight: FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.all.name,
                         child: Text(
                           'All',
-                          style: labelStyle.copyWith(fontWeight:FontWeight.normal),
+                          style: labelStyle.copyWith(
+                              fontWeight: FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.circular.name,
                         child: Text(
                           'Circular',
-                         style: labelStyle.copyWith(fontWeight:FontWeight.normal),
+                          style: labelStyle.copyWith(
+                              fontWeight: FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.vertical.name,
                         child: Text(
                           'Vertical',
-                        style: labelStyle.copyWith(fontWeight:FontWeight.normal),
+                          style: labelStyle.copyWith(
+                              fontWeight: FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.horizontal.name,
                         child: Text(
                           'Horizontal',
-                          style: labelStyle.copyWith(fontWeight:FontWeight.normal),
+                          style: labelStyle.copyWith(
+                              fontWeight: FontWeight.normal),
                         )),
                     DropdownMenuItem<String>(
                         value: BorderConfigType.only.name,
                         child: Text(
                           'Only',
-                          style: labelStyle.copyWith(fontWeight:FontWeight.normal),
+                          style: labelStyle.copyWith(
+                              fontWeight: FontWeight.normal),
                         )),
                   ],
                   onChanged: (type) {
@@ -405,7 +412,8 @@ class _BorderConfigWidgetState extends State<BorderConfigWidget> {
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(  textStyle: labelStyle,
+                  child: SpinBox(
+                    textStyle: labelStyle,
                     min: 1,
                     max: 180,
                     value: _borderConfig?.circularRadius ?? 45.0,

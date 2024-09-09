@@ -7,8 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 class FontField extends StatefulWidget {
   final Map<String, dynamic> config;
   final String parameter;
+  final TextStyle? style;
   const FontField({
     super.key,
+    this.style,
     required this.config,
     required this.parameter,
   });
@@ -44,15 +46,31 @@ class _FontFieldState extends BaseState<FontField> {
   }
 
   void _showColorPickerDialog() {
+    final TextStyle style = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          // fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Pick a color'),
+          titleTextStyle:
+              style.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+          title: Text(
+            'Pick a color',
+            style: style.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          contentTextStyle: style,
           content: SingleChildScrollView(
             child: ColorPicker(
               hexInputBar: true,
-              labelTypes: [],
+              labelTypes: const [],
+              labelTextStyle: style,
               pickerColor: getColor(),
               onColorChanged: (color) {
                 setState(() {
@@ -66,7 +84,10 @@ class _FontFieldState extends BaseState<FontField> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Done'),
+              child: Text(
+                'Done',
+                style: style,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -102,19 +123,26 @@ class _FontFieldState extends BaseState<FontField> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle style = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          // fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     return Row(
       children: [
         IntrinsicWidth(
           child: ElevatedButton(
             onPressed: _showColorPickerDialog,
             style: ElevatedButton.styleFrom(
+              textStyle: style,
               backgroundColor: getColor(),
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
             ),
-            child: const Text(
+            child: Text(
               'Pick Color',
-              style: TextStyle(color: Colors.white),
+              style: style.copyWith(color: Colors.white),
             ),
           ),
         ),
@@ -123,6 +151,7 @@ class _FontFieldState extends BaseState<FontField> {
           height: 35,
           child: IntrinsicWidth(
             child: SpinBox(
+              textStyle: style,
               min: 4,
               max: 50,
               value: getFontSize(),
@@ -135,6 +164,9 @@ class _FontFieldState extends BaseState<FontField> {
         const SizedBox(width: 10),
         IntrinsicWidth(
           child: IconButton(
+            style: ButtonStyle(
+              textStyle: WidgetStatePropertyAll(style),
+            ),
             icon: Icon(isBold()
                 ? Icons.font_download_sharp
                 : Icons.font_download_outlined),
