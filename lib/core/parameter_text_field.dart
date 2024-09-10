@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:twinned_widgets/core/definitions.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ParameterTextField extends StatefulWidget {
   final Map<String, dynamic> parameters;
   final String parameter;
   final ValueChangeNotifier? changeNotifier;
-
+  final TextStyle? style;
   const ParameterTextField(
       {super.key,
+      this.style,
       required this.parameters,
       required this.parameter,
       this.changeNotifier});
@@ -38,8 +40,19 @@ class _ParameterTextFieldState extends State<ParameterTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle style = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     return TextField(
-      decoration: const InputDecoration(border: OutlineInputBorder()),
+      style: style,
+      decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          hintStyle: style,
+          labelStyle: style,
+          errorStyle: style),
       controller: _controller,
       onSubmitted: (value) {
         widget.parameters[widget.parameter] = value;
