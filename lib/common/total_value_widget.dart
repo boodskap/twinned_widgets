@@ -5,10 +5,12 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TotalValueWidget extends StatefulWidget {
   final TotalValueWidgetConfig config;
-  const TotalValueWidget({super.key, required this.config});
+  final TextStyle? style;
+  const TotalValueWidget({super.key, this.style, required this.config});
 
   @override
   State<TotalValueWidget> createState() => _TotalValueWidgetState();
@@ -68,13 +70,19 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     if (!isValidConfig) {
       return Wrap(
         spacing: 8.0,
         children: [
           Text(
             'Not configured properly - ${_counter++}',
-            style: const TextStyle(
+            style: labelStyle.copyWith(
                 color: Colors.red, overflow: TextOverflow.ellipsis),
           ),
         ],
@@ -96,7 +104,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
           children: [
             Text(
               widget.config.title,
-              style: TextStyle(
+              style: labelStyle.copyWith(
                   fontWeight:
                       headerFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   fontSize: headerFont.fontSize,
@@ -106,7 +114,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
             if (null != value)
               Text(
                 '${widget.config.fieldPrefix}$value${widget.config.fieldSuffix}',
-                style: TextStyle(
+                style: labelStyle.copyWith(
                     fontWeight: labelFont.fontBold
                         ? FontWeight.bold
                         : FontWeight.normal,
