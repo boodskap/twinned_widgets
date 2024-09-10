@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:twin_commons/core/base_state.dart';
-import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_widgets/palette_category.dart';
-import 'package:twin_commons/core/twinned_session.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class ValueDistributionPieChartWidget extends StatefulWidget {
   final ValueDistributionPieChartWidgetConfig config;
-  const ValueDistributionPieChartWidget({super.key, required this.config});
-
+  const ValueDistributionPieChartWidget(
+      {super.key, this.style, required this.config});
+  final TextStyle? style;
   @override
   State<ValueDistributionPieChartWidget> createState() =>
       _ValueDistributionPieChartWidgetState();
@@ -56,15 +58,21 @@ class _ValueDistributionPieChartWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     if (!isValidConfig) {
-      return const Center(
+      return Center(
         child: Wrap(
           spacing: 8.0,
           children: [
             Text(
               'Not configured properly',
-              style:
-                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+              style: labelStyle.copyWith(
+                  color: Colors.red, overflow: TextOverflow.ellipsis),
             ),
           ],
         ),
@@ -79,7 +87,7 @@ class _ValueDistributionPieChartWidgetState
       return SfPyramidChart(
           legend: Legend(
               isVisible: true,
-              textStyle: TextStyle(
+              textStyle: labelStyle.copyWith(
                   fontWeight:
                       labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   fontSize: labelFont.fontSize,
@@ -90,7 +98,7 @@ class _ValueDistributionPieChartWidgetState
                   showZeroValue: false,
                   overflowMode: OverflowMode.shift,
                   labelIntersectAction: LabelIntersectAction.none,
-                  textStyle: TextStyle(
+                  textStyle: labelStyle.copyWith(
                       fontWeight: labelFont.fontBold
                           ? FontWeight.bold
                           : FontWeight.normal,
@@ -107,7 +115,7 @@ class _ValueDistributionPieChartWidgetState
       return SfFunnelChart(
           legend: Legend(
               isVisible: true,
-              textStyle: TextStyle(
+              textStyle: labelStyle.copyWith(
                   fontWeight:
                       labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   fontSize: labelFont.fontSize,
@@ -118,7 +126,7 @@ class _ValueDistributionPieChartWidgetState
                   showZeroValue: false,
                   overflowMode: OverflowMode.shift,
                   labelIntersectAction: LabelIntersectAction.none,
-                  textStyle: TextStyle(
+                  textStyle: labelStyle.copyWith(
                       fontWeight: labelFont.fontBold
                           ? FontWeight.bold
                           : FontWeight.normal,
@@ -134,7 +142,7 @@ class _ValueDistributionPieChartWidgetState
     return SfCircularChart(
         legend: Legend(
             isVisible: true,
-            textStyle: TextStyle(
+            textStyle: labelStyle.copyWith(
                 fontWeight:
                     labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
                 fontSize: labelFont.fontSize,
@@ -148,7 +156,7 @@ class _ValueDistributionPieChartWidgetState
                 dataLabelSettings: DataLabelSettings(
                     isVisible: true,
                     showZeroValue: false,
-                    textStyle: TextStyle(
+                    textStyle: labelStyle.copyWith(
                         fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -167,7 +175,7 @@ class _ValueDistributionPieChartWidgetState
                 dataLabelSettings: DataLabelSettings(
                     isVisible: true,
                     showZeroValue: false,
-                    textStyle: TextStyle(
+                    textStyle: labelStyle.copyWith(
                         fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -186,7 +194,7 @@ class _ValueDistributionPieChartWidgetState
                 dataLabelSettings: DataLabelSettings(
                     showZeroValue: false,
                     isVisible: true,
-                    textStyle: TextStyle(
+                    textStyle: labelStyle.copyWith(
                         fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
