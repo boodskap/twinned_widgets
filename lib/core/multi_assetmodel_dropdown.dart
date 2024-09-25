@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twin_commons/core/twinned_session.dart';
@@ -11,12 +12,14 @@ class MultiAssetModelDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnAssetModelsSelected onAssetModelsSelected;
   final bool allowDuplicates;
+  final TextStyle style;
 
   const MultiAssetModelDropdown({
     super.key,
     required this.selectedItems,
     required this.onAssetModelsSelected,
     required this.allowDuplicates,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -38,8 +41,26 @@ class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
           widget.onAssetModelsSelected(selectedItems as List<twin.AssetModel>);
         },
         itemSearchFunc: _search,
-        itemLabelFunc: (item) {
-          return Text('${item.name}');
+        itemLabelFunc: (value) {
+          twin.AssetModel entity = value;
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: (entity.images?.isNotEmpty ?? false)
+                        ? TwinImageHelper.getDomainImage(entity.images!.first)
+                        : const Icon(Icons.image)),
+              ),
+              divider(horizontal: true),
+              Text(
+                entity.name,
+                style: widget.style,
+              ),
+            ],
+          );
         },
         itemIdFunc: (item) {
           return item.id;

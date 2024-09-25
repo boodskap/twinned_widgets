@@ -32,7 +32,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
   late List<Color> barColors = [];
   late double barWidth;
   late double barRadius;
-  late double legendDuration;
+  late double toolTipDuration;
   late Color tooltipBgColor;
   late Color chartBgColor;
   late Color chartAreaColor;
@@ -52,7 +52,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
     legendPosition = config.legendPosition;
     barWidth = config.barWidth;
     barRadius = config.barRadius;
-    legendDuration = config.toolTipDuration;
+    toolTipDuration = config.toolTipDuration;
     tooltipBgColor = Color(config.tooltipBgColor);
     chartBgColor = Color(config.chartBgColor);
     chartAreaColor = Color(config.chartAreaColor);
@@ -60,7 +60,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
     barColors = config.barColor.map((colorInt) => Color(colorInt)).toList();
 
     _toolTip = TooltipBehavior(
-        duration: 1000,
+        duration: toolTipDuration,
         enable: true,
         builder: (dynamic data, dynamic point, dynamic series, int pointIndex,
             int seriesIndex) {
@@ -135,7 +135,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
                   ),
                   backgroundColor: chartBgColor,
                   plotAreaBackgroundColor: chartAreaColor,
-                  legend: const Legend(isVisible: true),
+                  legend:  Legend(isVisible: true,position: legendPosition),
                   tooltipBehavior: _toolTip,
                   series: chartDirection == BarChartDirection.vertical
                       ? _getColumnSeries()
@@ -171,7 +171,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
           sort: {'updatedStamp': 'desc'},
         ),
       );
-      debugPrint(qRes.body.toString());
+      // debugPrint(qRes.body.toString());
 
       if (validateResponse(qRes)) {
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
@@ -196,7 +196,7 @@ class _MultiDeviceMultiFieldBarChartWidgetState
             String? label = TwinUtils.getParameterLabel(field, deviceModel!);
             fetchedLabels[field] =
                 label != null && label.isNotEmpty ? label : field;
-            debugPrint('Field: $field, Label: ${fetchedLabels[field]}');
+            // debugPrint('Field: $field, Label: ${fetchedLabels[field]}');
           }
           fetchedData
               .add(ChartData(deviceName: deviceName, values: dataValues));

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 typedef OnPaddingConfigSaved = void Function(PaddingConfig? config);
 
@@ -9,8 +10,10 @@ class PaddingConfigWidget extends StatefulWidget {
   final String title;
   final PaddingConfig? paddingConfig;
   final OnPaddingConfigSaved onPaddingConfigSaved;
+  final TextStyle? style;
   const PaddingConfigWidget(
       {super.key,
+      this.style,
       required this.title,
       required this.paddingConfig,
       required this.onPaddingConfigSaved});
@@ -20,8 +23,8 @@ class PaddingConfigWidget extends StatefulWidget {
 }
 
 class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
-  static const labelStyle =
-      TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
+  // static const labelStyle =
+  //     TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
 
   PaddingConfig? _paddingConfig;
 
@@ -35,6 +38,12 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,7 +70,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
             direction: Axis.vertical,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              const Text(
+              Text(
                 'Top',
                 style: labelStyle,
               ),
@@ -69,6 +78,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                 height: 35,
                 child: IntrinsicWidth(
                   child: SpinBox(
+                    textStyle: labelStyle,
                     min: 0,
                     max: 2048,
                     step: 1,
@@ -96,7 +106,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                 direction: Axis.horizontal,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Left',
                     style: labelStyle,
                   ),
@@ -104,6 +114,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                     height: 35,
                     child: IntrinsicWidth(
                       child: SpinBox(
+                        textStyle: labelStyle,
                         min: 0,
                         max: 2048,
                         step: 1,
@@ -130,6 +141,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                     height: 35,
                     child: IntrinsicWidth(
                       child: SpinBox(
+                        textStyle: labelStyle,
                         min: 0,
                         max: 2048,
                         step: 1,
@@ -145,7 +157,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                       ),
                     ),
                   ),
-                  const Text(
+                  Text(
                     'Right',
                     style: labelStyle,
                   ),
@@ -164,6 +176,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                 height: 35,
                 child: IntrinsicWidth(
                   child: SpinBox(
+                    textStyle: labelStyle,
                     min: 0,
                     max: 2048,
                     step: 1,
@@ -179,7 +192,7 @@ class _PaddingConfigWidgetState extends State<PaddingConfigWidget> {
                   ),
                 ),
               ),
-              const Text(
+              Text(
                 'Bottom',
                 style: labelStyle,
               ),

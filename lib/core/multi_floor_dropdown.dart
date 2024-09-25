@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twin_commons/core/twinned_session.dart';
@@ -11,12 +12,14 @@ class MultiFloorDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnFloorsSelected onFloorsSelected;
   final bool allowDuplicates;
+  final TextStyle style;
 
   const MultiFloorDropdown({
     super.key,
     required this.selectedItems,
     required this.onFloorsSelected,
     required this.allowDuplicates,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -29,7 +32,7 @@ class _MultiFloorDropdownState extends BaseState<MultiFloorDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Floor>(
-        key: Key(Uuid().v4()),
+        key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Floors',
         selectedItems: _selectedItems,
@@ -37,8 +40,26 @@ class _MultiFloorDropdownState extends BaseState<MultiFloorDropdown> {
           widget.onFloorsSelected(selectedItems as List<twin.Floor>);
         },
         itemSearchFunc: _search,
-        itemLabelFunc: (item) {
-          return Text('${item.name}');
+        itemLabelFunc: (value) {
+          twin.Floor entity = value;
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: (entity.floorPlan?.isNotEmpty ?? false)
+                        ? TwinImageHelper.getDomainImage(entity.floorPlan!)
+                        : const Icon(Icons.image)),
+              ),
+              divider(horizontal: true),
+              Text(
+                entity.name,
+                style: widget.style,
+              ),
+            ],
+          );
         },
         itemIdFunc: (item) {
           return item.id;

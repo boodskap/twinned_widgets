@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twinned_widgets/core/multi_dropdown_searchable.dart';
 import 'package:twin_commons/core/twinned_session.dart';
@@ -11,12 +12,14 @@ class MultiFieldDropdown extends StatefulWidget {
   final List<String> selectedItems;
   final OnFieldsSelected onFieldsSelected;
   final bool allowDuplicates;
+  final TextStyle style;
 
   const MultiFieldDropdown({
     super.key,
     required this.selectedItems,
     required this.onFieldsSelected,
     required this.allowDuplicates,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
   @override
@@ -30,7 +33,7 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
   @override
   Widget build(BuildContext context) {
     return MultiDropdownSearchable<twin.Parameter>(
-        key: Key(Uuid().v4()),
+        key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
         searchHint: 'Select Fields',
         selectedItems: _selectedItems,
@@ -41,8 +44,26 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
           widget.onFieldsSelected(parameters);
         },
         itemSearchFunc: _search,
-        itemLabelFunc: (item) {
-          return Text('${item.name}');
+        itemLabelFunc: (value) {
+          twin.Parameter entity = value;
+          return Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: (entity.icon?.isNotEmpty ?? false)
+                        ? TwinImageHelper.getDomainImage(entity.icon!)
+                        : const Icon(Icons.image)),
+              ),
+              divider(horizontal: true),
+              Text(
+                entity.name,
+                style: widget.style,
+              ),
+            ],
+          );
         },
         itemIdFunc: (item) {
           return item.name;

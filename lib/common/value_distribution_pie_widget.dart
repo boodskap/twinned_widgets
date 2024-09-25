@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:twin_commons/core/base_state.dart';
-import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_widgets/palette_category.dart';
-import 'package:twin_commons/core/twinned_session.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:twin_commons/core/base_state.dart';
+import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class ValueDistributionPieChartWidget extends StatefulWidget {
   final ValueDistributionPieChartWidgetConfig config;
-  const ValueDistributionPieChartWidget({super.key, required this.config});
-
+  const ValueDistributionPieChartWidget(
+      {super.key, this.style, required this.config});
+  final TextStyle? style;
   @override
   State<ValueDistributionPieChartWidget> createState() =>
       _ValueDistributionPieChartWidgetState();
@@ -19,7 +21,7 @@ class ValueDistributionPieChartWidget extends StatefulWidget {
 class ChartData {
   ChartData(this.x, this.y, {this.color});
   final String x;
-  final double y;
+  final dynamic y;
   final Color? color;
 }
 
@@ -31,7 +33,6 @@ class _ValueDistributionPieChartWidgetState
   late FontConfig labelFont;
   late Color labelFontColor;
   late String field;
-  late List<String> modelIds;
   bool isValidConfig = false;
   int? value;
   List<Range> segments = [];
@@ -44,7 +45,6 @@ class _ValueDistributionPieChartWidgetState
     headerFont = FontConfig.fromJson(config.headerFont as Map<String, Object?>);
     labelFont = FontConfig.fromJson(config.labelFont as Map<String, Object?>);
     field = config.field;
-    modelIds = config.modelIds;
 
     headerFontColor =
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
@@ -52,22 +52,27 @@ class _ValueDistributionPieChartWidgetState
         labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
 
     isValidConfig = field.isNotEmpty;
-    isValidConfig = isValidConfig && modelIds.isNotEmpty;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     if (!isValidConfig) {
-      return const Center(
+      return Center(
         child: Wrap(
           spacing: 8.0,
           children: [
             Text(
               'Not configured properly',
-              style:
-                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+              style: labelStyle.copyWith(
+                  color: Colors.red, overflow: TextOverflow.ellipsis),
             ),
           ],
         ),
@@ -82,7 +87,7 @@ class _ValueDistributionPieChartWidgetState
       return SfPyramidChart(
           legend: Legend(
               isVisible: true,
-              textStyle: TextStyle(
+              textStyle: labelStyle.copyWith(
                   fontWeight:
                       labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   fontSize: labelFont.fontSize,
@@ -93,7 +98,7 @@ class _ValueDistributionPieChartWidgetState
                   showZeroValue: false,
                   overflowMode: OverflowMode.shift,
                   labelIntersectAction: LabelIntersectAction.none,
-                  textStyle: TextStyle(
+                  textStyle: labelStyle.copyWith(
                       fontWeight: labelFont.fontBold
                           ? FontWeight.bold
                           : FontWeight.normal,
@@ -110,7 +115,7 @@ class _ValueDistributionPieChartWidgetState
       return SfFunnelChart(
           legend: Legend(
               isVisible: true,
-              textStyle: TextStyle(
+              textStyle: labelStyle.copyWith(
                   fontWeight:
                       labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   fontSize: labelFont.fontSize,
@@ -121,7 +126,7 @@ class _ValueDistributionPieChartWidgetState
                   showZeroValue: false,
                   overflowMode: OverflowMode.shift,
                   labelIntersectAction: LabelIntersectAction.none,
-                  textStyle: TextStyle(
+                  textStyle: labelStyle.copyWith(
                       fontWeight: labelFont.fontBold
                           ? FontWeight.bold
                           : FontWeight.normal,
@@ -137,7 +142,7 @@ class _ValueDistributionPieChartWidgetState
     return SfCircularChart(
         legend: Legend(
             isVisible: true,
-            textStyle: TextStyle(
+            textStyle: labelStyle.copyWith(
                 fontWeight:
                     labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
                 fontSize: labelFont.fontSize,
@@ -151,7 +156,7 @@ class _ValueDistributionPieChartWidgetState
                 dataLabelSettings: DataLabelSettings(
                     isVisible: true,
                     showZeroValue: false,
-                    textStyle: TextStyle(
+                    textStyle: labelStyle.copyWith(
                         fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -170,7 +175,7 @@ class _ValueDistributionPieChartWidgetState
                 dataLabelSettings: DataLabelSettings(
                     isVisible: true,
                     showZeroValue: false,
-                    textStyle: TextStyle(
+                    textStyle: labelStyle.copyWith(
                         fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -189,7 +194,7 @@ class _ValueDistributionPieChartWidgetState
                 dataLabelSettings: DataLabelSettings(
                     showZeroValue: false,
                     isVisible: true,
-                    textStyle: TextStyle(
+                    textStyle: labelStyle.copyWith(
                         fontWeight: labelFont.fontBold
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -252,7 +257,36 @@ class _ValueDistributionPieChartWidgetState
           body: EqlSearch(
               source: [],
               conditions: [aggs],
-              mustConditions: [terms],
+              mustConditions: [
+                if (widget.config.modelIds.isNotEmpty)
+                  {
+                    "terms": {"modelId": widget.config.modelIds}
+                  },
+                if (widget.config.assetModelIds.isNotEmpty)
+                  {
+                    "terms": {"assetModelId": widget.config.assetModelIds}
+                  },
+                if (widget.config.premiseIds.isNotEmpty)
+                  {
+                    "terms": {"premiseId": widget.config.premiseIds}
+                  },
+                if (widget.config.facilityIds.isNotEmpty)
+                  {
+                    "terms": {"facilityId": widget.config.facilityIds}
+                  },
+                if (widget.config.floorIds.isNotEmpty)
+                  {
+                    "terms": {"floorId": widget.config.floorIds}
+                  },
+                if (widget.config.assetIds.isNotEmpty)
+                  {
+                    "terms": {"assetId": widget.config.assetIds}
+                  },
+                if (widget.config.clientIds.isNotEmpty)
+                  {
+                    "terms": {"clientIds.keyword": widget.config.clientIds}
+                  },
+              ],
               size: 0,
               queryConditions: [],
               boolConditions: []));

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class EnumeratedDropdown extends StatefulWidget {
   final List<String> enumeratedValues;
   final String selectedValue;
   final ValueChanged<String?> onChanged;
+  final TextStyle? style;
 
-  EnumeratedDropdown({
-    Key? key,
+  const EnumeratedDropdown({
+    super.key,
+    this.style,
     required this.enumeratedValues,
     required this.selectedValue,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _EnumeratedDropdownState createState() => _EnumeratedDropdownState();
@@ -27,12 +30,19 @@ class _EnumeratedDropdownState extends State<EnumeratedDropdown> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle style = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          // fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 1, color: Colors.black38),
         borderRadius: BorderRadius.circular(5),
       ),
       child: DropdownButton<String>(
+        style: style,
         value: _selectedValue,
         onChanged: (String? newValue) {
           setState(() {
@@ -44,7 +54,10 @@ class _EnumeratedDropdownState extends State<EnumeratedDropdown> {
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value),
+            child: Text(
+              value,
+              style: style,
+            ),
           );
         }).toList(),
       ),

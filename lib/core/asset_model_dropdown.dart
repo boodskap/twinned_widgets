@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/twin_commons.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -9,11 +10,14 @@ typedef OnAssetModelSelected = void Function(twin.AssetModel? assetModel);
 class AssetModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnAssetModelSelected onAssetModelSelected;
+  final TextStyle style;
 
-  const AssetModelDropdown(
-      {super.key,
-      required this.selectedItem,
-      required this.onAssetModelSelected});
+  const AssetModelDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onAssetModelSelected,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
+  });
 
   @override
   State<AssetModelDropdown> createState() => _AssetModelDropdownState();
@@ -28,6 +32,12 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
       value: _selectedItem,
       hint: 'Select Asset Model',
       searchHint: 'Select Asset Model',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -40,8 +50,24 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.AssetModel entity = value;
-        return Text(
-            '${entity.name} ${entity.description} (${entity.allowedDeviceModels?.length ?? 0} device models)');
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: (entity.images?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.images!.first)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              entity.name,
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -68,7 +94,26 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
             _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.AssetModel>(
-              value: entity, child: Text(entity.name)));
+              value: entity,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
+              )));
         }
 
         total = pRes.body!.total;

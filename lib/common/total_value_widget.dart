@@ -5,10 +5,12 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_models/twinned_models.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TotalValueWidget extends StatefulWidget {
   final TotalValueWidgetConfig config;
-  const TotalValueWidget({super.key, required this.config});
+  final TextStyle? style;
+  const TotalValueWidget({super.key, this.style, required this.config});
 
   @override
   State<TotalValueWidget> createState() => _TotalValueWidgetState();
@@ -26,6 +28,12 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
   late Color labelFontColor;
   late String field;
   late List<String> modelIds;
+  late List<String> assetModelIds;
+  late List<String> premiseIds;
+  late List<String> facilityIds;
+  late List<String> floorIds;
+  late List<String> assetIds;
+  late List<String> clientIds;
   bool isValidConfig = false;
   int? value;
   int _counter = 0;
@@ -41,8 +49,14 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
     borderStyle = config.borderStyle;
     headerFont = FontConfig.fromJson(config.headerFont);
     labelFont = FontConfig.fromJson(config.labelFont);
-    field = widget.config.field;
-    modelIds = widget.config.modelIds;
+    field = config.field;
+    modelIds = config.modelIds;
+    assetModelIds = config.assetModelIds;
+    premiseIds = config.premiseIds;
+    facilityIds = config.facilityIds;
+    floorIds = config.floorIds;
+    assetIds = config.assetIds;
+    clientIds = config.clientIds;
 
     headerFontColor =
         headerFont.fontColor <= 0 ? Colors.black : Color(headerFont.fontColor);
@@ -50,20 +64,25 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
         labelFont.fontColor <= 0 ? Colors.black : Color(labelFont.fontColor);
 
     isValidConfig = field.isNotEmpty;
-    isValidConfig = isValidConfig && modelIds.isNotEmpty;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     if (!isValidConfig) {
       return Wrap(
         spacing: 8.0,
         children: [
           Text(
             'Not configured properly - ${_counter++}',
-            style: const TextStyle(
+            style: labelStyle.copyWith(
                 color: Colors.red, overflow: TextOverflow.ellipsis),
           ),
         ],
@@ -85,7 +104,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
           children: [
             Text(
               widget.config.title,
-              style: TextStyle(
+              style: labelStyle.copyWith(
                   fontWeight:
                       headerFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   fontSize: headerFont.fontSize,
@@ -95,7 +114,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
             if (null != value)
               Text(
                 '${widget.config.fieldPrefix}$value${widget.config.fieldSuffix}',
-                style: TextStyle(
+                style: labelStyle.copyWith(
                     fontWeight: labelFont.fontBold
                         ? FontWeight.bold
                         : FontWeight.normal,
@@ -115,14 +134,7 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
 
     EqlCondition stats = EqlCondition(name: 'aggs', condition: {
       "stats": {
-        "filter": {
-          "terms": {"modelId": modelIds}
-        },
-        "aggs": {
-          "sum": {
-            "sum": {"field": "data.$field"}
-          }
-        }
+        "sum": {"field": "data.$field"}
       }
     });
     await execute(() async {
@@ -136,11 +148,40 @@ class _TotalValueWidgetState extends BaseState<TotalValueWidget> {
               size: 0,
               queryConditions: [],
               boolConditions: [],
-              mustConditions: []));
+              mustConditions: [
+                if (modelIds.isNotEmpty)
+                  {
+                    "terms": {"modelId": modelIds}
+                  },
+                if (assetModelIds.isNotEmpty)
+                  {
+                    "terms": {"assetModelId": assetModelIds}
+                  },
+                if (premiseIds.isNotEmpty)
+                  {
+                    "terms": {"premiseId": premiseIds}
+                  },
+                if (facilityIds.isNotEmpty)
+                  {
+                    "terms": {"facilityId": facilityIds}
+                  },
+                if (floorIds.isNotEmpty)
+                  {
+                    "terms": {"floorId": floorIds}
+                  },
+                if (assetIds.isNotEmpty)
+                  {
+                    "terms": {"assetId": assetIds}
+                  },
+                if (clientIds.isNotEmpty)
+                  {
+                    "terms": {"clientIds.keyword": clientIds}
+                  },
+              ]));
 
       if (validateResponse(sRes)) {
         var json = sRes.body!.result! as Map<String, dynamic>;
-        value = json['aggregations']['stats']['sum']["value"];
+        value = json['aggregations']['stats']["value"];
       }
     });
     refresh();

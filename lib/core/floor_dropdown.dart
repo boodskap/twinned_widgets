@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -11,13 +12,16 @@ class FloorDropdown extends StatefulWidget {
   final String? selectedPremise;
   final String? selectedFacility;
   final OnFloorSelected onFloorSelected;
+  final TextStyle style;
 
-  const FloorDropdown(
-      {super.key,
-      required this.selectedItem,
-      required this.selectedPremise,
-      required this.selectedFacility,
-      required this.onFloorSelected});
+  const FloorDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.selectedPremise,
+    required this.selectedFacility,
+    required this.onFloorSelected,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
+  });
 
   @override
   State<FloorDropdown> createState() => _FloorDropdownState();
@@ -32,6 +36,12 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
       value: _selectedItem,
       hint: 'Select Floor',
       searchHint: 'Select Floor',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -44,7 +54,24 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Floor entity = value;
-        return Text('${entity.name} ${entity.description}');
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: (entity.floorPlan?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.floorPlan!)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              entity.name,
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -74,9 +101,23 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
           }
           items.add(DropdownMenuItem<twin.Floor>(
               value: entity,
-              child: Text(
-                '${entity.name} ${entity.description}',
-                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.floorPlan?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(entity.floorPlan!)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
               )));
         }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
@@ -9,11 +10,14 @@ typedef OnDeviceModelSelected = void Function(twin.DeviceModel? deviceModel);
 class DeviceModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceModelSelected onDeviceModelSelected;
+  final TextStyle style;
 
-  const DeviceModelDropdown(
-      {super.key,
-      required this.selectedItem,
-      required this.onDeviceModelSelected});
+  const DeviceModelDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onDeviceModelSelected,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
+  });
 
   @override
   State<DeviceModelDropdown> createState() => _DeviceModelDropdownState();
@@ -28,6 +32,12 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       value: _selectedItem,
       hint: 'Select Device Model',
       searchHint: 'Select Device Model',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
@@ -40,8 +50,24 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.DeviceModel entity = value;
-        return Text(
-            '${entity.name} ${entity.description} (${entity.parameters.length} parameters)');
+        return Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: (entity.images?.isNotEmpty ?? false)
+                      ? TwinImageHelper.getDomainImage(entity.images!.first)
+                      : const Icon(Icons.image)),
+            ),
+            divider(horizontal: true),
+            Text(
+              entity.name,
+              style: widget.style,
+            ),
+          ],
+        );
       },
       onChanged: (selected) {
         setState(() {
@@ -68,7 +94,26 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
             _selectedItem = entity;
           }
           items.add(DropdownMenuItem<twin.DeviceModel>(
-              value: entity, child: Text(entity.name)));
+              value: entity,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 64,
+                        height: 48,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    '${entity.name}, ${entity.description}',
+                    style: widget.style,
+                  ),
+                ],
+              )));
         }
 
         total = pRes.body!.total;
