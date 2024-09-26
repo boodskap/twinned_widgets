@@ -28,10 +28,12 @@ import 'package:twinned_widgets/core/parameter_text_field.dart';
 import 'package:twinned_widgets/core/premise_dropdown.dart';
 import 'package:twinned_widgets/core/range_list.dart';
 import 'package:twinned_widgets/core/yesno_field.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 typedef OnConfigSaved = void Function(Map<String, dynamic> parameters);
 
 class TwinnedConfigBuilder extends StatefulWidget {
+  final TextStyle? style;
   final bool verbose;
   final BaseConfig config;
   final Map<String, dynamic> parameters;
@@ -40,6 +42,7 @@ class TwinnedConfigBuilder extends StatefulWidget {
 
   const TwinnedConfigBuilder(
       {super.key,
+      this.style,
       required this.verbose,
       required this.config,
       required this.parameters,
@@ -53,11 +56,15 @@ class TwinnedConfigBuilder extends StatefulWidget {
 class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   final Map<String, dynamic> _parameters = {};
   final List<TextEditingController> _controllers = [];
+  late final TextStyle _defaultStyle;
 
   @override
   void initState() {
     _parameters.addAll(widget.parameters);
-
+    _defaultStyle = widget.style ??
+        GoogleFonts.lato(
+          color: Colors.black,
+        );
     widget.defaultParameters.forEach((k, v) {
       if (!_parameters.containsKey(k)) {
         _parameters[k] = v;
@@ -148,7 +155,8 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
               maxLines: 4,
               overflow: TextOverflow.visible,
               key,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: _defaultStyle.copyWith(
+                  fontWeight: FontWeight.bold, fontSize: 13),
             ),
           ),
           divider(horizontal: true),
@@ -200,11 +208,13 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     switch (widget.config.getHintType(parameter)) {
       case HintType.color:
         return ColorPickerField(
+          style: _defaultStyle,
           config: _parameters,
           parameter: parameter,
         );
       default:
         return NumberField(
+          style: _defaultStyle,
           parameters: _parameters,
           parameter: parameter,
         );
@@ -213,6 +223,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
   Widget _buildDecimalField(String parameter) {
     return DecimalField(
+      style: _defaultStyle,
       parameters: _parameters,
       parameter: parameter,
     );
@@ -222,6 +233,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     switch (widget.config.getHintType(parameter)) {
       case HintType.field:
         return FieldDropdown(
+          style: _defaultStyle,
           selectedField: _parameters[parameter],
           onFieldSelected: (param) {
             _parameters[parameter] = param?.name ?? '';
@@ -229,36 +241,42 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         );
       case HintType.deviceId:
         return DeviceDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             onDeviceSelected: (device) {
               _parameters[parameter] = device?.id ?? '';
             });
       case HintType.deviceModelId:
         return DeviceModelDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             onDeviceModelSelected: (deviceModel) {
               _parameters[parameter] = deviceModel?.id ?? '';
             });
       case HintType.assetModelId:
         return AssetModelDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             onAssetModelSelected: (assetModel) {
               _parameters[parameter] = assetModel?.id ?? '';
             });
       case HintType.assetId:
         return AssetDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             onAssetSelected: (asset) {
               _parameters[parameter] = asset?.id ?? '';
             });
       case HintType.premiseId:
         return PremiseDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             onPremiseSelected: (premise) {
               _parameters[parameter] = premise?.id ?? '';
             });
       case HintType.facilityId:
         return FacilityDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             selectedPremise: null,
             onFacilitySelected: (facility) {
@@ -266,6 +284,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.floorId:
         return FloorDropdown(
+            style: _defaultStyle,
             selectedItem: _parameters[parameter],
             selectedFacility: null,
             selectedPremise: null,
@@ -274,18 +293,20 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       default:
         return ParameterTextField(
-            parameters: _parameters, parameter: parameter);
+            style: _defaultStyle, parameters: _parameters, parameter: parameter);
     }
   }
 
   Widget _buildYesNoField(String parameter) {
-    return YesNoField(parameters: _parameters, parameter: parameter);
+    return YesNoField(
+        style: _defaultStyle, parameters: _parameters, parameter: parameter);
   }
 
   Widget _buildEnumeratedField(String parameter) {
     List<String> enumeratedValues =
         widget.config.getEnumeratedValues(parameter);
     return EnumeratedDropdown(
+      style: _defaultStyle,
       enumeratedValues: enumeratedValues,
       selectedValue: _parameters[parameter] ?? enumeratedValues.first,
       onChanged: (String? value) {
@@ -305,6 +326,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
   Widget _buildFontField(String parameter) {
     return FontField(
+      style: _defaultStyle,
       config: _parameters,
       parameter: parameter,
     );
@@ -323,6 +345,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     switch (hintType) {
       case HintType.deviceId:
         return MultiDeviceDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onDevicesSelected: (items) {
@@ -330,6 +353,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.field:
         return MultiFieldDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onFieldsSelected: (fields) {
@@ -339,6 +363,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.deviceModelId:
         return MultiDeviceModelDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onDeviceModelsSelected: (models) {
@@ -346,6 +371,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.assetId:
         return MultiAssetDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onAssetsSelected: (models) {
@@ -353,6 +379,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.assetModelId:
         return MultiAssetModelDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onAssetModelsSelected: (models) {
@@ -361,6 +388,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.premiseId:
         return MultiPremiseDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onPremisesSelected: (models) {
@@ -368,6 +396,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.facilityId:
         return MultiFacilityDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onFacilitiesSelected: (models) {
@@ -375,6 +404,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.floorId:
         return MultiFloorDropdown(
+            style: _defaultStyle,
             allowDuplicates: widget.config.canDuplicate(parameter),
             selectedItems: toList(_parameters[parameter]),
             onFloorsSelected: (models) {
@@ -382,6 +412,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
             });
       case HintType.clientId:
         return MultiClientDropdown(
+          style: _defaultStyle,
           selectedItems: toList(_parameters[parameter]),
           allowDuplicates: widget.config.canDuplicate(parameter),
           onClientsSelected: (models) {
@@ -394,6 +425,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
       case HintType.textArea:
       default:
         return ListOfObjectsWidget(
+          style: _defaultStyle,
           objectType: ObjectType.text,
           config: _parameters,
           parameter: parameter,
@@ -407,6 +439,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
     switch (widget.config.getHintType(parameter)) {
       case HintType.color:
         return ListOfObjectsWidget(
+          style: _defaultStyle,
           objectType: ObjectType.color,
           config: _parameters,
           parameter: parameter,
@@ -414,6 +447,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
         );
       default:
         return ListOfObjectsWidget(
+          style: _defaultStyle,
           objectType: ObjectType.number,
           config: _parameters,
           parameter: parameter,
@@ -424,6 +458,7 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
 
   Widget _buildListOfDecimalsField(String parameter) {
     return ListOfObjectsWidget(
+      style: _defaultStyle,
       objectType: ObjectType.decimal,
       config: _parameters,
       parameter: parameter,
@@ -432,12 +467,14 @@ class _TwinnedConfigBuilderState extends BaseState<TwinnedConfigBuilder> {
   }
 
   Widget _buildListOfRangesField(String parameter) {
+   
     List<dynamic> list = _parameters[parameter];
     List<Map<String, dynamic>> values = [];
     for (Map<String, dynamic> map in list) {
       values.add(map);
     }
     return RangeList(
+      style: _defaultStyle,
       parameters: values,
       onRangeListSaved: (params) {
         _parameters[parameter] = params;

@@ -25,11 +25,11 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
   late String title;
   late String deviceId;
   late String field;
-  // String field = "temperature";
   late FontConfig titleFont;
   late FontConfig valueFont;
   late Color borderColor;
   late Color foreColor;
+  late Color cardColor;
   String minValue = '';
   String avgValue = '';
   String maxValue = '';
@@ -44,6 +44,7 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
     valueFont = FontConfig.fromJson(config.valueFont);
     borderColor = Color(config.borderColor);
     foreColor = Color(config.foreColor);
+    cardColor = Color(config.cardColor);
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
   }
@@ -52,10 +53,10 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(4), // Border radius
         border: Border.all(
-          color: Colors.white, // Border color
+          color: cardColor, // Border color
           width: 1, // Border width
         ),
       ),

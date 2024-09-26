@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const Color primaryColor = Color(0xFF0C244A);
+const Color primaryColor = Color(0xff0077b6);
 
 class TopBar extends StatelessWidget {
   final String title;
   final double? height;
+  final TextStyle? style;
+
+  const TopBar({
+    super.key,
+    required this.title,
+    this.height = 50,
+    this.style,
+  });
 
   //Profile Name
   String getFirstLetterAndSpace(String fullName) {
@@ -19,10 +27,16 @@ class TopBar extends StatelessWidget {
     }
   }
 
-  const TopBar({super.key, required this.title, this.height = 50});
-
   @override
   Widget build(BuildContext context) {
+    // Use the provided style or default to a GoogleFonts style
+    final TextStyle textStyle = style ??
+        GoogleFonts.lato(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        );
+
     return Container(
       width: MediaQuery.of(context).size.width,
       height: height,
@@ -45,7 +59,7 @@ class TopBar extends StatelessWidget {
               child: Center(
             child: Text(
               title,
-              style: GoogleFonts.acme(color: Colors.white, fontSize: 25),
+              style: textStyle,
             ),
           )),
         ],

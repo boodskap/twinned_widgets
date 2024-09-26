@@ -32,6 +32,12 @@ class _PremiseDropdownState extends BaseState<PremiseDropdown> {
       value: _selectedItem,
       hint: 'Select Premise',
       searchHint: 'Select Premise',
+      style: widget.style,
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       isExpanded: true,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {

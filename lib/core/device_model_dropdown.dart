@@ -40,6 +40,11 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       style: widget.style,
       dialogBox: widget.dialogBox,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
+      searchInputDecoration: InputDecoration(
+        hintStyle: widget.style,
+        errorStyle: widget.style,
+        labelStyle: widget.style,
+      ),
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;

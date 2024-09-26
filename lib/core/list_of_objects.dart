@@ -11,6 +11,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:twinned_models/twinned_models.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
+import 'package:google_fonts/google_fonts.dart';
 
 enum ObjectType { text, number, decimal, color, font, image }
 
@@ -21,8 +22,10 @@ class ListOfObjectsWidget extends StatefulWidget {
   final ValueChangeNotifier? changeNotifier;
   final bool allowDuplicates;
   final int maxTextLines;
+  final TextStyle? style;
   const ListOfObjectsWidget(
       {super.key,
+      this.style,
       required this.config,
       required this.parameter,
       required this.objectType,
@@ -54,9 +57,14 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
   final List<int> intValues = [];
   final List<double> doubleValues = [];
   final List<Map<String, dynamic>> fontValues = [];
-
+  late final TextStyle _defaultStyle;
   @override
   void initState() {
+    _defaultStyle = widget.style ??
+        GoogleFonts.lato(
+          color: Colors.black,
+        );
+
     switch (widget.objectType) {
       case ObjectType.text:
       case ObjectType.image:
@@ -199,6 +207,7 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
       FontConfig font = FontConfig.fromJson(fontValues[i]);
 
       children.add(Chip(
+        labelStyle: _defaultStyle,
         label: InkWell(
           onDoubleTap: () {
             setState(() {
@@ -263,6 +272,7 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
                 child: Tooltip(
                   message: 'Select font size',
                   child: SpinBox(
+                    textStyle: _defaultStyle,
                     min: 4,
                     max: 100,
                     value: fontSize ?? 12.0,
@@ -405,6 +415,7 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
     for (int i = 0; i < intValues.length; i++) {
       Color color = Color(intValues[i]);
       children.add(Chip(
+        labelStyle: _defaultStyle,
         label: SizedBox(
             width: 70,
             height: 18,
@@ -412,7 +423,8 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
               color: color,
               child: Text(
                 color.toHexString(),
-                style: TextStyle(color: TwinUtils.darken(color, 0.5)),
+                style:
+                    _defaultStyle.copyWith(color: TwinUtils.darken(color, 0.5)),
               ),
             )),
         onDeleted: () {
@@ -614,11 +626,17 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
 
   void _showColorPickerDialog(Color? pickerColor, {bool font = false}) {
     Color? pickedColor;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Pick a color'),
+          titleTextStyle:
+              _defaultStyle.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+          contentTextStyle: _defaultStyle,
+          title: Text('Pick a color',
+              style: _defaultStyle.copyWith(
+                  fontSize: 18, fontWeight: FontWeight.bold)),
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: pickerColor ?? Colors.transparent,
@@ -630,11 +648,15 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
               pickerAreaHeightPercent: 0.8,
               hexInputBar: true,
               labelTypes: [],
+              labelTextStyle: _defaultStyle,
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Done'),
+              child: Text(
+                'Done',
+                style: _defaultStyle,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 if (null != pickedColor) {
@@ -659,6 +681,7 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
 
     for (int i = 0; i < intValues.length; i++) {
       children.add(Chip(
+        labelStyle: _defaultStyle,
         label: InkWell(
             onDoubleTap: () {
               setState(() {
@@ -671,7 +694,10 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
                 }
               });
             },
-            child: Text('${intValues[i]}')),
+            child: Text(
+              '${intValues[i]}',
+              style: _defaultStyle,
+            )),
         onDeleted: () {
           _removeIntValue(i);
         },
@@ -686,8 +712,13 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
             children: [
               Expanded(
                   child: TextField(
+                style: _defaultStyle,
                 controller: intController,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    hintStyle: _defaultStyle,
+                    labelStyle: _defaultStyle,
+                    errorStyle: _defaultStyle),
                 keyboardType: const TextInputType.numberWithOptions(
                     decimal: false, signed: true),
                 inputFormatters: [
@@ -767,6 +798,7 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
 
     for (int i = 0; i < stringValues.length; i++) {
       children.add(Chip(
+        labelStyle: _defaultStyle,
         label: InkWell(
             onDoubleTap: () {
               setState(() {
@@ -794,7 +826,13 @@ class _ListOfObjectsWidgetState extends BaseState<ListOfObjectsWidget> {
             children: [
               Expanded(
                   child: TextField(
+                style: _defaultStyle,
                 controller: controller,
+                decoration: InputDecoration(
+                  hintStyle: _defaultStyle,
+                  labelStyle: _defaultStyle,
+                  errorStyle: _defaultStyle,
+                ),
                 maxLines: widget.maxTextLines,
                 onChanged: (content) {
                   setState(() {

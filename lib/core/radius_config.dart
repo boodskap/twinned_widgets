@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 typedef OnRadiusConfigured = void Function(RadiusConfig config);
 
@@ -9,9 +10,11 @@ class RadiusConfigWidget extends StatefulWidget {
   final String? title;
   final RadiusConfig radiusConfig;
   final OnRadiusConfigured onRadiusConfigured;
+  final TextStyle? style;
   const RadiusConfigWidget(
       {super.key,
       this.title,
+      this.style,
       required this.radiusConfig,
       required this.onRadiusConfigured});
 
@@ -20,11 +23,14 @@ class RadiusConfigWidget extends StatefulWidget {
 }
 
 class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
-  static const labelStyle =
-      TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold);
-
   @override
   Widget build(BuildContext context) {
+    final TextStyle labelStyle = widget.style ??
+        GoogleFonts.lato(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        );
     String value = widget.radiusConfig.radType.name;
 
     switch (widget.radiusConfig.radType) {
@@ -48,7 +54,7 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+             Text(
               'Radius Type',
               style: labelStyle,
             ),
@@ -57,21 +63,21 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
                 items: [
                   DropdownMenuItem<String>(
                       value: RadiusConfigRadType.zero.name,
-                      child: const Text(
+                      child:  Text(
                         'Zero',
-                        style: labelStyle,
+                        style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                       )),
                   DropdownMenuItem<String>(
                       value: RadiusConfigRadType.circular.name,
-                      child: const Text(
+                      child:  Text(
                         'Circular',
-                        style: labelStyle,
+                       style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                       )),
                   DropdownMenuItem<String>(
                       value: RadiusConfigRadType.elliptical.name,
-                      child: const Text(
+                      child:  Text(
                         'Elliptical',
-                        style: labelStyle,
+                       style: labelStyle.copyWith(fontWeight:FontWeight.normal),
                       )),
                 ],
                 onChanged: (type) {
@@ -106,14 +112,14 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 'Border Radius',
                 style: labelStyle,
               ),
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(
+                  child: SpinBox(  textStyle: labelStyle,
                     min: 0,
                     max: 360,
                     value: widget.radiusConfig.rad ?? 45,
@@ -134,14 +140,14 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 'Border X Radius',
                 style: labelStyle,
               ),
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(
+                  child: SpinBox(  textStyle: labelStyle,
                     min: 0,
                     max: 360,
                     value: widget.radiusConfig.xRad ?? 45,
@@ -161,14 +167,14 @@ class _RadiusConfigWidgetState extends State<RadiusConfigWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 'Border Y Radius',
                 style: labelStyle,
               ),
               SizedBox(
                 height: 35,
                 child: IntrinsicWidth(
-                  child: SpinBox(
+                  child: SpinBox(  textStyle: labelStyle,
                     min: 0,
                     max: 360,
                     value: widget.radiusConfig.yRad ?? 45,

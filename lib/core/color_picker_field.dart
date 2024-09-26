@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:twinned_widgets/core/definitions.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ColorPickerField extends StatefulWidget {
   final Map<String, dynamic> config;
   final String parameter;
+  final TextStyle? style;
   final ValueChangeNotifier? changeNotifier;
   const ColorPickerField(
       {super.key,
+      this.style,
       required this.config,
       required this.parameter,
       this.changeNotifier});
@@ -19,6 +22,10 @@ class ColorPickerField extends StatefulWidget {
 class _ColorPickerFieldState extends State<ColorPickerField> {
   @override
   Widget build(BuildContext context) {
+    final TextStyle style = widget.style ??
+        GoogleFonts.lato(
+          color: Colors.black,
+        );
     return Align(
       alignment: Alignment.topLeft,
       child: ElevatedButton(
@@ -28,9 +35,9 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10))),
         ),
-        child: const Text(
+        child: Text(
           'Pick Color',
-          style: TextStyle(color: Colors.white),
+          style: style.copyWith(color: Colors.white),
         ),
       ),
     );
@@ -51,15 +58,30 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
   }
 
   void _showColorPickerDialog() {
+    final TextStyle style = widget.style ??
+        GoogleFonts.lato(
+          color: Colors.black,
+        );
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Pick a color'),
+          titleTextStyle: style.copyWith(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+          contentTextStyle: style,
+          title: Text(
+            'Pick a color',
+            style: style.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           content: SingleChildScrollView(
             child: ColorPicker(
               hexInputBar: true,
-              labelTypes: [],
+              labelTypes: const [],
               pickerColor: getColor(),
               onColorChanged: (color) {
                 setColor(color);
@@ -71,7 +93,10 @@ class _ColorPickerFieldState extends State<ColorPickerField> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Done'),
+              child: Text(
+                'Done',
+                style: style,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
