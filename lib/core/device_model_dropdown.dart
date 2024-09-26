@@ -11,17 +11,13 @@ class DeviceModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceModelSelected onDeviceModelSelected;
   final TextStyle style;
-  final bool dialogBox;
-  final bool isExpanded;
-  final TextInputType keyboardType;
+  final InputDecoration? searchInputDecoration;
 
   const DeviceModelDropdown({
     super.key,
     required this.selectedItem,
     required this.onDeviceModelSelected,
-    this.dialogBox = true,
-    this.isExpanded = true,
-    this.keyboardType = TextInputType.text,
+    this.searchInputDecoration,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -38,16 +34,9 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       value: _selectedItem,
       hint: 'Select Device Model',
       searchHint: 'Select Device Model',
-      isExpanded: widget.isExpanded,
       style: widget.style,
-      dialogBox: widget.dialogBox,
-      keyboardType: widget.keyboardType,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
+      searchInputDecoration: widget.searchInputDecoration,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
