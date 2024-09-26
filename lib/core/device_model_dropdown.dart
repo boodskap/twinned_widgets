@@ -119,6 +119,14 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
     }
     loading = false;
 
+    if (items.isNotEmpty &&
+        (null == widget.selectedItem ||
+            (widget.selectedItem?.isEmpty ?? true))) {
+      setState(() {
+        _selectedItem = items.first.value;
+      });
+    }
+
     return Tuple2(items, total);
   }
 
