@@ -11,11 +11,15 @@ class DeviceModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceModelSelected onDeviceModelSelected;
   final TextStyle style;
+  final bool dialogBox;
+  final bool isExpanded;
 
   const DeviceModelDropdown({
     super.key,
     required this.selectedItem,
     required this.onDeviceModelSelected,
+    this.dialogBox = true,
+    this.isExpanded = true,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -32,7 +36,10 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       value: _selectedItem,
       hint: 'Select Device Model',
       searchHint: 'Select Device Model',
-      isExpanded: true,
+      isExpanded: widget.isExpanded,
+      style: widget.style,
+      dialogBox: widget.dialogBox,
+      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -40,8 +47,6 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.DeviceModel entity = value;
         return Row(
