@@ -30,8 +30,8 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.DeviceModel>.single(
       value: _selectedItem,
-      hint: 'Select Device Model',
-      searchHint: 'Select Device Model',
+      hint: 'Select Device Library',
+      searchHint: 'Select Device Library',
       style: widget.style,
       searchInputDecoration: InputDecoration(
         hintStyle: widget.style,

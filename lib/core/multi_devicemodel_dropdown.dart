@@ -36,7 +36,7 @@ class _MultiDeviceModelDropdownState
     return MultiDropdownSearchable<twin.DeviceModel>(
         key: Key(Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Device Models',
+        searchHint: 'Select Device Library',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget
