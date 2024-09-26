@@ -13,6 +13,7 @@ class DeviceModelDropdown extends StatefulWidget {
   final TextStyle style;
   final bool dialogBox;
   final bool isExpanded;
+  final TextInputType keyboardType;
 
   const DeviceModelDropdown({
     super.key,
@@ -20,6 +21,7 @@ class DeviceModelDropdown extends StatefulWidget {
     required this.onDeviceModelSelected,
     this.dialogBox = true,
     this.isExpanded = true,
+    this.keyboardType = TextInputType.text,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -39,6 +41,7 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       isExpanded: widget.isExpanded,
       style: widget.style,
       dialogBox: widget.dialogBox,
+      keyboardType: widget.keyboardType,
       dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       searchInputDecoration: InputDecoration(
         hintStyle: widget.style,
