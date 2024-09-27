@@ -36,7 +36,7 @@ class MultiDropdownSearchable<T> extends StatefulWidget {
     this.isExpanded = true,
     this.searchInputDecoration,
     this.menuBackgroundColor,
-    this.dropDownDialogPadding = const EdgeInsets.fromLTRB(250, 50, 250, 50),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
