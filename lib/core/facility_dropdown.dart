@@ -11,13 +11,29 @@ class FacilityDropdown extends StatefulWidget {
   final String? selectedItem;
   final String? selectedPremise;
   final OnFacilitySelected onFacilitySelected;
+  final String hint;
+  final String searchHint;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
   final TextStyle style;
+  final bool isExpanded;
 
   const FacilityDropdown({
     super.key,
     required this.selectedItem,
     required this.selectedPremise,
     required this.onFacilitySelected,
+    this.hint = 'Select a Facility',
+    this.searchHint = 'Search facilities',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding = const EdgeInsets.fromLTRB(250, 50, 250, 50),
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -32,15 +48,13 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.Facility>.single(
       value: _selectedItem,
-      hint: 'Select Facility',
-      searchHint: 'Select Facility',
+      hint: widget.hint,
+      searchHint: widget.searchHint,
       style: widget.style,
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
-      isExpanded: true,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -48,8 +62,6 @@ class _FacilityDropdownState extends BaseState<FacilityDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Facility entity = value;
         return Row(

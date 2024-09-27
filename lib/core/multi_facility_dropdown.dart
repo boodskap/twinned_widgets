@@ -34,7 +34,8 @@ class _MultiFacilityDropdownState extends BaseState<MultiFacilityDropdown> {
     return MultiDropdownSearchable<twin.Facility>(
         key: Key(Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Facilities',
+        hint: 'Select Facilities',
+        searchHint: 'Search facilities',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onFacilitiesSelected(selectedItems as List<twin.Facility>);
