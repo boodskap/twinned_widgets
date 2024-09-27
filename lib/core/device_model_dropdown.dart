@@ -31,7 +31,7 @@ class DeviceModelDropdown extends StatefulWidget {
       errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
       labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
     ),
-    this.dropDownDialogPadding = const EdgeInsets.fromLTRB(250, 50, 250, 50),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
