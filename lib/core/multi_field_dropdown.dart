@@ -35,7 +35,8 @@ class _MultiFieldDropdownState extends BaseState<MultiFieldDropdown> {
     return MultiDropdownSearchable<twin.Parameter>(
         key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Fields',
+        hint: 'Select Fields',
+        searchHint: 'Search fields',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           List<twin.Parameter> parameters =

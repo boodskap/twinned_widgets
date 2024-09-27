@@ -34,7 +34,8 @@ class _MultiClientDropdownState extends BaseState<MultiClientDropdown> {
     return MultiDropdownSearchable<twin.Client>(
         key: Key(Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Clients',
+        hint: 'Select Clients',
+        searchHint: 'Search clients',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onClientsSelected(selectedItems as List<twin.Client>);
