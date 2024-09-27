@@ -259,7 +259,7 @@ class FieldCardWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.waves);
+    return const Icon(Icons.credit_card);
   }
 
   @override
