@@ -35,7 +35,8 @@ class _MultiAssetModelDropdownState extends BaseState<MultiAssetModelDropdown> {
     return MultiDropdownSearchable<twin.AssetModel>(
         key: Key(Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Asset Models',
+        hint: 'Select Asset Models',
+        searchHint: 'Search asset models',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onAssetModelsSelected(selectedItems as List<twin.AssetModel>);

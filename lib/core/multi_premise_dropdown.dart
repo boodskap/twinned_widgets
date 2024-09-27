@@ -34,7 +34,8 @@ class _MultiPremiseDropdownState extends BaseState<MultiPremiseDropdown> {
     return MultiDropdownSearchable<twin.Premise>(
         key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Premises',
+        hint: 'Select Premises',
+        searchHint: 'Search premises',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onPremisesSelected(selectedItems as List<twin.Premise>);

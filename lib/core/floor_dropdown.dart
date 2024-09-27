@@ -12,7 +12,13 @@ class FloorDropdown extends StatefulWidget {
   final String? selectedPremise;
   final String? selectedFacility;
   final OnFloorSelected onFloorSelected;
+  final String hint;
+  final String searchHint;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
   final TextStyle style;
+  final bool isExpanded;
 
   const FloorDropdown({
     super.key,
@@ -20,6 +26,16 @@ class FloorDropdown extends StatefulWidget {
     required this.selectedPremise,
     required this.selectedFacility,
     required this.onFloorSelected,
+    this.hint = 'Select a Floor',
+    this.searchHint = 'Search floors',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding = const EdgeInsets.fromLTRB(250, 50, 250, 50),
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -34,15 +50,13 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.Floor>.single(
       value: _selectedItem,
-      hint: 'Select Floor',
-      searchHint: 'Select Floor',
+      hint: widget.hint,
+      searchHint: widget.searchHint,
       style: widget.style,
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
-      isExpanded: true,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -50,8 +64,6 @@ class _FloorDropdownState extends BaseState<FloorDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Floor entity = value;
         return Row(

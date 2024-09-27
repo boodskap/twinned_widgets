@@ -34,7 +34,8 @@ class _MultiFloorDropdownState extends BaseState<MultiFloorDropdown> {
     return MultiDropdownSearchable<twin.Floor>(
         key: Key(const Uuid().v4()),
         allowDuplicates: widget.allowDuplicates,
-        searchHint: 'Select Floors',
+        hint: 'Select Floors',
+        searchHint: 'Search floors',
         selectedItems: _selectedItems,
         onItemsSelected: (selectedItems) {
           widget.onFloorsSelected(selectedItems as List<twin.Floor>);
