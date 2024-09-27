@@ -10,14 +10,28 @@ typedef OnDeviceModelSelected = void Function(twin.DeviceModel? deviceModel);
 class DeviceModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceModelSelected onDeviceModelSelected;
-  final TextStyle style;
+  final String hint;
+  final String searchHint;
+  final bool isExpanded;
+  final Color? menuBackgroundColor;
   final InputDecoration? searchInputDecoration;
+  final EdgeInsets? dropDownDialogPadding;
+  final TextStyle style;
 
   const DeviceModelDropdown({
     super.key,
     required this.selectedItem,
     required this.onDeviceModelSelected,
-    this.searchInputDecoration,
+    this.hint = 'Select Device Model',
+    this.searchHint = 'Select Device Model',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -32,11 +46,13 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.DeviceModel>.single(
       value: _selectedItem,
-      hint: 'Select Device Model',
-      searchHint: 'Select Device Model',
+      hint: widget.hint,
+      searchHint: widget.searchHint,
       style: widget.style,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
+      dropDownDialogPadding: widget.dropDownDialogPadding,
       searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;

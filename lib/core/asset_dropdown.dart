@@ -10,12 +10,28 @@ typedef OnAssetSelected = void Function(twin.Asset? asset);
 class AssetDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnAssetSelected onAssetSelected;
+  final String hint;
+  final String searchHint;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
   final TextStyle style;
+  final bool isExpanded;
 
   const AssetDropdown({
     super.key,
     required this.selectedItem,
     required this.onAssetSelected,
+    this.hint = 'Select an Asset',
+    this.searchHint = 'Search assets',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -30,15 +46,13 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.Asset>.single(
       value: _selectedItem,
-      hint: 'Select Asset',
-      searchHint: 'Select Asset',
+      hint: widget.hint,
+      searchHint: widget.searchHint,
       style: widget.style,
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
-      isExpanded: true,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -46,8 +60,6 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Asset entity = value;
         return Row(

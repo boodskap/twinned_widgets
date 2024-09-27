@@ -10,22 +10,35 @@ typedef ItemIdFunc<T> = String Function(T item);
 
 class MultiDropdownSearchable<T> extends StatefulWidget {
   final bool allowDuplicates;
+  final String hint;
   final String searchHint;
   final List<T> selectedItems;
   final OnItemsSelected onItemsSelected;
   final ItemSearchFunc itemSearchFunc;
   final ItemLabelFunc itemLabelFunc;
   final ItemIdFunc itemIdFunc;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
+  final TextStyle style;
+  final bool isExpanded;
 
-  const MultiDropdownSearchable(
-      {super.key,
-      required this.allowDuplicates,
-      required this.searchHint,
-      required this.selectedItems,
-      required this.onItemsSelected,
-      required this.itemSearchFunc,
-      required this.itemLabelFunc,
-      required this.itemIdFunc});
+  const MultiDropdownSearchable({
+    super.key,
+    required this.allowDuplicates,
+    required this.hint,
+    required this.searchHint,
+    required this.selectedItems,
+    required this.onItemsSelected,
+    required this.itemSearchFunc,
+    required this.itemLabelFunc,
+    required this.itemIdFunc,
+    this.isExpanded = true,
+    this.searchInputDecoration,
+    this.menuBackgroundColor,
+    this.dropDownDialogPadding,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
+  });
 
   @override
   State<MultiDropdownSearchable> createState() =>
@@ -78,9 +91,13 @@ class _MultiDropdownSearchableState<T>
       children: [
         SearchChoices<T>.single(
           value: _selectedItem,
-          hint: widget.searchHint,
+          hint: widget.hint,
           searchHint: widget.searchHint,
-          isExpanded: true,
+          style: widget.style,
+          dropDownDialogPadding: widget.dropDownDialogPadding,
+          searchInputDecoration: widget.searchInputDecoration,
+          menuBackgroundColor: widget.menuBackgroundColor,
+          isExpanded: widget.isExpanded,
           futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
               List<Tuple2<String, String>>? filters, int? pageNb) async {
             pageNb = pageNb ?? 1;
@@ -104,8 +121,6 @@ class _MultiDropdownSearchableState<T>
             return Tuple2(list, _items.length);
             ;
           },
-          dialogBox: true,
-          dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
           selectedValueWidgetFn: (value) {
             return widget.itemLabelFunc(value);
           },
