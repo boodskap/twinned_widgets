@@ -31,7 +31,6 @@ class _FieldCardWidgetState extends BaseState<FieldCardWidget> {
   late double height;
   late double imageSize;
   late double topSectionHeight;
-  late String image;
   String value = '-';
   String fiedLabel = '-';
   String fiedIcon = '-';
@@ -55,7 +54,6 @@ class _FieldCardWidgetState extends BaseState<FieldCardWidget> {
     height = config.height;
     imageSize = config.imageSize;
     topSectionHeight = config.topSectionHeight;
-    image = config.image;
     super.initState();
   }
 
