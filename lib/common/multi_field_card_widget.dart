@@ -32,7 +32,6 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
   late double imageSize;
   late double topSectionHeight;
   late List<Map<String, dynamic>> fieldDataList;
-  late double spacing;
   List<int> colors = [];
   String value = '-';
   String fiedLabel = '-';
@@ -56,7 +55,6 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
     width = config.width;
     height = config.height;
     imageSize = config.imageSize;
-    spacing = config.spacing;
     topSectionHeight = config.topSectionHeight;
 
     colors = [
@@ -85,7 +83,6 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
     super.initState();
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
