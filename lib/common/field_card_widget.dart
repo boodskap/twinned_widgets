@@ -105,8 +105,8 @@ class _FieldCardWidgetState extends BaseState<FieldCardWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          const SizedBox(width: 20),
                           Text(
                             value,
                             style: TextStyle(
@@ -117,7 +117,6 @@ class _FieldCardWidgetState extends BaseState<FieldCardWidget> {
                                     : FontWeight.normal,
                                 color: Color(valueFont.fontColor)),
                           ),
-                          const SizedBox(width: 15),
                           Flexible(
                             child: Text(
                               fiedLabel,
