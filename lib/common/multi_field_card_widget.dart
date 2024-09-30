@@ -120,10 +120,9 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
             ),
           ),
         SingleChildScrollView(
-          child: Wrap(
-            spacing:spacing,
-            runSpacing: spacing,
-            direction: Axis.horizontal,
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: fieldDataList.asMap().entries.map((entry) {
               int index = entry.key;
               Map<String, dynamic> fieldData = entry.value;
