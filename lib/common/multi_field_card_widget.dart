@@ -122,6 +122,7 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
         Wrap(
           spacing:spacing,
           runSpacing: spacing,
+          direction: Axis.horizontal,
           children: fieldDataList.asMap().entries.map((entry) {
             int index = entry.key;
             Map<String, dynamic> fieldData = entry.value;
