@@ -119,122 +119,124 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
               color: Color(titleFont.fontColor),
             ),
           ),
-        Wrap(
-          spacing:spacing,
-          runSpacing: spacing,
-          direction: Axis.horizontal,
-          children: fieldDataList.asMap().entries.map((entry) {
-            int index = entry.key;
-            Map<String, dynamic> fieldData = entry.value;
-            Color dynamicColor = Color(colors[index % colors.length]);
-            return SizedBox(
-              width: width,
-              height: height,
-              child: Card(
-                color: Colors.white,
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: topSectionHeight,
-                      color: dynamicColor,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              width: 100,
-                              child: DeviceDropdown(
-                                selectedItem: selectedDeviceId,
-                                dropDownDialogPadding: EdgeInsets.zero,
-                                isCollapse: true,
-                                onDeviceSelected: (Device? device) {
-                                  setState(() {
-                                    selectedDeviceId = device?.id;
-                                    _load();
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(
-                                fieldData['value'],
-                                style: TextStyle(
-                                  fontFamily: valueFont.fontFamily,
-                                  fontSize: valueFont.fontSize,
-                                  fontWeight: valueFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(valueFont.fontColor),
+        SingleChildScrollView(
+          child: Wrap(
+            spacing:spacing,
+            runSpacing: spacing,
+            direction: Axis.horizontal,
+            children: fieldDataList.asMap().entries.map((entry) {
+              int index = entry.key;
+              Map<String, dynamic> fieldData = entry.value;
+              Color dynamicColor = Color(colors[index % colors.length]);
+              return SizedBox(
+                width: width,
+                height: height,
+                child: Card(
+                  color: Colors.white,
+                  elevation: 4.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: topSectionHeight,
+                        color: dynamicColor,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: SizedBox(
+                                width: 100,
+                                child: DeviceDropdown(
+                                  selectedItem: selectedDeviceId,
+                                  dropDownDialogPadding: EdgeInsets.zero,
+                                  isCollapse: true,
+                                  onDeviceSelected: (Device? device) {
+                                    setState(() {
+                                      selectedDeviceId = device?.id;
+                                      _load();
+                                    });
+                                  },
                                 ),
                               ),
-                              Flexible(
-                                child: Text(
-                                  fieldData['label'],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  fieldData['value'],
                                   style: TextStyle(
-                                    fontFamily: headingFont.fontFamily,
-                                    fontSize: headingFont.fontSize,
-                                    fontWeight: headingFont.fontBold
+                                    fontFamily: valueFont.fontFamily,
+                                    fontSize: valueFont.fontSize,
+                                    fontWeight: valueFont.fontBold
                                         ? FontWeight.bold
                                         : FontWeight.normal,
-                                    color: Color(headingFont.fontColor),
+                                    color: Color(valueFont.fontColor),
                                   ),
-                                  softWrap: true,
                                 ),
+                                Flexible(
+                                  child: Text(
+                                    fieldData['label'],
+                                    style: TextStyle(
+                                      fontFamily: headingFont.fontFamily,
+                                      fontSize: headingFont.fontSize,
+                                      fontWeight: headingFont.fontBold
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: Color(headingFont.fontColor),
+                                    ),
+                                    softWrap: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            if (fieldData['icon'].isEmpty)
+                              Icon(
+                                Icons.display_settings,
+                                size: imageSize,
+                                color: bottomSectionColor,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          if (fieldData['icon'].isEmpty)
-                            Icon(
-                              Icons.display_settings,
-                              size: imageSize,
-                              color: bottomSectionColor,
-                            ),
-                          if (fieldData['icon'].isNotEmpty)
-                            SizedBox(
-                              width: imageSize,
-                              height: imageSize,
-                              child: TwinImageHelper.getDomainImage(
-                                  fieldData['icon']),
-                            ),
-                          const SizedBox(height: 10),
-                        ],
+                            if (fieldData['icon'].isNotEmpty)
+                              SizedBox(
+                                width: imageSize,
+                                height: imageSize,
+                                child: TwinImageHelper.getDomainImage(
+                                    fieldData['icon']),
+                              ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: bottomSectionColor,
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            fieldData['description'],
-                            style: TextStyle(
-                              fontFamily: contentFont.fontFamily,
-                              fontSize: contentFont.fontSize,
-                              fontWeight: contentFont.fontBold
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: Color(contentFont.fontColor),
+                      Expanded(
+                        child: Container(
+                          color: bottomSectionColor,
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              fieldData['description'],
+                              style: TextStyle(
+                                fontFamily: contentFont.fontFamily,
+                                fontSize: contentFont.fontSize,
+                                fontWeight: contentFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(contentFont.fontColor),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         ),
       ],
     );
