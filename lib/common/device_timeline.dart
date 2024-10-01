@@ -142,7 +142,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                                   fontWeight: indicatorFont.fontBold
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                                  color: Color(indicatorFont.fontColor)),
+                                  color: Color(indicatorFont.fontColor)), borderWidth: borderWidth,
                             ),
                             hdivider,
                             NameTimelineWidget(
@@ -194,7 +194,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                                   fontWeight: indicatorFont.fontBold
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                                  color: Color(indicatorFont.fontColor)),
+                                  color: Color(indicatorFont.fontColor)), borderWidth: borderWidth,
                             ),
                             hdivider,
                             DescriptionTimelineWidget(
@@ -295,12 +295,13 @@ class CircleIndicator extends StatelessWidget {
   final int total;
   final Color indicatorColor;
   final TextStyle indicatorTextStyle;
+  final double borderWidth;
   const CircleIndicator(
       {super.key,
       required this.index,
       required this.total,
       required this.indicatorColor,
-      required this.indicatorTextStyle});
+      required this.indicatorTextStyle, required this.borderWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -309,7 +310,7 @@ class CircleIndicator extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 2,
+            width: borderWidth,
             height: 25,
             color: Colors.black,
           ),
@@ -322,7 +323,7 @@ class CircleIndicator extends StatelessWidget {
             ),
           ),
           Container(
-            width: 2,
+            width: borderWidth,
             height: index == total - 1 ? 25 : 45,
             color: Colors.black,
           ),
@@ -411,10 +412,15 @@ class NameTimelineWidget extends StatelessWidget {
                       value,
                       style: labelTextStyle,
                     ),
-                    Text(
-                      text,
-                      style: labelTextStyle,
+                    hdivider,
+                    Flexible(
+                      child: Text(
+                        softWrap: true,
+                        text,
+                        style: labelTextStyle,
+                      ),
                     ),
+                    hdivider,
                     CircleAvatar(
                         radius: size,
                         backgroundColor: color,
@@ -448,10 +454,15 @@ class NameTimelineWidget extends StatelessWidget {
                                   size: size,
                                 ),
                         )),
-                    Text(
-                      text,
-                      style: labelTextStyle,
+                        hdivider,
+                      Flexible(
+                      child: Text(
+                        softWrap: true,
+                        text,
+                        style: labelTextStyle,
+                      ),
                     ),
+                    hdivider,
                     Text(
                       value,
                       style: labelTextStyle,
