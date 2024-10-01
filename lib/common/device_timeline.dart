@@ -142,7 +142,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                                   fontWeight: indicatorFont.fontBold
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                                  color: Color(indicatorFont.fontColor)),
+                                  color: Color(indicatorFont.fontColor)), borderWidth: borderWidth,
                             ),
                             hdivider,
                             NameTimelineWidget(
