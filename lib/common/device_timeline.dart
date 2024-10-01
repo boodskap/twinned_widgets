@@ -166,7 +166,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                           ]
                         : [
                             NameTimelineWidget(
-                              text: fetchedData[index]['label'].toString(),
+                              text: "hfffffffffffffffffffffffffffffffffffffffff",
                               color: index <= colors.length
                                   ? Color(colors[index])
                                   : Color(0XFF9bb67b),
@@ -412,10 +412,15 @@ class NameTimelineWidget extends StatelessWidget {
                       value,
                       style: labelTextStyle,
                     ),
-                    Text(
-                      text,
-                      style: labelTextStyle,
+                    hdivider,
+                    Flexible(
+                      child: Text(
+                        softWrap: true,
+                        text,
+                        style: labelTextStyle,
+                      ),
                     ),
+                    hdivider,
                     CircleAvatar(
                         radius: size,
                         backgroundColor: color,
@@ -449,10 +454,15 @@ class NameTimelineWidget extends StatelessWidget {
                                   size: size,
                                 ),
                         )),
-                    Text(
-                      text,
-                      style: labelTextStyle,
+                        hdivider,
+                      Flexible(
+                      child: Text(
+                        softWrap: true,
+                        text,
+                        style: labelTextStyle,
+                      ),
                     ),
+                    hdivider,
                     Text(
                       value,
                       style: labelTextStyle,
