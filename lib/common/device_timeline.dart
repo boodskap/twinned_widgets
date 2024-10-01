@@ -166,7 +166,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                           ]
                         : [
                             NameTimelineWidget(
-                              text: "hfffffffffffffffffffffffffffffffffffffffff",
+                              text: fetchedData[index]['label'].toString(),
                               color: index <= colors.length
                                   ? Color(colors[index])
                                   : Color(0XFF9bb67b),
