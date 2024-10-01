@@ -108,107 +108,109 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
         vdivider,
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: width,
-            height: height,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: fetchedData.length,
-              itemBuilder: (context, index) {
-                bool isEven = index % 2 == 0;
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: isEven
-                      ? [
-                          DescriptionTimelineWidget(
-                            text: fetchedData[index]['description'].toString(),
-                            descTextStyle: TextStyle(
-                                fontFamily: contentFont.fontFamily,
-                                fontSize: contentFont.fontSize,
-                                fontWeight: contentFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(contentFont.fontColor)),
-                          ),
-                          hdivider,
-                          CircleIndicator(
-                            index: index,
-                            total: fetchedData.length,
-                            indicatorColor: indicatorColor,
-                            indicatorTextStyle: TextStyle(
-                                fontFamily: indicatorFont.fontFamily,
-                                fontSize: indicatorFont.fontSize,
-                                fontWeight: indicatorFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(indicatorFont.fontColor)),
-                          ),
-                          hdivider,
-                          NameTimelineWidget(
-                            text: fetchedData[index]['label'].toString(),
-                            color: index <= colors.length
-                                ? Color(colors[index])
-                                : Color(0XFF9bb67b),
-                            isEven: isEven,
-                            value: fetchedData[index]['value'].toString(),
-                            iconId: fetchedData[index]['icon'].toString(),
-                            size: imageSize,
-                            labelTextStyle: TextStyle(
-                                fontFamily: labelFont.fontFamily,
-                                fontSize: labelFont.fontSize,
-                                fontWeight: labelFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(labelFont.fontColor)),
-                            opacity: opacity,
-                          ),
-                        ]
-                      : [
-                          NameTimelineWidget(
-                            text: fetchedData[index]['label'].toString(),
-                            color: index <= colors.length
-                                ? Color(colors[index])
-                                : Color(0XFF9bb67b),
-                            isEven: isEven,
-                            value: fetchedData[index]['value'].toString(),
-                            iconId: fetchedData[index]['icon'].toString(),
-                            size: imageSize,
-                            labelTextStyle: TextStyle(
-                                fontFamily: labelFont.fontFamily,
-                                fontSize: labelFont.fontSize,
-                                fontWeight: labelFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(labelFont.fontColor)),
-                            opacity: opacity,
-                          ),
-                          hdivider,
-                          CircleIndicator(
-                            index: index,
-                            total: fetchedData.length,
-                            indicatorColor: indicatorColor,
-                            indicatorTextStyle: TextStyle(
-                                fontFamily: indicatorFont.fontFamily,
-                                fontSize: indicatorFont.fontSize,
-                                fontWeight: indicatorFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(indicatorFont.fontColor)),
-                          ),
-                          hdivider,
-                          DescriptionTimelineWidget(
-                            text: fetchedData[index]['description'].toString(),
-                            descTextStyle: TextStyle(
-                                fontFamily: contentFont.fontFamily,
-                                fontSize: contentFont.fontSize,
-                                fontWeight: contentFont.fontBold
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: Color(contentFont.fontColor)),
-                          ),
-                        ],
-                );
-              },
+          child: Expanded(
+            child: SizedBox(
+              width: width,
+              height: height,
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: fetchedData.length,
+                itemBuilder: (context, index) {
+                  bool isEven = index % 2 == 0;
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: isEven
+                        ? [
+                            DescriptionTimelineWidget(
+                              text: fetchedData[index]['description'].toString(),
+                              descTextStyle: TextStyle(
+                                  fontFamily: contentFont.fontFamily,
+                                  fontSize: contentFont.fontSize,
+                                  fontWeight: contentFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: Color(contentFont.fontColor)),
+                            ),
+                            hdivider,
+                            CircleIndicator(
+                              index: index,
+                              total: fetchedData.length,
+                              indicatorColor: indicatorColor,
+                              indicatorTextStyle: TextStyle(
+                                  fontFamily: indicatorFont.fontFamily,
+                                  fontSize: indicatorFont.fontSize,
+                                  fontWeight: indicatorFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: Color(indicatorFont.fontColor)),
+                            ),
+                            hdivider,
+                            NameTimelineWidget(
+                              text: fetchedData[index]['label'].toString(),
+                              color: index <= colors.length
+                                  ? Color(colors[index])
+                                  : Color(0XFF9bb67b),
+                              isEven: isEven,
+                              value: fetchedData[index]['value'].toString(),
+                              iconId: fetchedData[index]['icon'].toString(),
+                              size: imageSize,
+                              labelTextStyle: TextStyle(
+                                  fontFamily: labelFont.fontFamily,
+                                  fontSize: labelFont.fontSize,
+                                  fontWeight: labelFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: Color(labelFont.fontColor)),
+                              opacity: opacity,
+                            ),
+                          ]
+                        : [
+                            NameTimelineWidget(
+                              text: fetchedData[index]['label'].toString(),
+                              color: index <= colors.length
+                                  ? Color(colors[index])
+                                  : Color(0XFF9bb67b),
+                              isEven: isEven,
+                              value: fetchedData[index]['value'].toString(),
+                              iconId: fetchedData[index]['icon'].toString(),
+                              size: imageSize,
+                              labelTextStyle: TextStyle(
+                                  fontFamily: labelFont.fontFamily,
+                                  fontSize: labelFont.fontSize,
+                                  fontWeight: labelFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: Color(labelFont.fontColor)),
+                              opacity: opacity,
+                            ),
+                            hdivider,
+                            CircleIndicator(
+                              index: index,
+                              total: fetchedData.length,
+                              indicatorColor: indicatorColor,
+                              indicatorTextStyle: TextStyle(
+                                  fontFamily: indicatorFont.fontFamily,
+                                  fontSize: indicatorFont.fontSize,
+                                  fontWeight: indicatorFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: Color(indicatorFont.fontColor)),
+                            ),
+                            hdivider,
+                            DescriptionTimelineWidget(
+                              text: fetchedData[index]['description'].toString(),
+                              descTextStyle: TextStyle(
+                                  fontFamily: contentFont.fontFamily,
+                                  fontSize: contentFont.fontSize,
+                                  fontWeight: contentFont.fontBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: Color(contentFont.fontColor)),
+                            ),
+                          ],
+                  );
+                },
+              ),
             ),
           ),
         ),
