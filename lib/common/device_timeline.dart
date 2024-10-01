@@ -7,7 +7,9 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_models/timeline/device_timeline.dart';
 
-const hdivider=SizedBox(width:3);
+const hdivider = SizedBox(width: 3);
+const vdivider = SizedBox(height: 3);
+
 class DeviceTimelineWidget extends StatefulWidget {
   final DeviceTimelineWidgetConfig config;
   const DeviceTimelineWidget({super.key, required this.config});
@@ -27,7 +29,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
   late FontConfig titleFont;
   late Color indicatorColor;
   late double width;
-   late double height;
+  late double height;
   late double borderWidth;
   late double imageSize;
   late double opacity;
@@ -94,6 +96,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
 
     return Column(
       children: [
+        vdivider,
         if (title != "")
           Text(title,
               style: TextStyle(
@@ -102,108 +105,110 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                   fontWeight:
                       titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   color: Color(titleFont.fontColor))),
-                  hdivider,
+        vdivider,
         SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              width: width,
-              height: height,
-              child: ListView.builder(
-                itemCount: fetchedData.length,
-                itemBuilder: (context, index) {
-                  bool isEven = index % 2 == 0;
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: isEven
-                        ? [
-                            DescriptionTimelineWidget(
-                              text: fetchedData[index]['description'].toString(),
-                              descTextStyle: TextStyle(
-                                  fontFamily: contentFont.fontFamily,
-                                  fontSize: contentFont.fontSize,
-                                  fontWeight: contentFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(contentFont.fontColor)),
-                            ),
-                           hdivider,
-                            CircleIndicator(
-                              index: index,
-                              total: fetchedData.length,
-                              indicatorColor: indicatorColor,
-                              indicatorTextStyle: TextStyle(
-                                  fontFamily: indicatorFont.fontFamily,
-                                  fontSize: indicatorFont.fontSize,
-                                  fontWeight: indicatorFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(indicatorFont.fontColor)),
-                            ),
-                           hdivider,
-                            NameTimelineWidget(
-                              text: fetchedData[index]['label'].toString(),
-                              color: index<=colors.length? Color(colors[index]) :Color(0XFF9bb67b),
-                              isEven: isEven,
-                              value: fetchedData[index]['value'].toString(),
-                              iconId: fetchedData[index]['icon'].toString(),
-                              size: imageSize,
-                              labelTextStyle: TextStyle(
-                                  fontFamily: labelFont.fontFamily,
-                                  fontSize: labelFont.fontSize,
-                                  fontWeight: labelFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(labelFont.fontColor)),
-                              opacity: opacity,
-                            ),
-                          ]
-                        : [
-                            NameTimelineWidget(
-                              text: fetchedData[index]['label'].toString(),
-                               color: index<=colors.length? Color(colors[index]) :Color(0XFF9bb67b),
-                              isEven: isEven,
-                              value: fetchedData[index]['value'].toString(),
-                              iconId: fetchedData[index]['icon'].toString(),
-                              size: imageSize,
-                              labelTextStyle: TextStyle(
-                                  fontFamily: labelFont.fontFamily,
-                                  fontSize: labelFont.fontSize,
-                                  fontWeight: labelFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(labelFont.fontColor)),
-                              opacity: opacity,
-                            ),
-                            hdivider,
-                            CircleIndicator(
-                              index: index,
-                              total: fetchedData.length,
-                              indicatorColor: indicatorColor,
-                              indicatorTextStyle: TextStyle(
-                                  fontFamily: indicatorFont.fontFamily,
-                                  fontSize: indicatorFont.fontSize,
-                                  fontWeight: indicatorFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(indicatorFont.fontColor)),
-                            ),
-                            hdivider,
-                            DescriptionTimelineWidget(
-                              text: fetchedData[index]['description'].toString(),
-                              descTextStyle: TextStyle(
-                                  fontFamily: contentFont.fontFamily,
-                                  fontSize: contentFont.fontSize,
-                                  fontWeight: contentFont.fontBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: Color(contentFont.fontColor)),
-                            ),
-                          ],
-                  );
-                },
-              ),
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: fetchedData.length,
+              itemBuilder: (context, index) {
+                bool isEven = index % 2 == 0;
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: isEven
+                      ? [
+                          DescriptionTimelineWidget(
+                            text: fetchedData[index]['description'].toString(),
+                            descTextStyle: TextStyle(
+                                fontFamily: contentFont.fontFamily,
+                                fontSize: contentFont.fontSize,
+                                fontWeight: contentFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(contentFont.fontColor)),
+                          ),
+                          hdivider,
+                          CircleIndicator(
+                            index: index,
+                            total: fetchedData.length,
+                            indicatorColor: indicatorColor,
+                            indicatorTextStyle: TextStyle(
+                                fontFamily: indicatorFont.fontFamily,
+                                fontSize: indicatorFont.fontSize,
+                                fontWeight: indicatorFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(indicatorFont.fontColor)),
+                          ),
+                          hdivider,
+                          NameTimelineWidget(
+                            text: fetchedData[index]['label'].toString(),
+                            color: index <= colors.length
+                                ? Color(colors[index])
+                                : Color(0XFF9bb67b),
+                            isEven: isEven,
+                            value: fetchedData[index]['value'].toString(),
+                            iconId: fetchedData[index]['icon'].toString(),
+                            size: imageSize,
+                            labelTextStyle: TextStyle(
+                                fontFamily: labelFont.fontFamily,
+                                fontSize: labelFont.fontSize,
+                                fontWeight: labelFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(labelFont.fontColor)),
+                            opacity: opacity,
+                          ),
+                        ]
+                      : [
+                          NameTimelineWidget(
+                            text: fetchedData[index]['label'].toString(),
+                            color: index <= colors.length
+                                ? Color(colors[index])
+                                : Color(0XFF9bb67b),
+                            isEven: isEven,
+                            value: fetchedData[index]['value'].toString(),
+                            iconId: fetchedData[index]['icon'].toString(),
+                            size: imageSize,
+                            labelTextStyle: TextStyle(
+                                fontFamily: labelFont.fontFamily,
+                                fontSize: labelFont.fontSize,
+                                fontWeight: labelFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(labelFont.fontColor)),
+                            opacity: opacity,
+                          ),
+                          hdivider,
+                          CircleIndicator(
+                            index: index,
+                            total: fetchedData.length,
+                            indicatorColor: indicatorColor,
+                            indicatorTextStyle: TextStyle(
+                                fontFamily: indicatorFont.fontFamily,
+                                fontSize: indicatorFont.fontSize,
+                                fontWeight: indicatorFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(indicatorFont.fontColor)),
+                          ),
+                          hdivider,
+                          DescriptionTimelineWidget(
+                            text: fetchedData[index]['description'].toString(),
+                            descTextStyle: TextStyle(
+                                fontFamily: contentFont.fontFamily,
+                                fontSize: contentFont.fontSize,
+                                fontWeight: contentFont.fontBold
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: Color(contentFont.fontColor)),
+                          ),
+                        ],
+                );
+              },
             ),
           ),
         ),
@@ -282,8 +287,6 @@ getParameterDescription(String name, DeviceModel deviceModel) {
   }
   return '-';
 }
-
-
 
 class CircleIndicator extends StatelessWidget {
   final int index;
@@ -458,7 +461,6 @@ class NameTimelineWidget extends StatelessWidget {
     );
   }
 }
-
 
 class DeviceTimelineWidgetBuilder extends TwinnedWidgetBuilder {
   @override
