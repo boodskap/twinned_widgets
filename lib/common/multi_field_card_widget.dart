@@ -123,7 +123,7 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
             children: fieldDataList.asMap().entries.map((entry) {
               int index = entry.key;
               Map<String, dynamic> fieldData = entry.value;
-              Color dynamicColor = Color(colors[index % colors.length]);
+              Color dynamicColor = index<=colors.length?Color(colors[index % colors.length]) :Color(0xFF189309);
               return SizedBox(
                 width: width,
                 height: height,
