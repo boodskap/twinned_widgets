@@ -102,6 +102,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
                   fontWeight:
                       titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   color: Color(titleFont.fontColor))),
+                  hdivider,
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: SingleChildScrollView(
