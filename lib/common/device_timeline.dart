@@ -21,7 +21,6 @@ class DeviceTimelineWidget extends StatefulWidget {
 class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
   bool isValidConfig = false;
   bool apiLoadingStatus = false;
-  late String title;
   late String deviceId;
   late FontConfig labelFont;
   late FontConfig indicatorFont;
@@ -35,12 +34,11 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
   late double opacity;
   List<Map<String, String>> fetchedData = [];
   List<int> colors = [];
-
+  String title = "";
   @override
   void initState() {
     var config = widget.config;
     isValidConfig = widget.config.deviceId.isNotEmpty;
-    title = config.title;
     deviceId = config.deviceId;
     labelFont = FontConfig.fromJson(config.labelFont);
     indicatorFont = FontConfig.fromJson(config.indicatorFont);
@@ -239,6 +237,8 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
       );
 
       if (validateResponse(qRes)) {
+         Map<String, dynamic> deviceReportingData = qRes.body!.result as Map<String, dynamic>;
+          Map<String, dynamic> source = deviceReportingData['hits']['hits'][0]['p_source'];
         Device? device =
             await TwinUtils.getDevice(deviceId: widget.config.deviceId);
         if (null == device) return;
@@ -251,6 +251,7 @@ class _DeviceTimelineWidgetState extends BaseState<DeviceTimelineWidget> {
         List<String> deviceFields = TwinUtils.getSortedFields(deviceModel);
         List<dynamic> values = json['hits']['hits'];
         fetchedData = [];
+        title = source['asset']!="" ?source['asset'] : source['deviceName'];
         if (values.isNotEmpty) {
           Map<String, dynamic> obj = values[0];
           Map<String, dynamic> data = obj['p_source']['data'];
