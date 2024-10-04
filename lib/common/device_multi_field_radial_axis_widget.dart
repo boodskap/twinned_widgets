@@ -54,7 +54,7 @@ class _DeviceMultiFieldRadialAxisWidgetState
 
     isConfigValid = fields.isNotEmpty && deviceId.isNotEmpty;
 
-    _load();
+    
     super.initState();
   }
 
@@ -197,7 +197,9 @@ class _DeviceMultiFieldRadialAxisWidgetState
   }
 
   @override
-  void setup() {}
+  void setup() {
+    _load();
+  }
 }
 
 class DeviceMultiFieldRadialAxisWidgetBuilder extends TwinnedWidgetBuilder {
