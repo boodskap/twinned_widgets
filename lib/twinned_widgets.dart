@@ -26,6 +26,7 @@ import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
+import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
 import 'package:twinned_widgets/common/humidity_progress_widget.dart';
@@ -117,6 +118,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWMultiFieldCardWidget': MultiFieldCardWidgetBuilder(),
   'TWDeviceTimelineWidget':DeviceTimelineWidgetBuilder(),
   'TWGenericOddEvenCardWidget':GenericOddEvenCardWidgetBuilder(),
+  'TWGenericUpDownTriangleWidget': GenericUpDownTriangleWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
