@@ -10,12 +10,28 @@ typedef OnAssetModelSelected = void Function(twin.AssetModel? assetModel);
 class AssetModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnAssetModelSelected onAssetModelSelected;
+  final String hint;
+  final String searchHint;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
   final TextStyle style;
+  final bool isExpanded;
 
   const AssetModelDropdown({
     super.key,
     required this.selectedItem,
     required this.onAssetModelSelected,
+    this.hint = 'Select an Asset Model',
+    this.searchHint = 'Search asset models',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -30,15 +46,13 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.AssetModel>.single(
       value: _selectedItem,
-      hint: 'Select Asset Model',
-      searchHint: 'Select Asset Model',
+      hint: widget.hint,
+      searchHint: widget.searchHint,
       style: widget.style,
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
-      isExpanded: true,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -46,8 +60,6 @@ class _AssetModelDropdownState extends BaseState<AssetModelDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.AssetModel entity = value;
         return Row(

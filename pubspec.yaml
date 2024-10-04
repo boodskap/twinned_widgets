@@ -20,10 +20,10 @@ dependencies:
 
   country_pickers: ^3.0.1
   data_table_2: ^2.5.10
-  syncfusion_flutter_datagrid: ^25.2.6
-  syncfusion_flutter_gauges: ^25.2.6
-  syncfusion_flutter_sliders: ^25.2.7
-  search_choices: ^2.2.7
+  syncfusion_flutter_datagrid: ^27.1.48
+  syncfusion_flutter_gauges: ^27.1.48
+  syncfusion_flutter_sliders: ^27.1.48
+  search_choices: ^2.2.10
   accordion: ^2.6.0
   toggle_switch: ^2.3.0
   percent_indicator: ^4.2.3

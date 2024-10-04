@@ -10,12 +10,30 @@ typedef OnDeviceSelected = void Function(twin.Device? device);
 class DeviceDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceSelected onDeviceSelected;
+  final String hint;
+  final String searchHint;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
   final TextStyle style;
+  final bool isExpanded;
+  final bool isCollapse;
 
   const DeviceDropdown({
     super.key,
     required this.selectedItem,
     required this.onDeviceSelected,
+    this.hint = 'Select a Device',
+    this.searchHint = 'Search devices',
+    this.isExpanded = true,
+    this.isCollapse = false,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -30,15 +48,21 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.Device>.single(
       value: _selectedItem,
-      hint: 'Select Device',
+      hint: widget.isCollapse ? '' : widget.hint,
+      searchHint: widget.isCollapse ? '' : widget.searchHint,
       style: widget.style,
-      searchHint: 'Select Device',
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
-      isExpanded: true,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
+      underline: widget.isCollapse
+          ? Container(
+              height: 0,
+            )
+          : Container(
+              height: 1,
+              color: const Color(0xFFBDBDBD),
+            ),
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -46,28 +70,29 @@ class _DeviceDropdownState extends BaseState<DeviceDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.Device entity = value;
-        return Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                  width: 32,
-                  height: 32,
-                  child: (entity.images?.isNotEmpty ?? false)
-                      ? TwinImageHelper.getDomainImage(entity.images!.first)
-                      : const Icon(Icons.image)),
-            ),
-            divider(horizontal: true),
-            Text(
-              entity.name,
-              style: widget.style,
-            ),
-          ],
-        );
+        return widget.isCollapse
+            ? Container()
+            : Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: (entity.images?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(
+                                entity.images!.first)
+                            : const Icon(Icons.image)),
+                  ),
+                  divider(horizontal: true),
+                  Text(
+                    entity.name,
+                    style: widget.style,
+                  ),
+                ],
+              );
       },
       onChanged: (selected) {
         setState(() {

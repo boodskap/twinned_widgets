@@ -10,12 +10,28 @@ typedef OnDeviceModelSelected = void Function(twin.DeviceModel? deviceModel);
 class DeviceModelDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnDeviceModelSelected onDeviceModelSelected;
+  final String hint;
+  final String searchHint;
+  final bool isExpanded;
+  final Color? menuBackgroundColor;
+  final InputDecoration? searchInputDecoration;
+  final EdgeInsets? dropDownDialogPadding;
   final TextStyle style;
 
   const DeviceModelDropdown({
     super.key,
     required this.selectedItem,
     required this.onDeviceModelSelected,
+    this.hint = 'Select Device Model',
+    this.searchHint = 'Select Device Model',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding,
     this.style = const TextStyle(overflow: TextOverflow.ellipsis),
   });
 
@@ -30,15 +46,13 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<twin.DeviceModel>.single(
       value: _selectedItem,
-      hint: 'Select Device Model',
-      searchHint: 'Select Device Model',
+      hint: widget.hint,
+      searchHint: widget.searchHint,
       style: widget.style,
-      searchInputDecoration: InputDecoration(
-        hintStyle: widget.style,
-        errorStyle: widget.style,
-        labelStyle: widget.style,
-      ),
-      isExpanded: true,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -46,8 +60,6 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         twin.DeviceModel entity = value;
         return Row(
@@ -122,6 +134,14 @@ class _DeviceModelDropdownState extends BaseState<DeviceModelDropdown> {
       debugPrint('$e\n$s');
     }
     loading = false;
+
+    if (items.isNotEmpty &&
+        (null == widget.selectedItem ||
+            (widget.selectedItem?.isEmpty ?? true))) {
+      setState(() {
+        _selectedItem = items.first.value;
+      });
+    }
 
     return Tuple2(items, total);
   }

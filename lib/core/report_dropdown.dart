@@ -5,11 +5,11 @@ import 'package:twin_commons/twin_commons.dart';
 import 'package:twinned_api/twinned_api.dart' as twin;
 import 'package:twin_commons/core/twinned_session.dart';
 
-typedef OnAssetSelected = void Function(twin.Asset? asset);
+typedef OnReportSelected = void Function(twin.Report? asset);
 
-class AssetDropdown extends StatefulWidget {
+class ReportDropdown extends StatefulWidget {
   final String? selectedItem;
-  final OnAssetSelected onAssetSelected;
+  final OnReportSelected onReportSelected;
   final String hint;
   final String searchHint;
   final InputDecoration? searchInputDecoration;
@@ -18,12 +18,12 @@ class AssetDropdown extends StatefulWidget {
   final TextStyle style;
   final bool isExpanded;
 
-  const AssetDropdown({
+  const ReportDropdown({
     super.key,
     required this.selectedItem,
-    required this.onAssetSelected,
-    this.hint = 'Select an Asset',
-    this.searchHint = 'Search assets',
+    required this.onReportSelected,
+    this.hint = 'Select a Report',
+    this.searchHint = 'Search reports',
     this.isExpanded = true,
     this.menuBackgroundColor,
     this.searchInputDecoration = const InputDecoration(
@@ -36,15 +36,15 @@ class AssetDropdown extends StatefulWidget {
   });
 
   @override
-  State<AssetDropdown> createState() => _AssetDropdownState();
+  State<ReportDropdown> createState() => _ReportDropdownState();
 }
 
-class _AssetDropdownState extends BaseState<AssetDropdown> {
-  twin.Asset? _selectedItem;
+class _ReportDropdownState extends BaseState<ReportDropdown> {
+  twin.Report? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
-    return SearchChoices<twin.Asset>.single(
+    return SearchChoices<twin.Report>.single(
       value: _selectedItem,
       hint: widget.hint,
       searchHint: widget.searchHint,
@@ -85,19 +85,19 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
         setState(() {
           _selectedItem = selected;
         });
-        widget.onAssetSelected(_selectedItem);
+        widget.onReportSelected(_selectedItem);
       },
     );
   }
 
-  Future<Tuple2<List<DropdownMenuItem<twin.Asset>>, int>> _search(
+  Future<Tuple2<List<DropdownMenuItem<twin.Report>>, int>> _search(
       {String search = "*", int? page = 0}) async {
     if (loading) return Tuple2([], 0);
     loading = true;
-    List<DropdownMenuItem<twin.Asset>> items = [];
+    List<DropdownMenuItem<twin.Report>> items = [];
     int total = 0;
     try {
-      var pRes = await TwinnedSession.instance.twin.searchAssets(
+      var pRes = await TwinnedSession.instance.twin.searchReports(
           apikey: TwinnedSession.instance.authToken,
           body: twin.SearchReq(search: search, page: page ?? 0, size: 25));
       if (validateResponse(pRes)) {
@@ -105,7 +105,7 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
           if (entity.id == widget.selectedItem) {
             _selectedItem = entity;
           }
-          items.add(DropdownMenuItem<twin.Asset>(
+          items.add(DropdownMenuItem<twin.Report>(
               value: entity,
               child: Row(
                 children: [
@@ -114,9 +114,8 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
                     child: SizedBox(
                         width: 64,
                         height: 48,
-                        child: (entity.images?.isNotEmpty ?? false)
-                            ? TwinImageHelper.getDomainImage(
-                                entity.images!.first)
+                        child: (entity.icon?.isNotEmpty ?? false)
+                            ? TwinImageHelper.getDomainImage(entity.icon!)
                             : const Icon(Icons.image)),
                   ),
                   divider(horizontal: true),
@@ -144,9 +143,9 @@ class _AssetDropdownState extends BaseState<AssetDropdown> {
       return;
     }
     try {
-      var eRes = await TwinnedSession.instance.twin.getAsset(
+      var eRes = await TwinnedSession.instance.twin.getReport(
         apikey: TwinnedSession.instance.authToken,
-        assetId: widget.selectedItem,
+        reportId: widget.selectedItem,
       );
       if (eRes != null && eRes.body != null) {
         setState(() {

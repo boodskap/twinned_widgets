@@ -8,11 +8,30 @@ typedef OnFontFamilySelected = void Function(String? fontFamily);
 class GoogleFontsDropdown extends StatefulWidget {
   final String? selectedItem;
   final OnFontFamilySelected onFontFamilySelected;
+  final String hint;
+  final String searchHint;
+  final InputDecoration? searchInputDecoration;
+  final Color? menuBackgroundColor;
+  final EdgeInsets? dropDownDialogPadding;
+  final TextStyle style;
+  final bool isExpanded;
 
-  const GoogleFontsDropdown(
-      {super.key,
-      required this.selectedItem,
-      required this.onFontFamilySelected});
+  const GoogleFontsDropdown({
+    super.key,
+    required this.selectedItem,
+    required this.onFontFamilySelected,
+    this.hint = 'Select a Font',
+    this.searchHint = 'Search fonts',
+    this.isExpanded = true,
+    this.menuBackgroundColor,
+    this.searchInputDecoration = const InputDecoration(
+      hintStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      errorStyle: TextStyle(overflow: TextOverflow.ellipsis),
+      labelStyle: TextStyle(overflow: TextOverflow.ellipsis),
+    ),
+    this.dropDownDialogPadding,
+    this.style = const TextStyle(overflow: TextOverflow.ellipsis),
+  });
 
   @override
   State<GoogleFontsDropdown> createState() => GoogleFontsDropdownState();
@@ -28,9 +47,13 @@ class GoogleFontsDropdownState extends BaseState<GoogleFontsDropdown> {
   Widget build(BuildContext context) {
     return SearchChoices<String>.single(
       value: _selectedItem,
-      hint: 'Select Font',
-      searchHint: 'Search Fonts',
-      isExpanded: true,
+      hint: widget.hint,
+      searchHint: widget.searchHint,
+      style: widget.style,
+      dropDownDialogPadding: widget.dropDownDialogPadding,
+      searchInputDecoration: widget.searchInputDecoration,
+      menuBackgroundColor: widget.menuBackgroundColor,
+      isExpanded: widget.isExpanded,
       futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
           List<Tuple2<String, String>>? filters, int? pageNb) async {
         pageNb = pageNb ?? 1;
@@ -38,8 +61,6 @@ class GoogleFontsDropdownState extends BaseState<GoogleFontsDropdown> {
         var result = await _search(search: keyword ?? '*', page: pageNb);
         return result;
       },
-      dialogBox: true,
-      dropDownDialogPadding: const EdgeInsets.fromLTRB(250, 50, 250, 50),
       selectedValueWidgetFn: (value) {
         String entity = value;
         return Text(

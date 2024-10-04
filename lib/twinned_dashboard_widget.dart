@@ -157,7 +157,7 @@ class TwinnedDashboardWidgetState extends BaseState<TwinnedDashboardWidget> {
       debugPrint('$tag BG Image: $bgImage, Fit: $fit');
 
       image = DecorationImage(
-        image: TwinImageHelper.getDomainImage(bgImage!).image,
+        image: TwinImageHelper.getUnCachedDomainImage(bgImage!).image,
         fit: fit,
       );
     }
