@@ -46,6 +46,7 @@ import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/common/static_timeline_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
+import 'package:twinned_widgets/common/vertical_card.dart';
 import 'package:twinned_widgets/common/week_humidity_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/solutions/ems/circle_progress_bar_widget.dart';
@@ -121,6 +122,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDirectionalWidget': DirectionalWidgetBuilder(),
   'TWGenericOddEvenCardWidget': GenericOddEvenCardWidgetBuilder(),
   'TWDeviceMultiFieldRadialAxisWidget': DeviceMultiFieldRadialAxisWidgetBuilder(),
+  'TWVerticalFieldCardWidget':VerticalFieldCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
