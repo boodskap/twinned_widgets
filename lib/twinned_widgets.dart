@@ -24,6 +24,7 @@ import 'package:twinned_widgets/common/generic_air_quality_linear_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_odd_even_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
+import 'package:twinned_widgets/common/generic_odd_even_card_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
@@ -114,7 +115,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
       GenericAirQualityOddEvenCircleWidgetBuilder(),
   'TWFieldCardWidget': FieldCardWidgetBuilder(),
   'TWMultiFieldCardWidget': MultiFieldCardWidgetBuilder(),
-  'TWDeviceTimelineWidget':DeviceTimelineWidgetBuilder()
+  'TWDeviceTimelineWidget':DeviceTimelineWidgetBuilder(),
+  'TWGenericOddEvenCardWidget':GenericOddEvenCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
