@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_models/directional_widget/directional_widget.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
@@ -20,6 +19,7 @@ class ArrowData {
 
 class DirectionalWidget extends StatefulWidget {
   final DirectionalWidgetConfig config;
+
   const DirectionalWidget({super.key, required this.config});
 
   @override
@@ -30,9 +30,11 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
   bool isConfigValid = false;
   Map<String, dynamic> fieldValues = {};
   late String title;
-  // late Color bgColor;
+  late Color bgColor;
   late Color widgetColor;
-
+  late FontConfig titleFont;
+  late FontConfig labelFont;
+  late FontConfig valueFont;
   late String deviceIds;
   List<String> fields = [];
 
@@ -40,36 +42,51 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
   void initState() {
     title = widget.config.title;
     widgetColor = Color(widget.config.widgetColor);
-    // bgColor = Color(widget.config.bgColor);
-    // isConfigValid = fields.isNotEmpty && deviceIds.isNotEmpty;
-    // load(); // Load data on initialization
+    bgColor = Color(widget.config.bgColor);
+    titleFont = FontConfig.fromJson(widget.config.titleFont);
+    labelFont = FontConfig.fromJson(widget.config.labelFont);
+    valueFont = FontConfig.fromJson(widget.config.valueFont);
+
+    fields = widget.config.fields;
+    deviceIds = widget.config.deviceId;
+
+    isConfigValid = fields.isNotEmpty && deviceIds.isNotEmpty;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // if (!isConfigValid) {
-    //   return const Center(
-    //     child: Wrap(
-    //       spacing: 8.0,
-    //       children: [
-    //         Text(
-    //           'Not configured properly',
-    //           style:
-    //               TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
+    if (!isConfigValid) {
+      return const Center(
+        child: Wrap(
+          spacing: 8.0,
+          children: [
+            Text(
+              'Not configured properly',
+              style:
+                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
+      );
+    }
+
     List<ArrowData> arrows = fieldValues.entries.map((entry) {
       return ArrowData(label: entry.key, value: entry.value.toString());
     }).toList();
 
     return Scaffold(
-      // backgroundColor: bgColor,
+      backgroundColor: bgColor,
       appBar: AppBar(
-        title: Text(widget.config.title),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: titleFont.fontSize,
+            fontWeight:
+                titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
+            color: Color(titleFont.fontColor),
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -91,12 +108,12 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
                         SizedBox(
                           height: arrows.isNotEmpty
                               ? arrows.length * totalHeightPerArrow
-                              : totalHeightPerArrow, // Minimum height
+                              : totalHeightPerArrow,
                           child: CustomPaint(
                             size: Size(constraints.maxWidth * 0.8,
                                 arrows.length * totalHeightPerArrow),
-                            painter:
-                                SignalDiagramPainter(arrows, 1.0, widgetColor),
+                            painter: SignalDiagramPainter(
+                                arrows, 1.0, widgetColor, valueFont, labelFont),
                           ),
                         ),
                       ],
@@ -109,7 +126,7 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
   }
 
   Future<void> load() async {
-    // if (!isConfigValid) return;
+    if (!isConfigValid) return;
     if (loading) return;
     loading = true;
 
@@ -167,8 +184,11 @@ class SignalDiagramPainter extends CustomPainter {
   final List<ArrowData> arrows;
   final double scaleFactor;
   final Color arrowColor;
+  final FontConfig valueFont;
+  final FontConfig labelFont;
 
-  SignalDiagramPainter(this.arrows, this.scaleFactor, this.arrowColor);
+  SignalDiagramPainter(this.arrows, this.scaleFactor, this.arrowColor,
+      this.valueFont, this.labelFont);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -250,10 +270,12 @@ class SignalDiagramPainter extends CustomPainter {
     canvas.drawPath(arrowPath, paint);
 
     TextSpan valueSpan = TextSpan(
-      style: const TextStyle(
-          color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-      text: value,
-    );
+        text: value,
+        style: TextStyle(
+          fontSize: valueFont.fontSize,
+          fontWeight: valueFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          color: Color(valueFont.fontColor),
+        ));
     TextPainter valueTp = TextPainter(
       text: valueSpan,
       textAlign: TextAlign.center,
@@ -266,10 +288,12 @@ class SignalDiagramPainter extends CustomPainter {
     valueTp.paint(canvas, Offset(valueX, valueY));
 
     TextSpan labelSpan = TextSpan(
-      style: const TextStyle(
-          color: Colors.blue, fontSize: 12, fontWeight: FontWeight.bold),
-      text: label,
-    );
+        text: label,
+        style: TextStyle(
+          fontSize: labelFont.fontSize,
+          fontWeight: labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          color: Color(labelFont.fontColor),
+        ));
     TextPainter labelTp = TextPainter(
       text: labelSpan,
       textAlign: TextAlign.center,
