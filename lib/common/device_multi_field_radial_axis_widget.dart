@@ -6,6 +6,8 @@ import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_models/device_multi_field_radial_axis/device_multi_field_radial_axis.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class DeviceMultiFieldRadialAxisWidget extends StatefulWidget {
   final DeviceMultiFieldRadialAxisWidgetConfig config;
@@ -196,4 +198,40 @@ class _DeviceMultiFieldRadialAxisWidgetState
 
   @override
   void setup() {}
+}
+
+class DeviceMultiFieldRadialAxisWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return DeviceMultiFieldRadialAxisWidget(
+        config: DeviceMultiFieldRadialAxisWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.radar_outlined);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Multi Radial Axis Widget";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return DeviceMultiFieldRadialAxisWidgetConfig.fromJson(config);
+    }
+    return DeviceMultiFieldRadialAxisWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return "Multi Radial Axis Widget";
+  }
 }

@@ -15,7 +15,9 @@ import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
 import 'package:twinned_widgets/common/device_field_spline_chart_widget.dart';
+import 'package:twinned_widgets/common/device_multi_field_radial_axis_widget.dart';
 import 'package:twinned_widgets/common/device_timeline.dart';
+import 'package:twinned_widgets/common/directional_widget.dart';
 import 'package:twinned_widgets/common/dynamic_text_widget.dart';
 import 'package:twinned_widgets/common/field_card_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
@@ -115,8 +117,10 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
       GenericAirQualityOddEvenCircleWidgetBuilder(),
   'TWFieldCardWidget': FieldCardWidgetBuilder(),
   'TWMultiFieldCardWidget': MultiFieldCardWidgetBuilder(),
-  'TWDeviceTimelineWidget':DeviceTimelineWidgetBuilder(),
-  'TWGenericOddEvenCardWidget':GenericOddEvenCardWidgetBuilder(),
+  'TWDeviceTimelineWidget': DeviceTimelineWidgetBuilder(),
+  'TWDirectionalWidget': DirectionalWidgetBuilder(),
+  'TWGenericOddEvenCardWidget': GenericOddEvenCardWidgetBuilder(),
+  'TWDeviceMultiFieldRadialAxisWidget': DeviceMultiFieldRadialAxisWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
