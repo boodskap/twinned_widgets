@@ -1,45 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/generic_air_quality_odd_even_circle/generic_air_quality_odd_even_circle.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twinned_models/generic_up_down_pentagon/generic_up_down_pentagon.dart';
 
-class GenericAirQualityOddEvenCircleWidget extends StatefulWidget {
-  final GenericAirQualityOddEvenCircleWidgetConfig config;
+class GenericUpDownPentagonWidget extends StatefulWidget {
+  final GenericUpDownPentagonWidgetConfig config;
 
-  const GenericAirQualityOddEvenCircleWidget({super.key, required this.config});
+  const GenericUpDownPentagonWidget({super.key, required this.config});
 
   @override
-  State<GenericAirQualityOddEvenCircleWidget> createState() =>
-      _GenericAirQualityOddEvenCircleWidgetState();
+  State<GenericUpDownPentagonWidget> createState() =>
+      _GenericUpDownPentagonWidgetState();
 }
 
-class _GenericAirQualityOddEvenCircleWidgetState
-    extends BaseState<GenericAirQualityOddEvenCircleWidget> {
+class _GenericUpDownPentagonWidgetState
+    extends BaseState<GenericUpDownPentagonWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
   late String subTitle;
-  late String mainField;
   late FontConfig titleFont;
   late FontConfig prefixFont;
   late FontConfig suffixFont;
   late FontConfig valueFont;
-  late FontConfig prefixMainFont;
-  late FontConfig suffixMainFont;
-  late FontConfig valueMainFont;
   late FontConfig subTitleFont;
-  late Color oddCircleBGColor;
-  late Color evenCircleBGColor;
-  late Color oddCircleBorderColor;
-  late Color evenCircleBorderColor;
-  late double oddCircleRadius;
-  late double evenCircleRadius;
+  late Color upperPentagonBGColor;
+  late Color downPentagonBGColor;
   late List<Map<String, String>> deviceData;
   List<Map<String, String>> fetchedData = [];
 
@@ -50,8 +42,6 @@ class _GenericAirQualityOddEvenCircleWidgetState
   bool apiLoadingStatus = false;
   late double imageSize;
   late double horizontalSpacing;
-  late double verticalSpacing;
-  late bool isBouncing;
 
   @override
   void initState() {
@@ -59,28 +49,18 @@ class _GenericAirQualityOddEvenCircleWidgetState
     deviceId = config.deviceId;
     title = config.title;
     subTitle = config.subTitle;
-    mainField = config.mainField;
-    oddCircleBGColor = Color(config.oddCircleBGColor);
-    evenCircleBGColor = Color(config.evenCircleBGColor);
-    oddCircleBorderColor = Color(config.oddCircleBorderColor);
-    evenCircleBorderColor = Color(config.evenCircleBorderColor);
+    upperPentagonBGColor = Color(config.upperPentagonBGColor);
+    downPentagonBGColor = Color(config.downPentagonBGColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
     suffixFont = FontConfig.fromJson(config.suffixFont);
     valueFont = FontConfig.fromJson(config.valueFont);
-    prefixMainFont = FontConfig.fromJson(config.prefixMainFont);
-    suffixMainFont = FontConfig.fromJson(config.suffixMainFont);
-    valueMainFont = FontConfig.fromJson(config.valueMainFont);
     subTitleFont = FontConfig.fromJson(config.subTitleFont);
-    oddCircleRadius = config.oddCircleRadius;
-    evenCircleRadius = config.evenCircleRadius;
     isValidConfig = deviceId.isNotEmpty;
 
-    verticalSpacing = config.verticalSpacing;
     horizontalSpacing = config.horizontalSpacing;
     imageSize = config.imageSize;
-    isBouncing = config.isBouncing;
 
     deviceData = [];
     super.initState();
@@ -146,7 +126,7 @@ class _GenericAirQualityOddEvenCircleWidgetState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSameLevelCircles(),
+                    children: _buildSameLevelPentagons(),
                   ),
                 ),
               ],
@@ -157,112 +137,97 @@ class _GenericAirQualityOddEvenCircleWidgetState
     );
   }
 
-  List<Widget> _buildSameLevelCircles() {
+  List<Widget> _buildSameLevelPentagons() {
     return deviceData.asMap().entries.map((entry) {
       int index = entry.key;
       Map<String, String> item = entry.value;
 
-      bool isEven = index % 2 == 0;
+      bool isEven =
+          index % 2 == 0; // Upper pentagon for even index, down for odd
 
-      Color bgColor = isEven ? oddCircleBGColor : evenCircleBGColor;
-      Color borderColor = isEven ? oddCircleBorderColor : evenCircleBorderColor;
+      Color bgColor = isEven ? upperPentagonBGColor : downPentagonBGColor;
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalSpacing),
-        child: _buildCircle(
+        child: _buildCard(
           item['prefix']!,
           item['value']!,
           item['suffix']!,
           item['icon']!,
           bgColor,
-          borderColor,
+          isEven, // true for upper pentagon, false for down pentagon
         ),
       );
     }).toList();
   }
 
-  Widget _buildCircle(String prefix, String value, String suffix, String iconId,
-      Color bgColor, Color borderColor) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: borderColor, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: borderColor,
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: const Offset(0, 0),
-          ),
-        ],
-      ),
-      child: CircleAvatar(
-        radius: evenCircleRadius,
-        backgroundColor: bgColor.withOpacity(0.7),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                prefix.isNotEmpty ? prefix : 'N/A',
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: prefixFont.fontFamily,
-                  fontSize: prefixFont.fontSize,
-                  fontWeight:
-                      prefixFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                  color: Color(prefixFont.fontColor),
-                ),
+  Widget _buildCard(String prefix, String value, String suffix, String iconId,
+      Color bgColor, bool isUpperPentagon) {
+    return ClipPath(
+      // Use PentagonClipper for upper pentagon or DownPentagonClipper for down pentagon
+      clipper: isUpperPentagon ? PentagonClipper() : DownPentagonClipper(),
+      child: Container(
+        height: 150,
+        width: 150,
+        color: bgColor.withOpacity(0.7),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              prefix.isNotEmpty ? prefix : 'N/A',
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: prefixFont.fontFamily,
+                fontSize: prefixFont.fontSize,
+                fontWeight:
+                    prefixFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                color: Color(prefixFont.fontColor),
               ),
-              const SizedBox(
-                height: 5,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            if (iconId.isNotEmpty)
+              SizedBox(
+                width: imageSize,
+                height: imageSize,
+                child: TwinImageHelper.getDomainImage(iconId),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (iconId.isNotEmpty)
-                    SizedBox(
-                      width: imageSize,
-                      height: imageSize,
-                      child: TwinImageHelper.getDomainImage(iconId),
-                    ),
-                  if (iconId.isEmpty)
-                    Icon(Icons.display_settings, size: imageSize),
-                  const SizedBox(
-                    width: 4,
+            const SizedBox(
+              height: 6,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value.isNotEmpty ? value : '0',
+                  style: TextStyle(
+                    fontFamily: valueFont.fontFamily,
+                    fontSize: valueFont.fontSize,
+                    fontWeight: valueFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(valueFont.fontColor),
                   ),
-                  Text(
-                    value.isNotEmpty ? value : '0',
-                    style: TextStyle(
-                      fontFamily: valueFont.fontFamily,
-                      fontSize: valueFont.fontSize,
-                      fontWeight: valueFont.fontBold
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: Color(valueFont.fontColor),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Text(
-                suffix.isNotEmpty ? suffix : 'N/A',
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: suffixFont.fontFamily,
-                  fontSize: suffixFont.fontSize,
-                  fontWeight:
-                      suffixFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                  color: Color(suffixFont.fontColor),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(width: 3),
+                Text(
+                  suffix.isNotEmpty ? suffix : 'N/A',
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: suffixFont.fontFamily,
+                    fontSize: suffixFont.fontSize,
+                    fontWeight: suffixFont.fontBold
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(suffixFont.fontColor),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -318,7 +283,7 @@ class _GenericAirQualityOddEvenCircleWidgetState
             String value = '${data[field] ?? '-'}';
             String unit = TwinUtils.getParameterUnit(field, deviceModel);
             dynamic iconId = TwinUtils.getParameterIcon(field, deviceModel);
-            if (field != mainField) {
+            if (field != value) {
               fetchedData.add({
                 'prefix': label,
                 'value': value,
@@ -345,11 +310,47 @@ class _GenericAirQualityOddEvenCircleWidgetState
   }
 }
 
-class GenericAirQualityOddEvenCircleWidgetBuilder extends TwinnedWidgetBuilder {
+class PentagonClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    // Create pentagon path points
+    path.moveTo(size.width * 0.5, 0); // Top point
+    path.lineTo(size.width, size.height * 0.38); // Top right
+    path.lineTo(size.width * 0.8, size.height); // Bottom right
+    path.lineTo(size.width * 0.2, size.height); // Bottom left
+    path.lineTo(0, size.height * 0.38); // Top left
+    path.close(); // Complete the pentagon
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class DownPentagonClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    // Create a flipped pentagon path (down facing)
+    path.moveTo(0, size.height * 0.62); // Top left
+    path.lineTo(size.width * 0.2, 0); // Bottom left
+    path.lineTo(size.width * 0.8, 0); // Bottom right
+    path.lineTo(size.width, size.height * 0.62); // Top right
+    path.lineTo(size.width * 0.5, size.height); // Bottom point
+    path.close(); // Complete the pentagon
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class GenericUpDownPentagonWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return GenericAirQualityOddEvenCircleWidget(
-        config: GenericAirQualityOddEvenCircleWidgetConfig.fromJson(config));
+    return GenericUpDownPentagonWidget(
+        config: GenericUpDownPentagonWidgetConfig.fromJson(config));
   }
 
   @override
@@ -359,24 +360,24 @@ class GenericAirQualityOddEvenCircleWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.lens_rounded);
+    return const Icon(Icons.pentagon_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Odd Even Circle Widget";
+    return "Generic Pentagon Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (null != config) {
-      return GenericAirQualityOddEvenCircleWidgetConfig.fromJson(config);
+      return GenericUpDownPentagonWidgetConfig.fromJson(config);
     }
-    return GenericAirQualityOddEvenCircleWidgetConfig();
+    return GenericUpDownPentagonWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Odd Even Circle Widget';
+    return 'Generic Up Down Pentagon Widget';
   }
 }
