@@ -72,7 +72,7 @@ class _MultiFieldDeviceSplineChartWidgetState
     size = widget.size;
     duration = widget.config.duration;
     deviceId = widget.config.deviceId;
-    fields = widget.config.field;
+    fields = widget.config.fields;
     chartBorderColor = Color(widget.config.chartBorderColor);
     enableTooltip = widget.config.enableTooltip;
     legendIconType = widget.config.iconType;
