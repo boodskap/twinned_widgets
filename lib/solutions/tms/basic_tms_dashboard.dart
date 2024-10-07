@@ -221,7 +221,7 @@ class _BasicTMSDashboardScreenState extends BaseState<BasicTMSDashboardScreen> {
                       child: MultiFieldDeviceSplineChartWidget(
                         config: MultiFieldDeviceSplineChartWidgetConfig(
                           deviceId: deviceId ?? '',
-                          field: [
+                          fields: [
                             "temperature",
                             "level",
                           ],
