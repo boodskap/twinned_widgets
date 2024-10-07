@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/directional_widget/directional_widget.dart';
 import 'package:twinned_models/models.dart';
@@ -75,54 +76,49 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
       return ArrowData(label: entry.key, value: entry.value.toString());
     }).toList();
 
-    return Scaffold(
-      backgroundColor: bgColor,
-      appBar: AppBar(
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: titleFont.fontSize,
-            fontWeight:
-                titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
-            color: Color(titleFont.fontColor),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : LayoutBuilder(
-              builder: (context, constraints) {
-                double arrowHeight = 30;
-                double arrowPadding = 20;
-                double totalHeightPerArrow = arrowHeight + arrowPadding;
+    return loading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title,
+                  style: TwinUtils.getTextStyle(titleFont),
+                ),
+              ),
+              divider(height: 10),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  double arrowHeight = 30;
+                  double arrowPadding = 20;
+                  double totalHeightPerArrow = arrowHeight + arrowPadding;
 
-                return SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: arrows.isNotEmpty
-                              ? arrows.length * totalHeightPerArrow
-                              : totalHeightPerArrow,
-                          child: CustomPaint(
-                            size: Size(constraints.maxWidth * 0.8,
-                                arrows.length * totalHeightPerArrow),
-                            painter: SignalDiagramPainter(
-                                arrows, 1.0, widgetColor, valueFont, labelFont),
+                  return SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: arrows.isNotEmpty
+                                ? arrows.length * totalHeightPerArrow
+                                : totalHeightPerArrow,
+                            child: CustomPaint(
+                              size: Size(constraints.maxWidth * 0.8,
+                                  arrows.length * totalHeightPerArrow),
+                              painter: SignalDiagramPainter(arrows, 1.0,
+                                  widgetColor, valueFont, labelFont),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-    );
+                  );
+                },
+              ),
+            ],
+          );
   }
 
   Future<void> load() async {
