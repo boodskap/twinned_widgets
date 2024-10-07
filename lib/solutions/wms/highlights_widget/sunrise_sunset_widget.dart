@@ -4,9 +4,11 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class SunriseSunsetWidget extends StatefulWidget {
   final DeviceFieldRangeGaugeWidgetConfig config;
@@ -35,7 +37,6 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
   late Color valueColor;
   DateTime sunriseValue = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime sunsetValue = DateTime.fromMillisecondsSinceEpoch(0);
-  bool loading = false;
 
   @override
   void initState() {
@@ -60,6 +61,14 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -71,7 +80,7 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
       ),
       child: Card(
         color: Colors.transparent,
-          elevation: 0,
+        elevation: 0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -137,7 +146,7 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
                           children: [
                             Text('Sunset',
                                 style: TwinUtils.getTextStyle(labelFont)),
-                            Text(_formatTime(sunsetValue)?? '--',
+                            Text(_formatTime(sunsetValue) ?? '--',
                                 style: TwinUtils.getTextStyle(labelFont)),
                           ],
                         ),
@@ -205,8 +214,6 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
               sunriseValue = DateTime.fromMillisecondsSinceEpoch(sunriseEpoch);
               sunsetValue = DateTime.fromMillisecondsSinceEpoch(sunsetEpoch);
             });
-            // debugPrint('Sunrise time: ${_formatTime(sunriseValue)}');
-            // debugPrint('Sunset time: ${_formatTime(sunsetValue)}');
           }
         }
       }
@@ -218,5 +225,41 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class SunriseSunsetWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return SunriseSunsetWidget(
+        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.sunny_snowing);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Sunrise & Sunset Widget";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+    }
+    return DeviceFieldRangeGaugeWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return "Sunrise & Sunset Widget";
   }
 }

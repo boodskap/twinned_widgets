@@ -59,6 +59,9 @@ import 'package:twinned_widgets/solutions/ems/infrastructure_card_widget.dart';
 import 'package:twinned_widgets/solutions/ems/vertical_progress_bar_widget.dart';
 import 'package:twinned_widgets/solutions/tms/device_field_radial_gauge_widget.dart.dart';
 import 'package:twinned_widgets/solutions/tms/multi_field_device_spline_area_chart_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/sunrise_sunset_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/uv_index_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/wind_status_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 import 'common/multiple_device_cartesian_chart_widget.dart';
@@ -134,6 +137,9 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
       MultiFieldDeviceSplineChartWidgetBuilder(),
   'TWDeviceFieldRadialGaugeWidget': DeviceFieldRadialGaugeWidgetBuilder(),
   'TWGenericOddEvenDiamondWidget': GenericOddEvenDiamondWidgetBuilder(),
+  'TWUvIndexWidget': UvIndexWidgetBuilder(),
+  'TWWindStatusWidget': WindStatusWidgetBuilder(),
+  'TWSunriseSunsetWidget': SunriseSunsetWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {

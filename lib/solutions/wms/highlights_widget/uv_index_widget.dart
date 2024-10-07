@@ -3,9 +3,11 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class UvIndexWidget extends StatefulWidget {
   final DeviceFieldRangeGaugeWidgetConfig config;
@@ -32,9 +34,11 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
   late FontConfig valueFont;
   late Color backgroundColor;
   late Color valueColor;
+  late double interval;
+  late bool showFirtLablel;
+  late bool showLastLabel;
+  late bool showLabel;
   double value = 0;
-
-  bool loading = false;
 
   @override
   void initState() {
@@ -50,6 +54,10 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
     valueFont = FontConfig.fromJson(config.valueFont);
     valueColor = Color(config.valueColor);
     backgroundColor = Color(config.backgroundColor);
+    interval = config.interval;
+    showFirtLablel = config.showFirstLabel;
+    showLastLabel = config.showLastLabel;
+    showLabel = config.showLabel;
 
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
@@ -57,6 +65,14 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -88,10 +104,10 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
                     endAngle: 0,
                     maximum: maximum,
                     minimum: minimum,
-                    interval: 3,
-                    showLastLabel: false,
-                    showFirstLabel: false,
-                    showLabels: true,
+                    interval: interval,
+                    showLastLabel: showLastLabel,
+                    showFirstLabel: showFirtLablel,
+                    showLabels: showLabel,
                     labelsPosition: ElementsPosition.outside,
                     labelOffset: 10,
                     axisLabelStyle: GaugeTextStyle(
@@ -173,9 +189,6 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-        // Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-        // if (device == null) return;
-
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
         if (json != null) {
@@ -199,5 +212,41 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class UvIndexWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return UvIndexWidget(
+        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.airline_stops_rounded);
+  }
+
+  @override
+  String getPaletteName() {
+    return "UV Index Widget";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+    }
+    return DeviceFieldRangeGaugeWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return "UV Index Widget";
   }
 }

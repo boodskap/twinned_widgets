@@ -7,6 +7,8 @@ import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class WindStatusWidget extends StatefulWidget {
   final DeviceFieldRangeGaugeWidgetConfig config;
@@ -24,6 +26,7 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
   late String deviceId;
   late String title;
   late List<String> fields;
+  late String field;
   late double minimum;
   late double maximum;
   late FontConfig titleFont;
@@ -36,12 +39,11 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
   double windSpeed = 0;
   // double value = 0;
 
-  bool loading = false;
-
   @override
   void initState() {
     var config = widget.config;
     fields = config.fields;
+    field = config.field;
     title = config.title;
     deviceId = config.deviceId;
     minimum = config.minimum;
@@ -52,12 +54,20 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
     labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
 
-    isValidConfig = fields.isNotEmpty && deviceId.isNotEmpty;
+    isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -178,10 +188,7 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
               "match_phrase": {"deviceId": deviceId}
             },
             {
-              "exists": {"field": "data.${fields[0]}"}
-            },
-            {
-              "exists": {"field": "data.${fields[1]}"}
+              "exists": {"field": "data.$field"}
             },
           ],
         ),
@@ -199,13 +206,11 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
 
           if (hits.isNotEmpty) {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-            var winddirection = obj['p_source']['data'][fields[0]];
-            var windspeed = obj['p_source']['data'][fields[1]];
-            // debugPrint(winddirection.toString());
+            var windspeed = obj['p_source']['data'][field];
 
             setState(() {
-              windDirectionValue = winddirection;
               windSpeed = windspeed;
+              windDirectionValue = windspeed;
             });
           }
         }
@@ -218,5 +223,41 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class WindStatusWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return WindStatusWidget(
+        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.air_rounded);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Wind Status Widget";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+    }
+    return DeviceFieldRangeGaugeWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return "Wind Status Widget";
   }
 }
