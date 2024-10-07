@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twin_commons/core/base_state.dart';
-import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
-import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
+import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/device_multi_field_radial_axis/device_multi_field_radial_axis.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
@@ -51,8 +51,9 @@ class _DeviceMultiFieldRadialAxisWidgetState
     axisBgColor = Color(config.axisBgColor);
     gaugeAnimate = config.gaugeAnimate;
 
-    isConfigValid = fields.isNotEmpty && deviceId.isNotEmpty;
-
+    isConfigValid = fields.isNotEmpty &&
+        deviceId.isNotEmpty &&
+        (config.fields.length == config.ranges.length);
     super.initState();
   }
 
@@ -67,73 +68,72 @@ class _DeviceMultiFieldRadialAxisWidgetState
       );
     }
 
-    return SfRadialGauge(
-      enableLoadingAnimation: gaugeAnimate,
-      title: GaugeTitle(
-        text: title,
-        textStyle: TwinUtils.getTextStyle(titleFont),
-      ),
-      axes: widget.config.ranges.asMap().entries.map((entry) {
-        int index = entry.key;
-        Map<String, dynamic> range = entry.value;
-
-        double from = range['from']?.toDouble() ?? 0.0;
-        double to = range['to']?.toDouble() ?? 100.0;
-        String label = range['label'] ?? 'Unknown';
-        Color fieldColor = Color(range['color']);
-
-        double value = fieldValues[fields[index]]?.toDouble() ?? 0.0;
-        double radiusFactorNew = radiusFactor - (index * 0.1);
-
-        return RadialAxis(
-          pointers: [
-            //individual range properties
-            RangePointer(
-              value: value,
-              width: axisLineThickness,
-              color: fieldColor,
-              enableAnimation: gaugeAnimate,
+    return loading
+        ? const Center(child: CircularProgressIndicator())
+        : SfRadialGauge(
+            enableLoadingAnimation: gaugeAnimate,
+            title: GaugeTitle(
+              text: title,
+              textStyle: TwinUtils.getTextStyle(titleFont),
             ),
-          ],
-          annotations: [
-            GaugeAnnotation(
-              widget: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    radius: 5,
-                    backgroundColor: fieldColor,
-                  ),
-                  const SizedBox(width: 3),
-                  Text(
-                    '$label $value',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: fieldColor,
-                    ),
+            axes: widget.config.ranges.asMap().entries.map((entry) {
+              int index = entry.key;
+              Map<String, dynamic> range = entry.value;
+
+              double from = range['from']?.toDouble() ?? 0.0;
+              double to = range['to']?.toDouble() ?? 100.0;
+              String label = range['label'] ?? 'Unknown';
+              Color fieldColor = Color(range['color']);
+
+              double value = fieldValues[fields[index]]?.toDouble() ?? 0.0;
+              double radiusFactorNew = radiusFactor - (index * 0.1);
+
+              return RadialAxis(
+                pointers: [
+                  //individual range properties
+                  RangePointer(
+                    value: value,
+                    width: axisLineThickness,
+                    color: fieldColor,
+                    enableAnimation: gaugeAnimate,
                   ),
                 ],
-              ),
-              angle: 250 - (index * 5),
-              positionFactor: 1,
-              horizontalAlignment: GaugeAlignment.far,
-            ),
-          ],
-          axisLineStyle: AxisLineStyle(
-            thickness: axisLineThickness,
-            color: axisBgColor,
-          ),
-          minimum: from,
-          maximum: to,
-          startAngle: startAngle,
-          endAngle: endAngle,
-          radiusFactor: radiusFactorNew,
-          showLabels: false,
-          showTicks: false,
-        );
-      }).toList(),
-    );
+                annotations: [
+                  GaugeAnnotation(
+                    widget: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          radius: 5,
+                          backgroundColor: fieldColor,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          '$label $value',
+                          style: TwinUtils.getTextStyle(labelFont)
+                              .copyWith(color: fieldColor),
+                        ),
+                      ],
+                    ),
+                    angle: 250 - (index * 5),
+                    positionFactor: 1,
+                    horizontalAlignment: GaugeAlignment.far,
+                  ),
+                ],
+                axisLineStyle: AxisLineStyle(
+                  thickness: axisLineThickness,
+                  color: axisBgColor,
+                ),
+                minimum: from,
+                maximum: to,
+                startAngle: startAngle,
+                endAngle: endAngle,
+                radiusFactor: radiusFactorNew,
+                showLabels: false,
+                showTicks: false,
+              );
+            }).toList(),
+          );
   }
 
   Future<void> _load() async {
@@ -177,15 +177,8 @@ class _DeviceMultiFieldRadialAxisWidgetState
       }
     }
 
-    // if (mounted) {
-    //   setState(() {});
-    // }
-
     loading = false;
     refresh();
-    // if (mounted) {
-    //   refresh(); // Ensure refresh is called safely
-    // }
   }
 
   @override

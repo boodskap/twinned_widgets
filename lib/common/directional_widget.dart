@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_models/directional_widget/directional_widget.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
@@ -20,6 +20,7 @@ class ArrowData {
 
 class DirectionalWidget extends StatefulWidget {
   final DirectionalWidgetConfig config;
+
   const DirectionalWidget({super.key, required this.config});
 
   @override
@@ -30,117 +31,143 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
   bool isConfigValid = false;
   Map<String, dynamic> fieldValues = {};
   late String title;
-  late Color titleBgColor;
+  late Color bgColor;
   late Color widgetColor;
-
+  late FontConfig titleFont;
+  late FontConfig labelFont;
+  late FontConfig valueFont;
   late String deviceIds;
   List<String> fields = [];
-  bool loading = false;
 
   @override
   void initState() {
-    super.initState();
     title = widget.config.title;
     widgetColor = Color(widget.config.widgetColor);
-    titleBgColor = Color(widget.config.titleBgColor);
-    // load(); // Load data on initialization
+    bgColor = Color(widget.config.bgColor);
+    titleFont = FontConfig.fromJson(widget.config.titleFont);
+    labelFont = FontConfig.fromJson(widget.config.labelFont);
+    valueFont = FontConfig.fromJson(widget.config.valueFont);
+
+    fields = widget.config.fields;
+    deviceIds = widget.config.deviceId;
+
+    isConfigValid = fields.isNotEmpty && deviceIds.isNotEmpty;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!isConfigValid) {
+      return const Center(
+        child: Wrap(
+          spacing: 8.0,
+          children: [
+            Text(
+              'Not configured properly',
+              style:
+                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
+      );
+    }
+
     List<ArrowData> arrows = fieldValues.entries.map((entry) {
       return ArrowData(label: entry.key, value: entry.value.toString());
     }).toList();
 
-    return Scaffold(
-      backgroundColor: Colors.blueGrey[900],
-      appBar: AppBar(
-        title: const Text('All'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: loading
-          ? Center(child: CircularProgressIndicator())
-          : LayoutBuilder(
-              builder: (context, constraints) {
-                double arrowHeight = 30;
-                double arrowPadding = 20;
-                double totalHeightPerArrow = arrowHeight + arrowPadding;
+    return loading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title,
+                  style: TwinUtils.getTextStyle(titleFont),
+                ),
+              ),
+              divider(height: 10),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  double arrowHeight = 30;
+                  double arrowPadding = 20;
+                  double totalHeightPerArrow = arrowHeight + arrowPadding;
 
-                return SingleChildScrollView(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: arrows.isNotEmpty
-                              ? arrows.length * totalHeightPerArrow
-                              : totalHeightPerArrow, // Minimum height
-                          child: CustomPaint(
-                            size: Size(constraints.maxWidth * 0.8,
-                                arrows.length * totalHeightPerArrow),
-                            painter: SignalDiagramPainter(arrows, 1.0),
+                  return SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: arrows.isNotEmpty
+                                ? arrows.length * totalHeightPerArrow
+                                : totalHeightPerArrow,
+                            child: CustomPaint(
+                              size: Size(constraints.maxWidth * 0.8,
+                                  arrows.length * totalHeightPerArrow),
+                              painter: SignalDiagramPainter(arrows, 1.0,
+                                  widgetColor, valueFont, labelFont),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-    );
+                  );
+                },
+              ),
+            ],
+          );
   }
 
   Future<void> load() async {
+    if (!isConfigValid) return;
     if (loading) return;
     loading = true;
-   
-      await execute(() async {
-        var query = EqlSearch(
-          source: ["data"],
-          page: 0,
-          size: 1,
-          mustConditions: [
-            {
-              "match_phrase": {"deviceId": widget.config.deviceId}
-            }
-          ],
-        );
 
-        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
-          apikey: TwinnedSession.instance.authToken,
-          body: query,
-        );
+    await execute(() async {
+      var query = EqlSearch(
+        source: ["data"],
+        page: 0,
+        size: 1,
+        mustConditions: [
+          {
+            "match_phrase": {"deviceId": widget.config.deviceId}
+          }
+        ],
+      );
 
-        if (qRes.body != null &&
-            qRes.body!.result != null &&
-            validateResponse(qRes)) {
-          Map<String, dynamic>? json =
-              qRes.body!.result! as Map<String, dynamic>?;
+      var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+        apikey: TwinnedSession.instance.authToken,
+        body: query,
+      );
 
-          if (json != null) {
-            List<dynamic> hits = json['hits']['hits'];
+      if (qRes.body != null &&
+          qRes.body!.result != null &&
+          validateResponse(qRes)) {
+        Map<String, dynamic>? json =
+            qRes.body!.result! as Map<String, dynamic>?;
 
-            if (hits.isNotEmpty) {
-              Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-              Map<String, dynamic> source =
-                  obj['p_source'] as Map<String, dynamic>;
-              Map<String, dynamic> data =
-                  source['data'] as Map<String, dynamic>;
+        if (json != null) {
+          List<dynamic> hits = json['hits']['hits'];
 
-              for (var field in widget.config.fields) {
-                fieldValues[field] = data[field] ?? 0.0;
-              }
+          if (hits.isNotEmpty) {
+            Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
+            Map<String, dynamic> source =
+                obj['p_source'] as Map<String, dynamic>;
+            Map<String, dynamic> data = source['data'] as Map<String, dynamic>;
+
+            for (var field in widget.config.fields) {
+              fieldValues[field] = data[field] ?? 0.0;
             }
           }
         }
-      });
-   
-      loading = false;
-      refresh(); 
-  
+      }
+    });
+
+    loading = false;
+    refresh();
   }
 
   @override
@@ -152,13 +179,17 @@ class _DirectionalWidgetState extends BaseState<DirectionalWidget> {
 class SignalDiagramPainter extends CustomPainter {
   final List<ArrowData> arrows;
   final double scaleFactor;
+  final Color arrowColor;
+  final FontConfig valueFont;
+  final FontConfig labelFont;
 
-  SignalDiagramPainter(this.arrows, this.scaleFactor);
+  SignalDiagramPainter(this.arrows, this.scaleFactor, this.arrowColor,
+      this.valueFont, this.labelFont);
 
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = Colors.blue
+      ..color = arrowColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8.0;
 
@@ -235,10 +266,12 @@ class SignalDiagramPainter extends CustomPainter {
     canvas.drawPath(arrowPath, paint);
 
     TextSpan valueSpan = TextSpan(
-      style: const TextStyle(
-          color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-      text: value,
-    );
+        text: value,
+        style: TextStyle(
+          fontSize: valueFont.fontSize,
+          fontWeight: valueFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          color: Color(valueFont.fontColor),
+        ));
     TextPainter valueTp = TextPainter(
       text: valueSpan,
       textAlign: TextAlign.center,
@@ -251,10 +284,12 @@ class SignalDiagramPainter extends CustomPainter {
     valueTp.paint(canvas, Offset(valueX, valueY));
 
     TextSpan labelSpan = TextSpan(
-      style: const TextStyle(
-          color: Colors.blue, fontSize: 12, fontWeight: FontWeight.bold),
-      text: label,
-    );
+        text: label,
+        style: TextStyle(
+          fontSize: labelFont.fontSize,
+          fontWeight: labelFont.fontBold ? FontWeight.bold : FontWeight.normal,
+          color: Color(labelFont.fontColor),
+        ));
     TextPainter labelTp = TextPainter(
       text: labelSpan,
       textAlign: TextAlign.center,
@@ -272,11 +307,11 @@ class SignalDiagramPainter extends CustomPainter {
     return false;
   }
 }
+
 class DirectionalWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return DirectionalWidget(
-        config: DirectionalWidgetConfig.fromJson(config));
+    return DirectionalWidget(config: DirectionalWidgetConfig.fromJson(config));
   }
 
   @override
@@ -307,4 +342,3 @@ class DirectionalWidgetBuilder extends TwinnedWidgetBuilder {
     return "Directional Widget";
   }
 }
-

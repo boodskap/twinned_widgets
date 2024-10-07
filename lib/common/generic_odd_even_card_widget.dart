@@ -165,7 +165,7 @@ class _GenericOddEvenCardWidgetState
           item['suffix']!,
           item['icon']!,
           bgColor,
-          cardElevation, // Pass the correct elevation here
+          cardElevation,
         ),
       );
     }).toList();
@@ -181,12 +181,9 @@ class _GenericOddEvenCardWidgetState
       clipBehavior: Clip.hardEdge,
       color: bgColor.withOpacity(0.7),
       child: Container(
-        // decoration: BoxDecoration(
-        //   // Remove the color here as it is already set on the Card
-        //   border: Border.all(width: 2),
-        // ),
+        height: 100,
+        width: 100,
         decoration: BoxDecoration(
-          // color: Color(widget.config.valueBgColor),
           borderRadius: BorderRadius.circular(
             8.0,
           ),
@@ -225,7 +222,7 @@ class _GenericOddEvenCardWidgetState
               height: 4,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   value.isNotEmpty ? value : '0',
@@ -237,6 +234,9 @@ class _GenericOddEvenCardWidgetState
                         : FontWeight.normal,
                     color: Color(valueFont.fontColor),
                   ),
+                ),
+                const SizedBox(
+                  width: 4,
                 ),
                 Text(
                   suffix.isNotEmpty ? suffix : 'N/A',
