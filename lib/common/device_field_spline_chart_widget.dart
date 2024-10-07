@@ -47,7 +47,7 @@ class _DeviceFieldSplineAreaChartWidgetState
   DateTime? customStartDate;
   DateTime? customEndDate;
 
-  bool loading = false;
+  // bool loading = false;
   String fieldName = '--';
   String unit = '--';
 
