@@ -38,7 +38,6 @@ class _DeviceMultiFieldRadialAxisWidgetState
 
   @override
   void initState() {
-
     var config = widget.config;
     fields = config.fields;
     deviceId = config.deviceId;
@@ -54,7 +53,6 @@ class _DeviceMultiFieldRadialAxisWidgetState
 
     isConfigValid = fields.isNotEmpty && deviceId.isNotEmpty;
 
-    _load();
     super.initState();
   }
 
@@ -69,135 +67,131 @@ class _DeviceMultiFieldRadialAxisWidgetState
       );
     }
 
-    return SizedBox(
-      width: 500,
-      height: 500,
-      child: SfRadialGauge(
-        enableLoadingAnimation: true,
-        title: GaugeTitle(
-          text: title,
-          textStyle: TwinUtils.getTextStyle(titleFont),
-        ),
-        axes: fields.asMap().entries.map((entry) {
-          int index = entry.key;
-          String fieldName = entry.value;
-
-          double value = fieldValues[fieldName]?.toDouble() ?? 0.0;
-
-          Color fieldColor = Colors.blue; // Placeholder for actual field color
-          double radiusFactor = 1 - (index * 0.1);
-
-          return RadialAxis(
-            pointers: [
-              RangePointer(
-                value: value, // Set the dynamic value for the RangePointer
-                width: 20,
-                color: fieldColor, // Use dynamic color
-                enableAnimation: gaugeAnimate,
-              ),
-            ],
-            annotations: [
-              GaugeAnnotation(
-                widget: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      radius: 5, // Circle icon size
-                      backgroundColor: fieldColor, // Same color as the pointer
-                    ),
-                    const SizedBox(width: 3), // Space between circle and text
-                    Text(
-                      fieldName, // Use the field's name as a label
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: fieldColor,
-                      ),
-                    ),
-                  ],
-                ),
-                angle: 250 - (index * 5),
-                positionFactor: 1,
-                horizontalAlignment: GaugeAlignment.far,
-              ),
-            ],
-            axisLineStyle: AxisLineStyle(
-              thickness: 20,
-              color: axisBgColor,
-            ),
-            minimum: 0,
-            maximum: 100,
-            startAngle: startAngle,
-            endAngle: endAngle,
-            showLabels: false,
-            showTicks: false,
-            radiusFactor: radiusFactor,
-          );
-        }).toList(),
+    return SfRadialGauge(
+      enableLoadingAnimation: gaugeAnimate,
+      title: GaugeTitle(
+        text: title,
+        textStyle: TwinUtils.getTextStyle(titleFont),
       ),
+      axes: widget.config.ranges.asMap().entries.map((entry) {
+        int index = entry.key;
+        Map<String, dynamic> range = entry.value;
+
+        double from = range['from']?.toDouble() ?? 0.0;
+        double to = range['to']?.toDouble() ?? 100.0;
+        String label = range['label'] ?? 'Unknown';
+        Color fieldColor = Color(range['color']);
+
+        double value = fieldValues[fields[index]]?.toDouble() ?? 0.0;
+        double radiusFactorNew = radiusFactor - (index * 0.1);
+
+        return RadialAxis(
+          pointers: [
+            //individual range properties
+            RangePointer(
+              value: value,
+              width: axisLineThickness,
+              color: fieldColor,
+              enableAnimation: gaugeAnimate,
+            ),
+          ],
+          annotations: [
+            GaugeAnnotation(
+              widget: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 5,
+                    backgroundColor: fieldColor,
+                  ),
+                  const SizedBox(width: 3),
+                  Text(
+                    '$label $value',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: fieldColor,
+                    ),
+                  ),
+                ],
+              ),
+              angle: 250 - (index * 5),
+              positionFactor: 1,
+              horizontalAlignment: GaugeAlignment.far,
+            ),
+          ],
+          axisLineStyle: AxisLineStyle(
+            thickness: axisLineThickness,
+            color: axisBgColor,
+          ),
+          minimum: from,
+          maximum: to,
+          startAngle: startAngle,
+          endAngle: endAngle,
+          radiusFactor: radiusFactorNew,
+          showLabels: false,
+          showTicks: false,
+        );
+      }).toList(),
     );
   }
 
   Future<void> _load() async {
-    if (!isConfigValid) return;
+    if (!isConfigValid || loading) return;
 
-    if (loading) return;
     loading = true;
 
-    try {
-      await execute(() async {
-        var query = EqlSearch(
-          source: ["data"],
-          page: 0,
-          size: 1,
-          mustConditions: [
-            {
-              "match_phrase": {"deviceId": deviceId}
-            }
-          ],
-        );
+    var query = EqlSearch(
+      source: ["data"],
+      page: 0,
+      size: 1,
+      mustConditions: [
+        {
+          "match_phrase": {"deviceId": deviceId}
+        }
+      ],
+    );
 
-        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
-          apikey: TwinnedSession.instance.authToken,
-          body: query,
-        );
-        print(qRes.body!.result.toString());
+    var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+      apikey: TwinnedSession.instance.authToken,
+      body: query,
+    );
 
-        if (qRes.body != null &&
-            qRes.body!.result != null &&
-            validateResponse(qRes)) {
-          Map<String, dynamic>? json =
-              qRes.body!.result! as Map<String, dynamic>?;
+    if (qRes.body != null &&
+        qRes.body!.result != null &&
+        validateResponse(qRes)) {
+      Map<String, dynamic>? json = qRes.body!.result as Map<String, dynamic>?;
 
-          if (json != null) {
-            List<dynamic> hits = json['hits']['hits'];
+      if (json != null) {
+        List<dynamic> hits = json['hits']['hits'];
 
-            if (hits.isNotEmpty) {
-              Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-              Map<String, dynamic> source =
-                  obj['p_source'] as Map<String, dynamic>;
-              Map<String, dynamic> data =
-                  source['data'] as Map<String, dynamic>;
+        if (hits.isNotEmpty) {
+          Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
+          Map<String, dynamic> source = obj['p_source'] as Map<String, dynamic>;
+          Map<String, dynamic> data = source['data'] as Map<String, dynamic>;
 
-              for (var field in fields) {
-                fieldValues[field] = data[field] ?? 0.0;
-              }
-            }
-            debugPrint('Data output ************ $fieldValues');
+          for (var field in fields) {
+            fieldValues[field] = data[field] ?? 0.0;
           }
         }
-      });
-    } catch (e, stackTrace) {
-      debugPrint('Error loading data: $e');
-      debugPrint('Stack trace: $stackTrace');
-    } finally {
-      loading = false;
-      refresh();
+      }
     }
+
+    // if (mounted) {
+    //   setState(() {});
+    // }
+
+    loading = false;
+    refresh();
+    // if (mounted) {
+    //   refresh(); // Ensure refresh is called safely
+    // }
   }
 
   @override
-  void setup() {}
+  void setup() {
+    _load();
+  }
 }
 
 class DeviceMultiFieldRadialAxisWidgetBuilder extends TwinnedWidgetBuilder {
