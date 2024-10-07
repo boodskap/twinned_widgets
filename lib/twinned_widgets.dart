@@ -1,6 +1,5 @@
 library twinned_widgets;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
@@ -11,10 +10,10 @@ import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
 import 'package:twinned_widgets/common/device_field_scatter_chart_widget.dart';
+import 'package:twinned_widgets/common/device_field_spline_chart_widget.dart';
 import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
-import 'package:twinned_widgets/common/device_field_spline_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_radial_axis_widget.dart';
 import 'package:twinned_widgets/common/device_timeline.dart';
 import 'package:twinned_widgets/common/directional_widget.dart';
@@ -24,6 +23,7 @@ import 'package:twinned_widgets/common/flow_meter_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_linear_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_odd_even_circle_widget.dart';
+import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_card_widget.dart';
@@ -35,18 +35,19 @@ import 'package:twinned_widgets/common/humidity_progress_widget.dart';
 import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_page_widget.dart';
-import 'package:twinned_widgets/common/multi_device_single_field_pie_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_multi_field_bar_chart_widget.dart';
+import 'package:twinned_widgets/common/multi_device_single_field_pie_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_field_card_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
+import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
+import 'package:twinned_widgets/common/single_value_slider_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
+import 'package:twinned_widgets/common/static_timeline_widget.dart';
 import 'package:twinned_widgets/common/thermometer_widget.dart';
 import 'package:twinned_widgets/common/timestamp_widget.dart';
 import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
-import 'package:twinned_widgets/common/static_timeline_widget.dart';
-import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
 import 'package:twinned_widgets/common/vertical_card.dart';
 import 'package:twinned_widgets/common/week_humidity_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
@@ -55,13 +56,15 @@ import 'package:twinned_widgets/solutions/ems/device_multi_field_stats_widget.da
 import 'package:twinned_widgets/solutions/ems/generic_card_image_widget.dart';
 import 'package:twinned_widgets/solutions/ems/infrastructure_card_widget.dart';
 import 'package:twinned_widgets/solutions/ems/vertical_progress_bar_widget.dart';
+import 'package:twinned_widgets/solutions/tms/device_field_radial_gauge_widget.dart.dart';
+import 'package:twinned_widgets/solutions/tms/multi_field_device_spline_area_chart_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+
 import 'common/multiple_device_cartesian_chart_widget.dart';
-import 'package:twinned_widgets/common/single_value_slider_widget.dart';
-import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
+
+export 'common/total_and_reporting_asset_widget.dart';
 export 'common/total_value_widget.dart';
 export 'common/value_distribution_pie_widget.dart';
-export 'common/total_and_reporting_asset_widget.dart';
 export 'twinned_config_builder.dart';
 export 'twinned_widget_builder.dart';
 
@@ -119,14 +122,16 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
       GenericAirQualityOddEvenCircleWidgetBuilder(),
   'TWFieldCardWidget': FieldCardWidgetBuilder(),
   'TWMultiFieldCardWidget': MultiFieldCardWidgetBuilder(),
-  'TWDeviceTimelineWidget':DeviceTimelineWidgetBuilder(),
-  'TWGenericOddEvenCardWidget':GenericOddEvenCardWidgetBuilder(),
-  'TWGenericUpDownTriangleWidget': GenericUpDownTriangleWidgetBuilder(),
   'TWDeviceTimelineWidget': DeviceTimelineWidgetBuilder(),
-  'TWDirectionalWidget': DirectionalWidgetBuilder(),
   'TWGenericOddEvenCardWidget': GenericOddEvenCardWidgetBuilder(),
-  'TWDeviceMultiFieldRadialAxisWidget': DeviceMultiFieldRadialAxisWidgetBuilder(),
-  'TWVerticalFieldCardWidget':VerticalFieldCardWidgetBuilder(),
+  'TWGenericUpDownTriangleWidget': GenericUpDownTriangleWidgetBuilder(),
+  'TWDirectionalWidget': DirectionalWidgetBuilder(),
+  'TWDeviceMultiFieldRadialAxisWidget':
+      DeviceMultiFieldRadialAxisWidgetBuilder(),
+  'TWVerticalFieldCardWidget': VerticalFieldCardWidgetBuilder(),
+  'TWMultiFieldDeviceSplineChartWidget':
+      MultiFieldDeviceSplineChartWidgetBuilder(),
+  'TWDeviceFieldRadialGaugeWidget': DeviceFieldRadialGaugeWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
