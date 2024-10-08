@@ -7,20 +7,21 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
-import 'package:twinned_models/generic_odd_even_octagon/generic_odd_even_octagon.dart';
+import 'package:twinned_models/generic_odd_even_decagon/generic_odd_even_decagon.dart';
+import 'dart:math';
 
-class GenericOddEvenOctagonWidget extends StatefulWidget {
-  final GenericOddEvenOctagonWidgetConfig config;
+class GenericOddEvenDecagonWidget extends StatefulWidget {
+  final GenericOddEvenDecagonWidgetConfig config;
 
-  const GenericOddEvenOctagonWidget({super.key, required this.config});
+  const GenericOddEvenDecagonWidget({super.key, required this.config});
 
   @override
-  State<GenericOddEvenOctagonWidget> createState() =>
-      _GenericOddEvenOctagonWidgetState();
+  State<GenericOddEvenDecagonWidget> createState() =>
+      _GenericOddEvenDecagonWidgetState();
 }
 
-class _GenericOddEvenOctagonWidgetState
-    extends BaseState<GenericOddEvenOctagonWidget> {
+class _GenericOddEvenDecagonWidgetState
+    extends BaseState<GenericOddEvenDecagonWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -33,8 +34,8 @@ class _GenericOddEvenOctagonWidgetState
   late FontConfig suffixMainFont;
   late FontConfig valueMainFont;
   late FontConfig subTitleFont;
-  late Color oddOctagonBGColor;
-  late Color evenOctagonBGColor;
+  late Color oddDecagonBGColor;
+  late Color evenDecagonBGColor;
   late List<Map<String, String>> deviceData;
   List<Map<String, String>> fetchedData = [];
 
@@ -52,8 +53,8 @@ class _GenericOddEvenOctagonWidgetState
     deviceId = config.deviceId;
     title = config.title;
     subTitle = config.subTitle;
-    oddOctagonBGColor = Color(config.oddOctagonBGColor);
-    evenOctagonBGColor = Color(config.evenOctagonBGColor);
+    oddDecagonBGColor = Color(config.oddDecagonBGColor);
+    evenDecagonBGColor = Color(config.evenDecagonBGColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
@@ -129,7 +130,7 @@ class _GenericOddEvenOctagonWidgetState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSameLevelOctagons(),
+                    children: _buildSameLevelDecagons(),
                   ),
                 ),
               ],
@@ -140,14 +141,14 @@ class _GenericOddEvenOctagonWidgetState
     );
   }
 
-  List<Widget> _buildSameLevelOctagons() {
+  List<Widget> _buildSameLevelDecagons() {
     return deviceData.asMap().entries.map((entry) {
       int index = entry.key;
       Map<String, String> item = entry.value;
 
       bool isEven = index % 2 == 0;
 
-      Color bgColor = isEven ? oddOctagonBGColor : evenOctagonBGColor;
+      Color bgColor = isEven ? oddDecagonBGColor : evenDecagonBGColor;
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalSpacing),
@@ -165,7 +166,7 @@ class _GenericOddEvenOctagonWidgetState
   Widget _buildCard(String prefix, String value, String suffix, String iconId,
       Color bgColor) {
     return ClipPath(
-      clipper: OctagonClipper(),
+      clipper: DecagonClipper(),
       child: Container(
         height: 150,
         width: 150,
@@ -310,24 +311,32 @@ class _GenericOddEvenOctagonWidgetState
   }
 }
 
-class OctagonClipper extends CustomClipper<Path> {
+class DecagonClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     double width = size.width;
     double height = size.height;
 
-    double sideLength = width * 0.293;
+    int numSides = 10;
+
+    double radius = width / 2;
+
+    double angle = (2 * pi) / numSides;
 
     Path path = Path();
 
-    path.moveTo(sideLength, 0);
-    path.lineTo(width - sideLength, 0);
-    path.lineTo(width, sideLength);
-    path.lineTo(width, height - sideLength);
-    path.lineTo(width - sideLength, height);
-    path.lineTo(sideLength, height);
-    path.lineTo(0, height - sideLength);
-    path.lineTo(0, sideLength);
+    double startAngle = -pi / 2 + angle / 2;
+
+    for (int i = 0; i < numSides; i++) {
+      double x = width / 2 + radius * cos(startAngle + angle * i);
+      double y = height / 2 + radius * sin(startAngle + angle * i);
+
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
 
     path.close();
     return path;
@@ -339,11 +348,11 @@ class OctagonClipper extends CustomClipper<Path> {
   }
 }
 
-class GenericOddEvenOctagonWidgetBuilder extends TwinnedWidgetBuilder {
+class GenericOddEvenDecagonWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return GenericOddEvenOctagonWidget(
-        config: GenericOddEvenOctagonWidgetConfig.fromJson(config));
+    return GenericOddEvenDecagonWidget(
+        config: GenericOddEvenDecagonWidgetConfig.fromJson(config));
   }
 
   @override
@@ -353,24 +362,24 @@ class GenericOddEvenOctagonWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.assistant);
+    return const Icon(Icons.token_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Octagon Widget";
+    return "Generic Decagon Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (null != config) {
-      return GenericOddEvenOctagonWidgetConfig.fromJson(config);
+      return GenericOddEvenDecagonWidgetConfig.fromJson(config);
     }
-    return GenericOddEvenOctagonWidgetConfig();
+    return GenericOddEvenDecagonWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Odd Even Octagon Widget';
+    return 'Generic Odd Even Decagon Widget';
   }
 }
