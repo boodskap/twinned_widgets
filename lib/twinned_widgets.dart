@@ -29,6 +29,7 @@ import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_diamond_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_hexagon_widget.dart';
+import 'package:twinned_widgets/common/generic_odd_even_octagon_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_pentagon.dart';
 import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
@@ -137,6 +138,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericOddEvenDiamondWidget': GenericOddEvenDiamondWidgetBuilder(),
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
   'TWGenericOddEvenHexagonWidget':GenericOddEvenHexagonWidgetBuilder(),
+  'TWGenericOddEvenOctagonWidget':GenericOddEvenOctagonWidgetBuilder()
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
