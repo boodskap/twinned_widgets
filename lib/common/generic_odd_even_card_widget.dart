@@ -61,9 +61,6 @@ class _GenericOddEvenCardWidgetState
     prefixFont = FontConfig.fromJson(config.prefixFont);
     suffixFont = FontConfig.fromJson(config.suffixFont);
     valueFont = FontConfig.fromJson(config.valueFont);
-    prefixMainFont = FontConfig.fromJson(config.prefixMainFont);
-    suffixMainFont = FontConfig.fromJson(config.suffixMainFont);
-    valueMainFont = FontConfig.fromJson(config.valueMainFont);
     subTitleFont = FontConfig.fromJson(config.subTitleFont);
     oddCardElevation = config.oddCardElevation;
     evenCardElevation = config.evenCardElevation;

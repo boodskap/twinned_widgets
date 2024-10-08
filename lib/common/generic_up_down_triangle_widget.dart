@@ -55,14 +55,10 @@ class _GenericUpDownTriangleWidgetState
     subTitle = config.subTitle;
     upTriangleBGColor = Color(config.upTriangleBGColor);
     downTriangleBGColor = Color(config.downTriangleBGColor);
-
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
     suffixFont = FontConfig.fromJson(config.suffixFont);
     valueFont = FontConfig.fromJson(config.valueFont);
-    prefixMainFont = FontConfig.fromJson(config.prefixMainFont);
-    suffixMainFont = FontConfig.fromJson(config.suffixMainFont);
-    valueMainFont = FontConfig.fromJson(config.valueMainFont);
     subTitleFont = FontConfig.fromJson(config.subTitleFont);
     isValidConfig = deviceId.isNotEmpty;
 
