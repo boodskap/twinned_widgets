@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
 
 class HumidityWeekWidget extends StatefulWidget {
@@ -15,7 +14,6 @@ class HumidityWeekWidget extends StatefulWidget {
 }
 
 class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
-  bool loading = false;
   bool isValidConfig = true;
   late String deviceId;
   String field = "humidity";
@@ -90,22 +88,6 @@ class _HumidityWeekWidgetState extends BaseState<HumidityWeekWidget> {
                   children: humidityData.map((data) {
                     bool isToday =
                         data['date'] == getFormattedDate(DateTime.now());
-
-                    // Select the icon based on humidity level
-                    IconData iconData;
-                    if (data['humidity'] > 70) {
-                      iconData = Icons.water_drop;
-                    } else if (data['humidity'] > 60) {
-                      iconData = Icons.cloud;
-                    } else if (data['humidity'] > 50) {
-                      iconData = Icons.air_outlined;
-                    } else if (data['humidity'] > 40) {
-                      iconData = Icons.grain;
-                    } else if (data['humidity'] > 30) {
-                      iconData = Icons.terrain;
-                    } else {
-                      iconData = Icons.wb_sunny;
-                    }
 
                     return Container(
                       width: MediaQuery.of(context).size.width / 8,
