@@ -37,7 +37,6 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
 
   double windDirectionValue = 0;
   double windSpeed = 0;
-  // double value = 0;
 
   @override
   void initState() {

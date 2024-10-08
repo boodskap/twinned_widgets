@@ -127,11 +127,11 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
                           children: [
                             Text(
                               'Sunrise',
-                              style: TwinUtils.getTextStyle(labelFont),
+                              style: TwinUtils.getTextStyle(valueFont),
                             ),
                             Text(
                               _formatTime(sunriseValue) ?? '--',
-                              style: TwinUtils.getTextStyle(labelFont),
+                              style: TwinUtils.getTextStyle(valueFont),
                             ),
                           ],
                         ),
@@ -145,9 +145,9 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text('Sunset',
-                                style: TwinUtils.getTextStyle(labelFont)),
+                                style: TwinUtils.getTextStyle(valueFont)),
                             Text(_formatTime(sunsetValue) ?? '--',
-                                style: TwinUtils.getTextStyle(labelFont)),
+                                style: TwinUtils.getTextStyle(valueFont)),
                           ],
                         ),
                       ),
