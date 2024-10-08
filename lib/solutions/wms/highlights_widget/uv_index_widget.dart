@@ -88,15 +88,13 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                title,
-                style: TwinUtils.getTextStyle(titleFont),
-              ),
-            ),
             Expanded(
               child: SfRadialGauge(
+                enableLoadingAnimation: true,
+                title: GaugeTitle(
+                  text: title,
+                  textStyle: TwinUtils.getTextStyle(titleFont),
+                ),
                 axes: <RadialAxis>[
                   RadialAxis(
                     showTicks: false,

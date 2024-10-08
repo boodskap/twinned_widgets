@@ -14,10 +14,12 @@ class HumidityProgressBarWidget extends StatefulWidget {
   const HumidityProgressBarWidget({super.key, required this.config});
 
   @override
-  State<HumidityProgressBarWidget> createState() => _HumidityProgressBarWidgetState();
+  State<HumidityProgressBarWidget> createState() =>
+      _HumidityProgressBarWidgetState();
 }
 
-class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidget> {
+class _HumidityProgressBarWidgetState
+    extends BaseState<HumidityProgressBarWidget> {
   bool loading = false;
   bool isValidConfig = false;
   late String deviceId;
@@ -46,6 +48,14 @@ class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidge
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -88,33 +98,6 @@ class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidge
     loading = true;
 
     await execute(() async {
-      // Define the start and end of yesterday
-      DateTime now = DateTime.now();
-      DateTime startOfToday = DateTime(now.year, now.month, now.day);
-      DateTime startOfYesterday =
-          startOfToday.subtract(const Duration(days: 1));
-      DateTime endOfYesterday =
-          startOfToday.subtract(const Duration(seconds: 1));
-      // debugPrint(now.toString());
-      // debugPrint(startOfToday.toString());
-      // debugPrint(startOfYesterday.toString());
-      // debugPrint(endOfYesterday.toString());
-
-      // Format the dates to match your query requirements
-      String startOfYesterdayStr = startOfYesterday.toUtc().toIso8601String();
-      String endOfYesterdayStr = endOfYesterday.toUtc().toIso8601String();
-      // debugPrint(startOfYesterdayStr);
-      // debugPrint(endOfYesterdayStr);
-
-      EqlCondition filterRange = EqlCondition(name: 'filter', condition: {
-        "range": {
-          "updatedStamp": {
-            "gte": startOfYesterdayStr,
-            "lte": endOfYesterdayStr,
-          }
-        }
-      });
-
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
         apikey: TwinnedSession.instance.authToken,
         body: EqlSearch(

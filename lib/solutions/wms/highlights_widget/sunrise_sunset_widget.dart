@@ -56,7 +56,6 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
 
     isValidConfig = fields.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
-    setup();
   }
 
   @override
@@ -210,10 +209,14 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
             var sunriseEpoch = obj['p_source']['data'][fields[0]];
             var sunsetEpoch = obj['p_source']['data'][fields[1]];
 
-            setState(() {
-              sunriseValue = DateTime.fromMillisecondsSinceEpoch(sunriseEpoch);
-              sunsetValue = DateTime.fromMillisecondsSinceEpoch(sunsetEpoch);
-            });
+            // Ensure the state is updated only after fetching data
+            if (mounted) {
+              setState(() {
+                sunriseValue =
+                    DateTime.fromMillisecondsSinceEpoch(sunriseEpoch);
+                sunsetValue = DateTime.fromMillisecondsSinceEpoch(sunsetEpoch);
+              });
+            }
           }
         }
       }
