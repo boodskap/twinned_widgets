@@ -51,6 +51,14 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
@@ -61,8 +69,8 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
         ),
       ),
       child: Card(
-       color: Colors.transparent,
-          elevation: 0,
+        color: Colors.transparent,
+        elevation: 0,
         child: Column(
           children: [
             Padding(
@@ -74,7 +82,8 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +138,7 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
                       orientation: LinearGaugeOrientation.vertical,
                       markerPointers: <LinearMarkerPointer>[
                         //Bottom Round Marker
-                         LinearShapePointer(
+                        LinearShapePointer(
                           value: -20,
                           markerAlignment: LinearMarkerAlignment.start,
                           shapeType: LinearShapePointerType.circle,
@@ -147,7 +156,7 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
                           child: Container(
                             width: 10,
                             height: 3.4,
-                            decoration:  BoxDecoration(
+                            decoration: BoxDecoration(
                               border: Border(
                                 left: BorderSide(
                                   width: 2.0,
@@ -163,7 +172,7 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
                           ),
                         ),
                       ],
-                      barPointers:  <LinearBarPointer>[
+                      barPointers: <LinearBarPointer>[
                         LinearBarPointer(
                           value: 60,
                           enableAnimation: false,
@@ -182,7 +191,8 @@ class _ThermometerWidgetState extends BaseState<ThermometerWidget> {
                         showAxisTrack: false,
                         interval: 20,
                         axisTrackExtent: 24,
-                        axisTrackStyle: const LinearAxisTrackStyle(thickness: 0),
+                        axisTrackStyle:
+                            const LinearAxisTrackStyle(thickness: 0),
                         orientation: LinearGaugeOrientation.vertical,
                       ),
                     ),
