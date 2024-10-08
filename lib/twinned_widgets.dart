@@ -29,6 +29,7 @@ import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_diamond_widget.dart';
+import 'package:twinned_widgets/common/generic_odd_even_hexagon_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_pentagon.dart';
 import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
@@ -145,6 +146,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
   'TWVisibilityWidget':VisibilityWidgetBuilder(),
   'TWAirQualityWidget': AirQualityWidgetBuilder(),
+  'TWGenericOddEvenHexagonWidget':GenericOddEvenHexagonWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
