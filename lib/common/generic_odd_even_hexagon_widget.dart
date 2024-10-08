@@ -7,20 +7,21 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
-import 'package:twinned_models/generic_up_down_pentagon/generic_up_down_pentagon.dart';
+import 'package:twinned_models/generic_odd_even_hexagon/generic_odd_even_hexagon.dart';
+import 'dart:math' as math;
 
-class GenericUpDownPentagonWidget extends StatefulWidget {
-  final GenericUpDownPentagonWidgetConfig config;
+class GenericOddEvenHexagonWidget extends StatefulWidget {
+  final GenericOddEvenHexagonWidgetConfig config;
 
-  const GenericUpDownPentagonWidget({super.key, required this.config});
+  const GenericOddEvenHexagonWidget({super.key, required this.config});
 
   @override
-  State<GenericUpDownPentagonWidget> createState() =>
-      _GenericUpDownPentagonWidgetState();
+  State<GenericOddEvenHexagonWidget> createState() =>
+      _GenericOddEvenHexagonWidgetState();
 }
 
-class _GenericUpDownPentagonWidgetState
-    extends BaseState<GenericUpDownPentagonWidget> {
+class _GenericOddEvenHexagonWidgetState
+    extends BaseState<GenericOddEvenHexagonWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -29,9 +30,12 @@ class _GenericUpDownPentagonWidgetState
   late FontConfig prefixFont;
   late FontConfig suffixFont;
   late FontConfig valueFont;
+  late FontConfig prefixMainFont;
+  late FontConfig suffixMainFont;
+  late FontConfig valueMainFont;
   late FontConfig subTitleFont;
-  late Color upperPentagonBGColor;
-  late Color downPentagonBGColor;
+  late Color oddHexagonBGColor;
+  late Color evenHexagonBGColor;
   late List<Map<String, String>> deviceData;
   List<Map<String, String>> fetchedData = [];
 
@@ -49,8 +53,8 @@ class _GenericUpDownPentagonWidgetState
     deviceId = config.deviceId;
     title = config.title;
     subTitle = config.subTitle;
-    upperPentagonBGColor = Color(config.upperPentagonBGColor);
-    downPentagonBGColor = Color(config.downPentagonBGColor);
+    oddHexagonBGColor = Color(config.oddHexagonBGColor);
+    evenHexagonBGColor = Color(config.evenHexagonBGColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
@@ -126,7 +130,7 @@ class _GenericUpDownPentagonWidgetState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSameLevelPentagons(),
+                    children: _buildSameLevelHexagons(),
                   ),
                 ),
               ],
@@ -137,15 +141,14 @@ class _GenericUpDownPentagonWidgetState
     );
   }
 
-  List<Widget> _buildSameLevelPentagons() {
+  List<Widget> _buildSameLevelHexagons() {
     return deviceData.asMap().entries.map((entry) {
       int index = entry.key;
       Map<String, String> item = entry.value;
 
-      bool isEven =
-          index % 2 == 0; 
+      bool isEven = index % 2 == 0;
 
-      Color bgColor = isEven ? upperPentagonBGColor : downPentagonBGColor;
+      Color bgColor = isEven ? oddHexagonBGColor : evenHexagonBGColor;
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalSpacing),
@@ -155,17 +158,15 @@ class _GenericUpDownPentagonWidgetState
           item['suffix']!,
           item['icon']!,
           bgColor,
-          isEven, // true for upper pentagon, false for down pentagon
         ),
       );
     }).toList();
   }
 
   Widget _buildCard(String prefix, String value, String suffix, String iconId,
-      Color bgColor, bool isUpperPentagon) {
+      Color bgColor) {
     return ClipPath(
-      // Use PentagonClipper for upper pentagon or DownPentagonClipper for down pentagon
-      clipper: isUpperPentagon ? PentagonClipper() : DownPentagonClipper(),
+      clipper: HexagonClipper(),
       child: Container(
         height: 150,
         width: 150,
@@ -310,47 +311,41 @@ class _GenericUpDownPentagonWidgetState
   }
 }
 
-class PentagonClipper extends CustomClipper<Path> {
+class HexagonClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    // Create pentagon path points
-    path.moveTo(size.width * 0.5, 0); // Top point
-    path.lineTo(size.width, size.height * 0.38); // Top right
-    path.lineTo(size.width * 0.8, size.height); // Bottom right
-    path.lineTo(size.width * 0.2, size.height); // Bottom left
-    path.lineTo(0, size.height * 0.38); // Top left
-    path.close(); // Complete the pentagon
+    final double width = size.width;
+    final double height = size.height;
+    final double centerX = width / 2;
+    final double centerY = height / 2;
+    final double radius = math.min(width, height) / 2;
+
+    for (int i = 0; i < 6; i++) {
+      double angle = (i * 60.0) * (math.pi / 180.0);
+      double x = centerX + radius * math.cos(angle);
+      double y = centerY + radius * math.sin(angle);
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
     return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-class DownPentagonClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    // Create a flipped pentagon path (down facing)
-    path.moveTo(0, size.height * 0.62); // Top left
-    path.lineTo(size.width * 0.2, 0); // Bottom left
-    path.lineTo(size.width * 0.8, 0); // Bottom right
-    path.lineTo(size.width, size.height * 0.62); // Top right
-    path.lineTo(size.width * 0.5, size.height); // Bottom point
-    path.close(); // Complete the pentagon
-    return path;
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class GenericUpDownPentagonWidgetBuilder extends TwinnedWidgetBuilder {
+class GenericOddEvenHexagonWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return GenericUpDownPentagonWidget(
-        config: GenericUpDownPentagonWidgetConfig.fromJson(config));
+    return GenericOddEvenHexagonWidget(
+        config: GenericOddEvenHexagonWidgetConfig.fromJson(config));
   }
 
   @override
@@ -360,24 +355,24 @@ class GenericUpDownPentagonWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.pentagon_rounded);
+    return const Icon(Icons.hexagon_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Pentagon Widget";
+    return "Generic Hexagon Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (null != config) {
-      return GenericUpDownPentagonWidgetConfig.fromJson(config);
+      return GenericOddEvenHexagonWidgetConfig.fromJson(config);
     }
-    return GenericUpDownPentagonWidgetConfig();
+    return GenericOddEvenHexagonWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Up Down Pentagon Widget';
+    return 'Generic Odd Even Hexagon Widget';
   }
 }
