@@ -2,6 +2,7 @@ library twinned_widgets;
 
 import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/common/air_quality_widget.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
@@ -51,6 +52,7 @@ import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/common/vertical_card.dart';
+import 'package:twinned_widgets/common/visibility_widget.dart';
 import 'package:twinned_widgets/common/week_humidity_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/solutions/ems/circle_progress_bar_widget.dart';
@@ -141,6 +143,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWWindStatusWidget': WindStatusWidgetBuilder(),
   'TWSunriseSunsetWidget': SunriseSunsetWidgetBuilder(),
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
+  'TWVisibilityWidget':VisibilityWidgetBuilder(),
+  'TWAirQualityWidget': AirQualityWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
