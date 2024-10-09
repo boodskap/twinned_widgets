@@ -34,6 +34,7 @@ import 'package:twinned_widgets/common/generic_odd_even_hexagon_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_octagon_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_pentagon.dart';
+import 'package:twinned_widgets/common/generic_up_down_semi_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
@@ -146,11 +147,12 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWWindStatusWidget': WindStatusWidgetBuilder(),
   'TWSunriseSunsetWidget': SunriseSunsetWidgetBuilder(),
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
-  'TWVisibilityWidget':VisibilityWidgetBuilder(),
+  'TWVisibilityWidget': VisibilityWidgetBuilder(),
   'TWAirQualityWidget': AirQualityWidgetBuilder(),
-  'TWGenericOddEvenHexagonWidget':GenericOddEvenHexagonWidgetBuilder(),
-  'TWGenericOddEvenOctagonWidget':GenericOddEvenOctagonWidgetBuilder(),
+  'TWGenericOddEvenHexagonWidget': GenericOddEvenHexagonWidgetBuilder(),
+  'TWGenericOddEvenOctagonWidget': GenericOddEvenOctagonWidgetBuilder(),
   'TWGenericOddEvenDecagonWidget': GenericOddEvenDecagonWidgetBuilder(),
+  'TWGenericUpDownSemiCircleWidget': GenericOddEvenOvalWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
