@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/generic_odd_even_card/generic_odd_even_card.dart';
+import 'package:twinned_models/generic_odd_even_circle/generic_odd_even_circle.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
@@ -9,18 +9,18 @@ import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 
-class GenericOddEvenCardWidget extends StatefulWidget {
-  final GenericOddEvenCardWidgetConfig config;
+class GenericOddEvenCircleWidget extends StatefulWidget {
+  final GenericOddEvenCircleWidgetConfig config;
 
-  const GenericOddEvenCardWidget({super.key, required this.config});
+  const GenericOddEvenCircleWidget({super.key, required this.config});
 
   @override
-  State<GenericOddEvenCardWidget> createState() =>
-      _GenericOddEvenCardWidgetState();
+  State<GenericOddEvenCircleWidget> createState() =>
+      _GenericOddEvenCircleWidgetState();
 }
 
-class _GenericOddEvenCardWidgetState
-    extends BaseState<GenericOddEvenCardWidget> {
+class _GenericOddEvenCircleWidgetState
+    extends BaseState<GenericOddEvenCircleWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -29,24 +29,21 @@ class _GenericOddEvenCardWidgetState
   late FontConfig prefixFont;
   late FontConfig suffixFont;
   late FontConfig valueFont;
-  late FontConfig prefixMainFont;
-  late FontConfig suffixMainFont;
-  late FontConfig valueMainFont;
   late FontConfig subTitleFont;
-  late Color oddCardBGColor;
-  late Color evenCardBGColor;
-  late double oddCardElevation;
-  late double evenCardElevation;
+  late Color oddCircleBGColor;
+  late Color evenCircleBGColor;
+  late Color oddCircleBorderColor;
+  late Color evenCircleBorderColor;
+  late double oddCircleRadius;
+  late double evenCircleRadius;
   late List<Map<String, String>> deviceData;
   List<Map<String, String>> fetchedData = [];
-
-  String mainPrefixValue = "";
-  String mainValue = "";
-  String mainSufficValue = "";
   String mainIcon = "";
   bool apiLoadingStatus = false;
   late double imageSize;
   late double horizontalSpacing;
+  late double verticalSpacing;
+  late bool isBouncing;
 
   @override
   void initState() {
@@ -54,18 +51,21 @@ class _GenericOddEvenCardWidgetState
     deviceId = config.deviceId;
     title = config.title;
     subTitle = config.subTitle;
-    oddCardBGColor = Color(config.oddCardBGColor);
-    evenCardBGColor = Color(config.evenCardBGColor);
+    oddCircleBGColor = Color(config.oddCircleBGColor);
+    evenCircleBGColor = Color(config.evenCircleBGColor);
+    oddCircleBorderColor = Color(config.oddCircleBorderColor);
+    evenCircleBorderColor = Color(config.evenCircleBorderColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
     suffixFont = FontConfig.fromJson(config.suffixFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     subTitleFont = FontConfig.fromJson(config.subTitleFont);
-    oddCardElevation = config.oddCardElevation;
-    evenCardElevation = config.evenCardElevation;
+    oddCircleRadius = config.oddCircleRadius;
+    evenCircleRadius = config.evenCircleRadius;
     isValidConfig = deviceId.isNotEmpty;
 
+    verticalSpacing = config.verticalSpacing;
     horizontalSpacing = config.horizontalSpacing;
     imageSize = config.imageSize;
 
@@ -133,7 +133,7 @@ class _GenericOddEvenCardWidgetState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSameLevelCards(),
+                    children: _buildSameLevelCircles(),
                   ),
                 ),
               ],
@@ -144,113 +144,112 @@ class _GenericOddEvenCardWidgetState
     );
   }
 
-  List<Widget> _buildSameLevelCards() {
+  List<Widget> _buildSameLevelCircles() {
     return deviceData.asMap().entries.map((entry) {
       int index = entry.key;
       Map<String, String> item = entry.value;
 
       bool isEven = index % 2 == 0;
 
-      Color bgColor = isEven ? oddCardBGColor : evenCardBGColor;
-      double cardElevation = isEven ? oddCardElevation : evenCardElevation;
+      Color bgColor = isEven ? oddCircleBGColor : evenCircleBGColor;
+      Color borderColor = isEven ? oddCircleBorderColor : evenCircleBorderColor;
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalSpacing),
-        child: _buildCard(
+        child: _buildCircle(
           item['prefix']!,
           item['value']!,
           item['suffix']!,
           item['icon']!,
           bgColor,
-          cardElevation,
+          borderColor,
         ),
       );
     }).toList();
   }
 
-  Widget _buildCard(String prefix, String value, String suffix, String iconId,
-      Color bgColor, double elevation) {
-    return Card(
-      elevation: elevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      clipBehavior: Clip.hardEdge,
-      color: bgColor.withOpacity(0.7),
-      child: Container(
-        height: 100,
-        width: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            8.0,
+  Widget _buildCircle(String prefix, String value, String suffix, String iconId,
+      Color bgColor, Color borderColor) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: borderColor, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: borderColor,
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0, 0),
           ),
-        ),
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              prefix.isNotEmpty ? prefix : 'N/A',
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: prefixFont.fontFamily,
-                fontSize: prefixFont.fontSize,
-                fontWeight:
-                    prefixFont.fontBold ? FontWeight.bold : FontWeight.normal,
-                color: Color(prefixFont.fontColor),
+        ],
+      ),
+      child: CircleAvatar(
+        radius: evenCircleRadius,
+        backgroundColor: bgColor.withOpacity(0.7),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                prefix.isNotEmpty ? prefix : 'N/A',
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: prefixFont.fontFamily,
+                  fontSize: prefixFont.fontSize,
+                  fontWeight:
+                      prefixFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  color: Color(prefixFont.fontColor),
+                ),
               ),
-            ),
-            const SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (iconId.isNotEmpty)
-                  SizedBox(
-                    width: imageSize,
-                    height: imageSize,
-                    child: TwinImageHelper.getDomainImage(iconId),
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (iconId.isNotEmpty)
+                    SizedBox(
+                      width: imageSize,
+                      height: imageSize,
+                      child: TwinImageHelper.getDomainImage(iconId),
+                    ),
+                  if (iconId.isEmpty)
+                    Icon(Icons.display_settings, size: imageSize),
+                  const SizedBox(
+                    width: 4,
                   ),
-                if (iconId.isEmpty)
-                  Icon(Icons.display_settings, size: imageSize),
-              ],
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  value.isNotEmpty ? value : '0',
-                  style: TextStyle(
-                    fontFamily: valueFont.fontFamily,
-                    fontSize: valueFont.fontSize,
-                    fontWeight: valueFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: Color(valueFont.fontColor),
+                  Text(
+                    value.isNotEmpty ? value : '0',
+                    style: TextStyle(
+                      fontFamily: valueFont.fontFamily,
+                      fontSize: valueFont.fontSize,
+                      fontWeight: valueFont.fontBold
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: Color(valueFont.fontColor),
+                    ),
                   ),
+                ],
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                suffix.isNotEmpty ? suffix : 'N/A',
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: suffixFont.fontFamily,
+                  fontSize: suffixFont.fontSize,
+                  fontWeight:
+                      suffixFont.fontBold ? FontWeight.bold : FontWeight.normal,
+                  color: Color(suffixFont.fontColor),
                 ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  suffix.isNotEmpty ? suffix : 'N/A',
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: suffixFont.fontFamily,
-                    fontSize: suffixFont.fontSize,
-                    fontWeight: suffixFont.fontBold
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: Color(suffixFont.fontColor),
-                  ),
-                ),
-              ],
-            )
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -306,19 +305,13 @@ class _GenericOddEvenCardWidgetState
             String value = '${data[field] ?? '-'}';
             String unit = TwinUtils.getParameterUnit(field, deviceModel);
             dynamic iconId = TwinUtils.getParameterIcon(field, deviceModel);
-            if (field != value) {
-              fetchedData.add({
-                'prefix': label,
-                'value': value,
-                'suffix': unit,
-                'icon': iconId ?? ""
-              });
-            } else {
-              mainPrefixValue = label;
-              mainSufficValue = unit;
-              mainValue = value;
-              mainIcon = iconId ?? "";
-            }
+
+            fetchedData.add({
+              'prefix': label,
+              'value': value,
+              'suffix': unit,
+              'icon': iconId ?? ""
+            });
           }
         }
         setState(() {
@@ -333,11 +326,11 @@ class _GenericOddEvenCardWidgetState
   }
 }
 
-class GenericOddEvenCardWidgetBuilder extends TwinnedWidgetBuilder {
+class GenericOddEvenCircleWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return GenericOddEvenCardWidget(
-        config: GenericOddEvenCardWidgetConfig.fromJson(config));
+    return GenericOddEvenCircleWidget(
+        config: GenericOddEvenCircleWidgetConfig.fromJson(config));
   }
 
   @override
@@ -347,24 +340,24 @@ class GenericOddEvenCardWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.square_rounded);
+    return const Icon(Icons.lens_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Odd Even Card Widget";
+    return "Generic Odd Even Circle Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (null != config) {
-      return GenericOddEvenCardWidgetConfig.fromJson(config);
+      return GenericOddEvenCircleWidgetConfig.fromJson(config);
     }
-    return GenericOddEvenCardWidgetConfig();
+    return GenericOddEvenCircleWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Odd Even Card Widget';
+    return 'Generic Odd Even Circle Widget';
   }
 }

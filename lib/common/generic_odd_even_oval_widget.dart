@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/generic_odd_even_card/generic_odd_even_card.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twinned_models/generic_odd_even_oval/generic_odd_even_oval.dart';
 
-class GenericOddEvenCardWidget extends StatefulWidget {
-  final GenericOddEvenCardWidgetConfig config;
+class GenericOddEvenOvalWidget extends StatefulWidget {
+  final GenericOddEvenOvalWidgetConfig config;
 
-  const GenericOddEvenCardWidget({super.key, required this.config});
+  const GenericOddEvenOvalWidget({super.key, required this.config});
 
   @override
-  State<GenericOddEvenCardWidget> createState() =>
-      _GenericOddEvenCardWidgetState();
+  State<GenericOddEvenOvalWidget> createState() =>
+      _GenericOddEvenOvalWidgetState();
 }
 
-class _GenericOddEvenCardWidgetState
-    extends BaseState<GenericOddEvenCardWidget> {
+class _GenericOddEvenOvalWidgetState
+    extends BaseState<GenericOddEvenOvalWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -29,14 +29,9 @@ class _GenericOddEvenCardWidgetState
   late FontConfig prefixFont;
   late FontConfig suffixFont;
   late FontConfig valueFont;
-  late FontConfig prefixMainFont;
-  late FontConfig suffixMainFont;
-  late FontConfig valueMainFont;
   late FontConfig subTitleFont;
-  late Color oddCardBGColor;
-  late Color evenCardBGColor;
-  late double oddCardElevation;
-  late double evenCardElevation;
+  late Color oddOvalBGColor;
+  late Color evenOvalBGColor;
   late List<Map<String, String>> deviceData;
   List<Map<String, String>> fetchedData = [];
 
@@ -54,16 +49,14 @@ class _GenericOddEvenCardWidgetState
     deviceId = config.deviceId;
     title = config.title;
     subTitle = config.subTitle;
-    oddCardBGColor = Color(config.oddCardBGColor);
-    evenCardBGColor = Color(config.evenCardBGColor);
+    oddOvalBGColor = Color(config.oddOvalBGColor);
+    evenOvalBGColor = Color(config.evenOvalBGColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
     suffixFont = FontConfig.fromJson(config.suffixFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     subTitleFont = FontConfig.fromJson(config.subTitleFont);
-    oddCardElevation = config.oddCardElevation;
-    evenCardElevation = config.evenCardElevation;
     isValidConfig = deviceId.isNotEmpty;
 
     horizontalSpacing = config.horizontalSpacing;
@@ -133,7 +126,7 @@ class _GenericOddEvenCardWidgetState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSameLevelCards(),
+                    children: _buildSameLevelOvals(),
                   ),
                 ),
               ],
@@ -144,48 +137,39 @@ class _GenericOddEvenCardWidgetState
     );
   }
 
-  List<Widget> _buildSameLevelCards() {
+  List<Widget> _buildSameLevelOvals() {
     return deviceData.asMap().entries.map((entry) {
       int index = entry.key;
       Map<String, String> item = entry.value;
 
       bool isEven = index % 2 == 0;
 
-      Color bgColor = isEven ? oddCardBGColor : evenCardBGColor;
-      double cardElevation = isEven ? oddCardElevation : evenCardElevation;
+      Color oddColor = oddOvalBGColor;
+      Color evenColor = evenOvalBGColor;
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalSpacing),
-        child: _buildCard(
+        child: _buildOvalShape(
           item['prefix']!,
           item['value']!,
           item['suffix']!,
           item['icon']!,
-          bgColor,
-          cardElevation,
+          oddColor,
+          evenColor,
+          isEven,
         ),
       );
     }).toList();
   }
 
-  Widget _buildCard(String prefix, String value, String suffix, String iconId,
-      Color bgColor, double elevation) {
-    return Card(
-      elevation: elevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      clipBehavior: Clip.hardEdge,
-      color: bgColor.withOpacity(0.7),
+  Widget _buildOvalShape(String prefix, String value, String suffix,
+      String iconId, Color oddColor, Color evenColor, bool isEven) {
+    return ClipPath(
+      clipper: OvalClipper(),
       child: Container(
-        height: 100,
-        width: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            8.0,
-          ),
-        ),
-        padding: const EdgeInsets.all(10),
+        height: 150,
+        width: 150,
+        color: isEven ? evenColor : oddColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -201,25 +185,16 @@ class _GenericOddEvenCardWidgetState
                 color: Color(prefixFont.fontColor),
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 8),
+            if (iconId.isNotEmpty)
+              SizedBox(
+                width: imageSize,
+                height: imageSize,
+                child: TwinImageHelper.getDomainImage(iconId),
+              ),
+            const SizedBox(height: 6),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (iconId.isNotEmpty)
-                  SizedBox(
-                    width: imageSize,
-                    height: imageSize,
-                    child: TwinImageHelper.getDomainImage(iconId),
-                  ),
-                if (iconId.isEmpty)
-                  Icon(Icons.display_settings, size: imageSize),
-              ],
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   value.isNotEmpty ? value : '0',
@@ -232,9 +207,7 @@ class _GenericOddEvenCardWidgetState
                     color: Color(valueFont.fontColor),
                   ),
                 ),
-                const SizedBox(
-                  width: 4,
-                ),
+                const SizedBox(width: 3),
                 Text(
                   suffix.isNotEmpty ? suffix : 'N/A',
                   overflow: TextOverflow.ellipsis,
@@ -249,7 +222,7 @@ class _GenericOddEvenCardWidgetState
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -333,11 +306,29 @@ class _GenericOddEvenCardWidgetState
   }
 }
 
-class GenericOddEvenCardWidgetBuilder extends TwinnedWidgetBuilder {
+class OvalClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.addOval(Rect.fromCenter(
+      center: Offset(size.width / 2, size.height / 2),
+      width: size.width * 0.7,
+      height: size.height,
+    ));
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
+
+class GenericOddEvenOvalWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return GenericOddEvenCardWidget(
-        config: GenericOddEvenCardWidgetConfig.fromJson(config));
+    return GenericOddEvenOvalWidget(
+        config: GenericOddEvenOvalWidgetConfig.fromJson(config));
   }
 
   @override
@@ -347,24 +338,24 @@ class GenericOddEvenCardWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.square_rounded);
+    return const Icon(Icons.egg_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Odd Even Card Widget";
+    return "Generic Oval Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (null != config) {
-      return GenericOddEvenCardWidgetConfig.fromJson(config);
+      return GenericOddEvenOvalWidgetConfig.fromJson(config);
     }
-    return GenericOddEvenCardWidgetConfig();
+    return GenericOddEvenOvalWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Odd Even Card Widget';
+    return 'Generic Odd Even Oval Widget';
   }
 }

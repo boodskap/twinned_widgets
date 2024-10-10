@@ -12,8 +12,7 @@ import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class DeviceFieldRadialGaugeWidget extends StatefulWidget {
   final DeviceFieldRangeGaugeWidgetConfig config;
-  const DeviceFieldRadialGaugeWidget({Key? key, required this.config})
-      : super(key: key);
+  const DeviceFieldRadialGaugeWidget({super.key, required this.config});
 
   @override
   _DeviceFieldRadialGaugeWidgetState createState() =>
@@ -25,7 +24,7 @@ class _DeviceFieldRadialGaugeWidgetState
   String title = "Temperature";
   String subtitle = "";
   double value = 0;
-  bool isValidConfig = true;
+  bool isValidConfig = false;
 
   late String deviceId;
   late String field;
@@ -92,12 +91,28 @@ class _DeviceFieldRadialGaugeWidgetState
     subTitleFont = FontConfig.fromJson(widget.config.subTitleFont);
     titleFont = FontConfig.fromJson(widget.config.titleFont);
     valueFont = FontConfig.fromJson(widget.config.valueFont);
+    isValidConfig=field.isNotEmpty && deviceId.isNotEmpty;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+ if (!isValidConfig) {
+      return const Center(
+        child: Wrap(
+          spacing: 8.0,
+          children: [
+            Text(
+              'Not configured properly',
+              style:
+                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -287,6 +302,6 @@ class DeviceFieldRadialGaugeWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteTooltip() {
-    return 'device field min max avg values';
+    return 'Device Field Radial Gauge';
   }
 }
