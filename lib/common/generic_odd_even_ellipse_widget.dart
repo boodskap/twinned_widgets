@@ -7,20 +7,20 @@ import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/core/twinned_session.dart';
-import 'package:twinned_models/generic_up_down_pentagon/generic_up_down_pentagon.dart';
+import 'package:twinned_models/generic_odd_even_ellipse/generic_odd_even_ellipse.dart';
 
-class GenericUpDownPentagonWidget extends StatefulWidget {
-  final GenericUpDownPentagonWidgetConfig config;
+class GenericOddEvenEllipseWidget extends StatefulWidget {
+  final GenericOddEvenEllipseWidgetConfig config;
 
-  const GenericUpDownPentagonWidget({super.key, required this.config});
+  const GenericOddEvenEllipseWidget({super.key, required this.config});
 
   @override
-  State<GenericUpDownPentagonWidget> createState() =>
-      _GenericUpDownPentagonWidgetState();
+  State<GenericOddEvenEllipseWidget> createState() =>
+      _GenericOddEvenEllipseWidgetState();
 }
 
-class _GenericUpDownPentagonWidgetState
-    extends BaseState<GenericUpDownPentagonWidget> {
+class _GenericOddEvenEllipseWidgetState
+    extends BaseState<GenericOddEvenEllipseWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -30,8 +30,8 @@ class _GenericUpDownPentagonWidgetState
   late FontConfig suffixFont;
   late FontConfig valueFont;
   late FontConfig subTitleFont;
-  late Color upperPentagonBGColor;
-  late Color downPentagonBGColor;
+  late Color oddEllipseBGColor;
+  late Color evenEllipseBGColor;
   late List<Map<String, String>> deviceData;
   List<Map<String, String>> fetchedData = [];
 
@@ -49,8 +49,8 @@ class _GenericUpDownPentagonWidgetState
     deviceId = config.deviceId;
     title = config.title;
     subTitle = config.subTitle;
-    upperPentagonBGColor = Color(config.upperPentagonBGColor);
-    downPentagonBGColor = Color(config.downPentagonBGColor);
+    oddEllipseBGColor = Color(config.oddEllipseBGColor);
+    evenEllipseBGColor = Color(config.evenEllipseBGColor);
 
     titleFont = FontConfig.fromJson(config.titleFont);
     prefixFont = FontConfig.fromJson(config.prefixFont);
@@ -126,7 +126,7 @@ class _GenericUpDownPentagonWidgetState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSameLevelPentagons(),
+                    children: _buildSameLevelEllipses(),
                   ),
                 ),
               ],
@@ -137,38 +137,39 @@ class _GenericUpDownPentagonWidgetState
     );
   }
 
-  List<Widget> _buildSameLevelPentagons() {
+  List<Widget> _buildSameLevelEllipses() {
     return deviceData.asMap().entries.map((entry) {
       int index = entry.key;
       Map<String, String> item = entry.value;
 
-      bool isEven =
-          index % 2 == 0; 
+      bool isEven = index % 2 == 0;
 
-      Color bgColor = isEven ? upperPentagonBGColor : downPentagonBGColor;
+      Color oddColor = oddEllipseBGColor;
+      Color evenColor = evenEllipseBGColor;
 
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalSpacing),
-        child: _buildCard(
+        child: _buildEllipseShape(
           item['prefix']!,
           item['value']!,
           item['suffix']!,
           item['icon']!,
-          bgColor,
-          isEven, 
+          oddColor,
+          evenColor,
+          isEven,
         ),
       );
     }).toList();
   }
 
-  Widget _buildCard(String prefix, String value, String suffix, String iconId,
-      Color bgColor, bool isUpperPentagon) {
+  Widget _buildEllipseShape(String prefix, String value, String suffix,
+      String iconId, Color oddColor, Color evenColor, bool isEven) {
     return ClipPath(
-      clipper: isUpperPentagon ? PentagonClipper() : DownPentagonClipper(),
+      clipper: EllipseClipper(),
       child: Container(
         height: 150,
         width: 150,
-        color: bgColor.withOpacity(0.7),
+        color: isEven ? evenColor : oddColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -184,18 +185,14 @@ class _GenericUpDownPentagonWidgetState
                 color: Color(prefixFont.fontColor),
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             if (iconId.isNotEmpty)
               SizedBox(
                 width: imageSize,
                 height: imageSize,
                 child: TwinImageHelper.getDomainImage(iconId),
               ),
-            const SizedBox(
-              height: 6,
-            ),
+            const SizedBox(height: 6),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -309,45 +306,29 @@ class _GenericUpDownPentagonWidgetState
   }
 }
 
-class PentagonClipper extends CustomClipper<Path> {
+class EllipseClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-      path.moveTo(size.width * 0.5, 0); 
-    path.lineTo(size.width, size.height * 0.38); 
-    path.lineTo(size.width * 0.8, size.height); 
-    path.lineTo(size.width * 0.2, size.height); 
-    path.lineTo(0, size.height * 0.38); 
-    path.close();
+    path.addOval(Rect.fromCenter(
+      center: Offset(size.width / 2, size.height / 2),
+      width: size.width,
+      height: size.height * 0.7,
+    ));
     return path;
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-class DownPentagonClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(0, size.height * 0.62); 
-    path.lineTo(size.width * 0.2, 0);
-    path.lineTo(size.width * 0.8, 0); 
-    path.lineTo(size.width, size.height * 0.62); 
-    path.lineTo(size.width * 0.5, size.height); 
-    path.close();
-    return path;
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-class GenericUpDownPentagonWidgetBuilder extends TwinnedWidgetBuilder {
+class GenericOddEvenEllipseWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return GenericUpDownPentagonWidget(
-        config: GenericUpDownPentagonWidgetConfig.fromJson(config));
+    return GenericOddEvenEllipseWidget(
+        config: GenericOddEvenEllipseWidgetConfig.fromJson(config));
   }
 
   @override
@@ -357,24 +338,24 @@ class GenericUpDownPentagonWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.pentagon_rounded);
+    return const Icon(Icons.home_mini_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Generic Pentagon Widget";
+    return "Generic Ellipse Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (null != config) {
-      return GenericUpDownPentagonWidgetConfig.fromJson(config);
+      return GenericOddEvenEllipseWidgetConfig.fromJson(config);
     }
-    return GenericUpDownPentagonWidgetConfig();
+    return GenericOddEvenEllipseWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Generic Up Down Pentagon Widget';
+    return 'Generic Odd Even Ellipse Widget';
   }
 }
