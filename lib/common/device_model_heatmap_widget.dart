@@ -3,11 +3,11 @@ import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twin_commons/core/base_state.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_models/device_model_heatmap_widget/device_model_heatmap_widget.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 class DeviceModelHeatmapWidget extends StatefulWidget {
   final DeviceModelHeatmapWidgetConfig config;
@@ -29,16 +29,8 @@ class _DeviceModelHeatmapWidgetState
 
   Map<String, Map<String, int>> datasets =
       {}; // Store heatmap data by device ID and parameter
-  Map<String, String> deviceNames = {}; // Map to store device IDs to names
-  Map<String, String> parameterUnits = {}; // Store units for each parameter
-  Map<String, Color> colorSets = {
-    'low': Colors.lightBlue,
-    'mid_low': Colors.green,
-    'medium': Colors.teal,
-    'mid_high': Colors.yellow,
-    'high': Colors.orange,
-    'very_high': Colors.red,
-  };
+  Map<String, String> deviceNames = {};
+  Map<String, String> parameterUnits = {};
 
   @override
   void initState() {
@@ -51,7 +43,6 @@ class _DeviceModelHeatmapWidgetState
 
     isValidConfig = deviceModelId.isNotEmpty;
     super.initState();
-    loadDeviceData();
   }
 
   @override
@@ -103,8 +94,7 @@ class _DeviceModelHeatmapWidgetState
                         } else if (row == deviceIds.length) {
                           // Bottom row: Parameter names and units
                           String parameter = parameters[col - 1];
-                          String unit = parameterUnits[parameter] ??
-                              '--'; // Get unit for this parameter
+                          String unit = parameterUnits[parameter] ?? '--';
                           return Container(
                             height: 50,
                             width: 50,
@@ -114,17 +104,15 @@ class _DeviceModelHeatmapWidgetState
                               children: [
                                 Text(
                                   parameter,
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.bold),
+                                  style: TwinUtils.getTextStyle(labelFont)
+                                      .copyWith(
+                                          overflow: TextOverflow.ellipsis),
                                 ),
                                 Text(
                                   unit.isNotEmpty ? '($unit)' : '--',
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.bold,
-                                      overflow: TextOverflow.ellipsis),
+                                  style: TwinUtils.getTextStyle(unitFont)
+                                      .copyWith(
+                                          overflow: TextOverflow.ellipsis),
                                 ),
                               ],
                             ),
@@ -138,9 +126,10 @@ class _DeviceModelHeatmapWidgetState
                             height: 50,
                             width: 50,
                             alignment: Alignment.center,
-                            child: Text(deviceName,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
+                            child: Text(
+                              deviceName,
+                              style: TwinUtils.getTextStyle(labelFont),
+                            ),
                           );
                         } else {
                           // Remaining cells: Parameter values
@@ -148,21 +137,22 @@ class _DeviceModelHeatmapWidgetState
                           String parameter = parameters[col - 1];
                           int value = datasets[deviceId]?[parameter] ?? 0;
 
-                          Color color;
-                          if (value < 50) {
-                            color = colorSets['low']!;
-                          } else if (value < 100) {
-                            color = colorSets['mid_low']!;
-                          } else if (value < 150) {
-                            color = colorSets['medium']!;
-                          } else if (value < 200) {
-                            color = colorSets['mid_high']!;
-                          } else if (value < 250) {
-                            color = colorSets['high']!;
-                          } else {
-                            color = colorSets['very_high']!;
+                          // Color matching logic
+                          Color color = Colors.transparent; // Default color
+
+                          for (var range in widget.config.ranges) {
+                            int from = range['from'];
+                            int to = range['to'] ??
+                                double.infinity; // Handle 'to' being null
+
+                            if (value >= from && value <= to) {
+                              color = colorFromInt(
+                                  range['color']); // Use the parsed color here
+                              break;
+                            }
                           }
 
+                          // Now apply `color` to your heatmap cell widget
                           return Container(
                             height: 50,
                             width: 50,
@@ -171,7 +161,7 @@ class _DeviceModelHeatmapWidgetState
                               color: color,
                             ),
                             child: Text('$value',
-                                style: const TextStyle(color: Colors.white)),
+                                style: TwinUtils.getTextStyle(valueFont)),
                           );
                         }
                       },
@@ -187,65 +177,37 @@ class _DeviceModelHeatmapWidgetState
                 height: 200,
                 width: 70,
                 child: SfLinearGauge(
-                  orientation: LinearGaugeOrientation.vertical,
-                  minimum: 0,
-                  maximum: 300,
-                  axisLabelStyle: const TextStyle(fontSize: 10),
+                  animateAxis: true,
+                  // Define a gradient background for the axis track
                   axisTrackStyle: LinearAxisTrackStyle(
-                    thickness: 15, // Adjust the thickness of the axis
+                    thickness: 15,
                     gradient: LinearGradient(
-                      colors: [
-                        colorSets['low']!,
-                        colorSets['mid_low']!,
-                        colorSets['medium']!,
-                        colorSets['mid_high']!,
-                        colorSets['high']!,
-                        colorSets['very_high']!,
-                      ],
-                      stops: const [
-                        0.0,
-                        0.2,
-                        0.4,
-                        0.6,
-                        0.8,
-                        1.0,
-                      ],
+                      colors: widget.config.ranges.map((range) {
+                        return colorFromInt(
+                            range['color']); // Convert int to Color
+                      }).toList(),
+                      stops: widget.config.ranges.map((range) {
+                        // Calculate the normalized stop value based on the range
+                        double startValue = range['from'].toDouble();
+                        return (startValue -
+                                (widget.config.ranges.first['from']
+                                    as double)) /
+                            ((widget.config.ranges.last['to']?.toDouble() ??
+                                    300) -
+                                (widget.config.ranges.first['from'] as double));
+                      }).toList(),
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                     ),
                   ),
-                  ranges: const [
-                    LinearGaugeRange(
-                      startValue: 0,
-                      endValue: 50,
-                      color: Colors.transparent,
-                    ),
-                    LinearGaugeRange(
-                      startValue: 50,
-                      endValue: 100,
-                      color: Colors.transparent,
-                    ),
-                    LinearGaugeRange(
-                      startValue: 100,
-                      endValue: 150,
-                      color: Colors.transparent,
-                    ),
-                    LinearGaugeRange(
-                      startValue: 150,
-                      endValue: 200,
-                      color: Colors.transparent,
-                    ),
-                    LinearGaugeRange(
-                      startValue: 200,
-                      endValue: 250,
-                      color: Colors.transparent,
-                    ),
-                    LinearGaugeRange(
-                      startValue: 250,
-                      endValue: 300,
-                      color: Colors.transparent,
-                    ),
-                  ],
+                  orientation: LinearGaugeOrientation.vertical,
+                  minimum: widget.config.ranges.isNotEmpty
+                      ? widget.config.ranges.first['from'].toDouble()
+                      : 0,
+                  maximum: widget.config.ranges.isNotEmpty
+                      ? widget.config.ranges.last['to']?.toDouble() ?? 300
+                      : 600,
+                  axisLabelStyle: const TextStyle(fontSize: 10),
                 ),
               ),
             ),
@@ -255,76 +217,82 @@ class _DeviceModelHeatmapWidgetState
     );
   }
 
-  Future<void> loadDeviceData() async {
-    try {
-      var qRes = await TwinnedSession.instance.twin.queryDeviceData(
-        apikey: TwinnedSession.instance.authToken,
-        body: EqlSearch(
-          source: [],
-          page: 0,
-          size: 100,
-          mustConditions: [
-            {
-              "match_phrase": {
-                "modelId": deviceModelId,
+  Future<void> _load() async {
+    if (!isValidConfig || loading) return;
+    loading = true;
+
+    await execute(
+      () async {
+        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+          apikey: TwinnedSession.instance.authToken,
+          body: EqlSearch(
+            source: [],
+            page: 0,
+            size: 100,
+            mustConditions: [
+              {
+                "match_phrase": {
+                  "modelId": deviceModelId,
+                }
+              },
+            ],
+          ),
+        );
+
+        if (validateResponse(qRes)) {
+          Map<String, dynamic> json =
+              qRes.body!.result! as Map<String, dynamic>;
+          List<Map<String, dynamic>> values =
+              List<Map<String, dynamic>>.from(json['hits']['hits']);
+
+          datasets = {}; // Reset datasets
+          deviceNames = {}; // Reset device names
+
+          for (Map<String, dynamic> obj in values) {
+            String deviceId = obj['p_source']['id'];
+            String deviceName = obj['p_source']['name'] ?? deviceId;
+
+            Map<String, dynamic> paramNames = obj['p_source']['data'];
+            deviceNames[deviceId] = deviceName;
+
+            DeviceModel? deviceModel =
+                await TwinUtils.getDeviceModel(modelId: deviceModelId);
+
+            for (String param in paramNames.keys) {
+              String label =
+                  TwinUtils.getParameterLabel(param, deviceModel!) ?? param;
+
+              if (label.isEmpty) {
+                label = param;
               }
-            },
-          ],
-        ),
-      );
 
-      if (validateResponse(qRes)) {
-        Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
-        List<Map<String, dynamic>> values =
-            List<Map<String, dynamic>>.from(json['hits']['hits']);
+              String unit = TwinUtils.getParameterUnit(param, deviceModel);
+              parameterUnits[label] = unit;
 
-        datasets = {}; // Reset datasets
-        deviceNames = {}; // Reset device names
-
-        for (Map<String, dynamic> obj in values) {
-          String deviceId = obj['p_source']['id']; // Get device ID
-          String deviceName =
-              obj['p_source']['name'] ?? deviceId; // Get device name
-
-          Map<String, dynamic> paramNames = obj['p_source']['data'];
-          deviceNames[deviceId] = deviceName; // Store device name
-
-          DeviceModel? deviceModel =
-              await TwinUtils.getDeviceModel(modelId: deviceModelId);
-
-          for (String param in paramNames.keys) {
-            String label =
-                TwinUtils.getParameterLabel(param, deviceModel!) ?? param;
-
-            if (label.isEmpty) {
-              label = param;
-            }
-
-            String unit = TwinUtils.getParameterUnit(param, deviceModel);
-            parameterUnits[label] = unit; // Store the unit for this parameter
-
-            var value = obj['p_source']['data'][param];
-            if (value is num) {
-              datasets.putIfAbsent(deviceId, () => {})[label] =
-                  (datasets[deviceId]?[label] ?? 0) +
-                      value.toInt(); // Use label as key.
+              var value = obj['p_source']['data'][param];
+              if (value is num) {
+                datasets.putIfAbsent(deviceId, () => {})[label] =
+                    (datasets[deviceId]?[label] ?? 0) + value.toInt();
+              }
             }
           }
+          refresh();
         }
+      },
+    );
 
-        setState(() {});
-      } else {
-        debugPrint('Invalid API response.');
-      }
-    } catch (e) {
-      debugPrint('Error fetching data: $e');
-    }
+    loading = false;
+    refresh();
   }
 
   @override
   void setup() {
-    loadDeviceData();
+    _load();
   }
+}
+
+Color colorFromInt(int colorValue) {
+  return Color(colorValue);
 }
 
 class DeviceModelHeatmapWidgetBuilder extends TwinnedWidgetBuilder {

@@ -138,7 +138,6 @@ class _DeviceMultiFieldRadialAxisWidgetState
 
   Future<void> _load() async {
     if (!isConfigValid || loading) return;
-
     loading = true;
 
     var query = EqlSearch(
@@ -152,31 +151,38 @@ class _DeviceMultiFieldRadialAxisWidgetState
       ],
     );
 
-    var qRes = await TwinnedSession.instance.twin.queryDeviceData(
-      apikey: TwinnedSession.instance.authToken,
-      body: query,
-    );
+    await execute(
+      () async {
+        var qRes = await TwinnedSession.instance.twin.queryDeviceData(
+          apikey: TwinnedSession.instance.authToken,
+          body: query,
+        );
 
-    if (qRes.body != null &&
-        qRes.body!.result != null &&
-        validateResponse(qRes)) {
-      Map<String, dynamic>? json = qRes.body!.result as Map<String, dynamic>?;
+        if (qRes.body != null &&
+            qRes.body!.result != null &&
+            validateResponse(qRes)) {
+          Map<String, dynamic>? json =
+              qRes.body!.result as Map<String, dynamic>?;
 
-      if (json != null) {
-        List<dynamic> hits = json['hits']['hits'];
+          if (json != null) {
+            List<dynamic> hits = json['hits']['hits'];
 
-        if (hits.isNotEmpty) {
-          Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-          Map<String, dynamic> source = obj['p_source'] as Map<String, dynamic>;
-          Map<String, dynamic> data = source['data'] as Map<String, dynamic>;
+            if (hits.isNotEmpty) {
+              Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
+              Map<String, dynamic> source =
+                  obj['p_source'] as Map<String, dynamic>;
+              Map<String, dynamic> data =
+                  source['data'] as Map<String, dynamic>;
 
-          for (var field in fields) {
-            fieldValues[field] = data[field] ?? 0.0;
+              for (var field in fields) {
+                fieldValues[field] = data[field] ?? 0.0;
+              }
+            }
           }
         }
-      }
-    }
-
+      },
+    );
+    
     loading = false;
     refresh();
   }
