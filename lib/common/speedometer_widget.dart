@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twin_commons/core/twinned_session.dart';
+import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_api/api/twinned.swagger.dart';
 import 'package:twinned_models/speedometer_widget/speedometer_widget.dart';
@@ -25,11 +26,12 @@ class _SpeedometerWidgetState extends BaseState<SpeedometerWidget> {
   late double positionFactor;
   late bool showLabel;
   late bool showTicks;
+  late bool enableAnimation;
   late Color axisColor;
   late FontConfig titleFont;
   late FontConfig valueFont;
   late FontConfig unitFont;
-
+  String unit = '--';
   double speedvalue = 0;
   bool isValidConfig = false;
 
@@ -44,6 +46,7 @@ class _SpeedometerWidgetState extends BaseState<SpeedometerWidget> {
     positionFactor = config.positionFactor;
     showLabel = config.showLabel;
     showTicks = config.showTicks;
+    enableAnimation = config.enableAnimation;
     axisColor = Color(config.axisColor);
     titleFont = FontConfig.fromJson(config.titleFont);
     valueFont = FontConfig.fromJson(config.valueFont);
@@ -57,83 +60,75 @@ class _SpeedometerWidgetState extends BaseState<SpeedometerWidget> {
   Widget build(BuildContext context) {
     if (!isValidConfig) {
       return const Center(
-        child: Wrap(
-          spacing: 8,
-          children: [
-            Text(
-              'Not Configured Properly',
-              style:
-                  TextStyle(color: Colors.red, overflow: TextOverflow.ellipsis),
-            ),
-          ],
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
         ),
       );
     }
 
-    return Center(
-      child: SfRadialGauge(
-        axes: <RadialAxis>[
-          // Main Axis (Outer line Speedometer)
-          RadialAxis(
-            axisLineStyle: AxisLineStyle(
-              color: axisColor,
-              thickness: 10,
-            ),
-            minimum: minimum,
-            maximum: maximum,
-            showTicks: false,
-            showLabels: false,
-          ),
-          // Inner Axis (main value is displayed in speedometer)
-          RadialAxis(
-            radiusFactor: 0.9,
-            minimum: minimum,
-            maximum: minimum,
-            showLabels: showLabel,
-            showTicks: showTicks,
-            minorTickStyle:
-                MinorTickStyle(color: axisColor, length: 15, thickness: 2),
-            majorTickStyle:
-                MajorTickStyle(thickness: 3, length: 25, color: axisColor),
-            axisLineStyle: const AxisLineStyle(
-              thickness: 0.1,
-              thicknessUnit: GaugeSizeUnit.factor,
-            ),
-            pointers: <GaugePointer>[
-              RangePointer(
-                value: speedvalue,
-                color: axisColor,
-                width: 0.1,
-                sizeUnit: GaugeSizeUnit.factor,
-              ),
-            ],
-            annotations: <GaugeAnnotation>[
-              const GaugeAnnotation(
-                widget: Text(
-                  'value%',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                angle: 90,
-                positionFactor: 0,
-              ),
-              GaugeAnnotation(
-                widget: const Text(
-                  ' km/h',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                angle: 90,
-                positionFactor: positionFactor,
-              ),
-            ],
-          ),
-        ],
+    return SfRadialGauge(
+      title: GaugeTitle(
+        text: title,
+        textStyle: TwinUtils.getTextStyle(titleFont),
       ),
+      axes: <RadialAxis>[
+        // Main Axis (Outer line Speedometer)
+        RadialAxis(
+          radiusFactor: 0.95,
+          axisLineStyle: AxisLineStyle(
+            color: axisColor,
+            thickness: 7,
+          ),
+          minimum: minimum,
+          maximum: maximum,
+          showTicks: false,
+          showLabels: false,
+        ),
+        // Inner Axis (main value is displayed in speedometer)
+        RadialAxis(
+          radiusFactor: 0.88,
+          minimum: minimum,
+          maximum: maximum,
+          showLabels: showLabel,
+          showTicks: showTicks,
+          minorTickStyle:
+              MinorTickStyle(color: axisColor, length: 15, thickness: 2),
+          majorTickStyle:
+              MajorTickStyle(color: axisColor, length: 25, thickness: 3),
+          axisLineStyle: const AxisLineStyle(
+            thickness: 0.1,
+            thicknessUnit: GaugeSizeUnit.factor,
+          ),
+          pointers: <GaugePointer>[
+            RangePointer(
+              enableAnimation: enableAnimation,
+              value: speedvalue,
+              color: axisColor,
+              width: 0.1,
+              sizeUnit: GaugeSizeUnit.factor,
+            ),
+          ],
+          annotations: <GaugeAnnotation>[
+            GaugeAnnotation(
+              widget: Text(
+                '$speedvalue',
+                style: TwinUtils.getTextStyle(valueFont),
+              ),
+              angle: 90,
+              positionFactor: positionFactor,
+            ),
+            GaugeAnnotation(
+              widget: Text(
+                unit.isNotEmpty ? unit : '--',
+                style: TwinUtils.getTextStyle(unitFont),
+              ),
+              angle: 90,
+              positionFactor: positionFactor + 0.2,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -161,8 +156,14 @@ class _SpeedometerWidgetState extends BaseState<SpeedometerWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
+        Device? device = await TwinUtils.getDevice(deviceId: deviceId);
+        if (device == null) return;
+        DeviceModel? deviceModel =
+            await TwinUtils.getDeviceModel(modelId: device.modelId);
+
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
+        unit = TwinUtils.getParameterUnit(field, deviceModel!);
 
         if (json != null) {
           List<dynamic> hits = json['hits']['hits'];
@@ -170,9 +171,11 @@ class _SpeedometerWidgetState extends BaseState<SpeedometerWidget> {
           if (hits.isNotEmpty) {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             var value = obj['p_source']['data'][field];
-            setState(() {
-              speedvalue = value;
-            });
+            refresh(
+              sync: () {
+                speedvalue = value;
+              },
+            );
           }
         }
       }

@@ -91,14 +91,14 @@ class _DeviceFieldRadialGaugeWidgetState
     subTitleFont = FontConfig.fromJson(widget.config.subTitleFont);
     titleFont = FontConfig.fromJson(widget.config.titleFont);
     valueFont = FontConfig.fromJson(widget.config.valueFont);
-    isValidConfig=field.isNotEmpty && deviceId.isNotEmpty;
+    isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
- if (!isValidConfig) {
+    if (!isValidConfig) {
       return const Center(
         child: Wrap(
           spacing: 8.0,
@@ -231,7 +231,6 @@ class _DeviceFieldRadialGaugeWidgetState
           validateResponse(qRes)) {
         Device? device = await TwinUtils.getDevice(deviceId: deviceId);
         if (device == null) return;
-
         DeviceModel? deviceModel =
             await TwinUtils.getDeviceModel(modelId: device.modelId);
 
@@ -246,7 +245,7 @@ class _DeviceFieldRadialGaugeWidgetState
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             value = obj['p_source']['data'][field];
 
-            setState(() {
+            refresh(sync: () {
               value = value;
               subtitle = _getUpdatedTimeAgo(obj['p_source']['updatedStamp']);
             });

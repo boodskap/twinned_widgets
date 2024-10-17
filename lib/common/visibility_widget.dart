@@ -108,8 +108,6 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-        // Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-        // if (device == null) return;
 
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
@@ -120,10 +118,11 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             var value = obj['p_source']['data'][field];
             // debugPrint(value.toString());
-
-            setState(() {
-              visiblityValue = value;
-            });
+            refresh(
+              sync: () {
+                visiblityValue = value;
+              },
+            );
           }
         }
       }
