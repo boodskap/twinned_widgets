@@ -21,6 +21,7 @@ class DeviceModelHeatmapWidget extends StatefulWidget {
 class _DeviceModelHeatmapWidgetState
     extends BaseState<DeviceModelHeatmapWidget> {
   late String deviceModelId;
+  late String modelName;
   late FontConfig titleFont;
   late FontConfig valueFont;
   late FontConfig labelFont;
@@ -36,6 +37,7 @@ class _DeviceModelHeatmapWidgetState
   void initState() {
     var config = widget.config;
     deviceModelId = config.deviceModelId;
+    modelName = '';
     titleFont = FontConfig.fromJson(config.titleFont);
     labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
@@ -69,6 +71,13 @@ class _DeviceModelHeatmapWidgetState
             Expanded(
               child: Column(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      modelName.isNotEmpty ? modelName : '--',
+                      style: TwinUtils.getTextStyle(titleFont),
+                    ),
+                  ),
                   Expanded(
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -251,6 +260,15 @@ class _DeviceModelHeatmapWidgetState
           for (Map<String, dynamic> obj in values) {
             String deviceId = obj['p_source']['id'];
             String deviceName = obj['p_source']['name'] ?? deviceId;
+            String fetchedModelName = obj['p_source']['modelName'] ?? '';
+
+            if (fetchedModelName.isNotEmpty) {
+              refresh(
+                sync: () {
+                  modelName = fetchedModelName;
+                },
+              );
+            }
 
             Map<String, dynamic> paramNames = obj['p_source']['data'];
             deviceNames[deviceId] = deviceName;

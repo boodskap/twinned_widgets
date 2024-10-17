@@ -50,6 +50,7 @@ import 'package:twinned_widgets/common/multi_field_card_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
 import 'package:twinned_widgets/common/single_value_slider_widget.dart';
+import 'package:twinned_widgets/common/speedometer_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
 import 'package:twinned_widgets/common/static_timeline_widget.dart';
 import 'package:twinned_widgets/common/text_card_widget.dart';
@@ -159,6 +160,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericOddEvenOvalWidget': GenericOddEvenOvalWidgetBuilder(),
   'TWGenericOddEvenEllipseWidget': GenericOddEvenEllipseWidgetBuilder(),
   'TWDeviceModelHeatmapWidget': DeviceModelHeatmapWidgetBuilder(),
+  'TWSpeedometerWidget': SpeedometerWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
