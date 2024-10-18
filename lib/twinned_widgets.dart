@@ -12,7 +12,9 @@ import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
 import 'package:twinned_widgets/common/device_field_scatter_chart_widget.dart';
 import 'package:twinned_widgets/common/device_field_spline_chart_widget.dart';
+import 'package:twinned_widgets/common/device_list_card_widget.dart';
 import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
+import 'package:twinned_widgets/common/device_model_heatmap_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_radial_axis_widget.dart';
@@ -48,9 +50,12 @@ import 'package:twinned_widgets/common/multi_device_single_field_pie_chart_widge
 import 'package:twinned_widgets/common/multi_field_card_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
+import 'package:twinned_widgets/common/profile_card_widget.dart';
 import 'package:twinned_widgets/common/single_value_slider_widget.dart';
+import 'package:twinned_widgets/common/speedometer_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
 import 'package:twinned_widgets/common/static_timeline_widget.dart';
+import 'package:twinned_widgets/common/text_card_widget.dart';
 import 'package:twinned_widgets/common/thermometer_widget.dart';
 import 'package:twinned_widgets/common/timestamp_widget.dart';
 import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
@@ -153,8 +158,13 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericOddEvenHexagonWidget': GenericOddEvenHexagonWidgetBuilder(),
   'TWGenericOddEvenOctagonWidget': GenericOddEvenOctagonWidgetBuilder(),
   'TWGenericOddEvenDecagonWidget': GenericOddEvenDecagonWidgetBuilder(),
+  'TWTextCardWidget': TextCardWidgetBuilder(),
   'TWGenericOddEvenOvalWidget': GenericOddEvenOvalWidgetBuilder(),
   'TWGenericOddEvenEllipseWidget': GenericOddEvenEllipseWidgetBuilder(),
+  'TWDeviceModelHeatmapWidget': DeviceModelHeatmapWidgetBuilder(),
+  'TWSpeedometerWidget': SpeedometerWidgetBuilder(),
+  'TWProfileCardWidget': ProfileCardWidgetBuilder(),
+  'TWDeviceListCardWidget': DeviceListCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
