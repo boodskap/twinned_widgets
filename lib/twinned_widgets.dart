@@ -12,6 +12,7 @@ import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
 import 'package:twinned_widgets/common/device_field_scatter_chart_widget.dart';
 import 'package:twinned_widgets/common/device_field_spline_chart_widget.dart';
+import 'package:twinned_widgets/common/device_list_card_widget.dart';
 import 'package:twinned_widgets/common/device_min_max_avg_widget.dart';
 import 'package:twinned_widgets/common/device_model_heatmap_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
@@ -161,6 +162,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericOddEvenEllipseWidget': GenericOddEvenEllipseWidgetBuilder(),
   'TWDeviceModelHeatmapWidget': DeviceModelHeatmapWidgetBuilder(),
   'TWSpeedometerWidget': SpeedometerWidgetBuilder(),
+  'TWDeviceListCardWidget': DeviceListCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
