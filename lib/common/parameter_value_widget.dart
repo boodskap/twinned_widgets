@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_models/parameter_value_widget/parameter_value_widget.dart';
@@ -26,6 +27,7 @@ class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
   late String field;
   late FontConfig titleFont;
   late FontConfig valueFont;
+  String imgIconId = '';
   double fieldValue = 0;
 
   @override
@@ -70,10 +72,15 @@ class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
               title,
               style: TwinUtils.getTextStyle(titleFont),
             ),
-            const Icon(
-              Icons.remove_red_eye_outlined,
-              color: Color(0xFFA4C2E8),
-            ),
+            if (imgIconId.isEmpty)
+              const Icon(
+                Icons.info,
+                color: Color(0xFFA4C2E8),
+                size: 30,
+              ),
+            if (imgIconId.isNotEmpty)
+              TwinImageHelper.getCachedDomainImage(imgIconId,
+                  height: 30, width: 30),
             Text(
               '${fieldValue}km',
               style: TwinUtils.getTextStyle(valueFont),
@@ -108,7 +115,6 @@ class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
         if (json != null) {
@@ -117,10 +123,15 @@ class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
           if (hits.isNotEmpty) {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             var value = obj['p_source']['data'][field];
+            var modelId = obj['p_source']['modelId'];
+            DeviceModel? deviceModel =
+                await TwinUtils.getDeviceModel(modelId: modelId);
+            String iconId = TwinUtils.getParameterIcon(field, deviceModel!);
             // debugPrint(value.toString());
             refresh(
               sync: () {
                 fieldValue = value;
+                imgIconId = iconId;
               },
             );
           }
