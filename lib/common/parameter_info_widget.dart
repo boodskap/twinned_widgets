@@ -121,8 +121,6 @@ class _ParameterInfoWidgetState extends BaseState<ParameterInfoWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-        // Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-        // if (device == null) return;
 
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
@@ -132,12 +130,12 @@ class _ParameterInfoWidgetState extends BaseState<ParameterInfoWidget> {
           if (hits.isNotEmpty) {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             var value = obj['p_source']['data'][field];
-            // var modelId = obj['p_source']['modelId'];
-            // debugPrint(modelId.toString());
-
-            setState(() {
-              fieldValue = value;
-            });
+            // debugPrint(value.toString());
+            refresh(
+              sync: () {
+                fieldValue = value;
+              },
+            );
           }
         }
       }
