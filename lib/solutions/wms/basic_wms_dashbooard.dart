@@ -7,19 +7,20 @@ import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/device_field_spline_chart/device_field_spline_chart.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
 import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
-import 'package:twinned_models/visibility_air_quality/visibility_air_quality.dart';
 import 'package:twinned_models/thermometer_temperature/thermometer_temperature.dart';
+import 'package:twinned_widgets/common/parameter_info_widget.dart';
+import 'package:twinned_widgets/common/parameter_value_widget.dart';
 import 'package:twinned_widgets/solutions/wms/current_temperature.dart';
 import 'package:twinned_widgets/solutions/wms/forecast_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/air_quality_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/humidity_progress_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/sunrise_sunset_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/uv_index_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/visibility_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/wind_status_widget.dart';
 import 'package:twinned_widgets/solutions/wms/spline_chart_wms.dart';
 import 'package:twinned_widgets/solutions/wms/thermometer_widget.dart';
 import 'package:twinned_widgets/solutions/wms/week_humidity_widget.dart';
+import 'package:twinned_models/parameter_info_widget/parameter_info_widget.dart';
+import 'package:twinned_models/parameter_value_widget/parameter_value_widget.dart';
 
 class BasicWmsDashboard extends StatefulWidget {
   const BasicWmsDashboard({super.key});
@@ -400,8 +401,8 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   left: 4.0, top: 4, bottom: 4),
-                              child: VisibilityWidget(
-                                config: VisibilityAirQualityWidgetConfig(
+                              child: ParameterInfoWidget(
+                                config: ParameterInfoWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   field: 'visibility',
                                   title: 'Visibility',
@@ -412,8 +413,8 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(4),
-                              child: AirQualityWidget(
-                                config: VisibilityAirQualityWidgetConfig(
+                              child: ParameterValueWidget(
+                                config: ParameterValueWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   field: 'airquality',
                                   title: 'Air Quality',
