@@ -63,6 +63,7 @@ class _ProfileCardWidgetState extends BaseState<ProfileCardWidget> {
     return Center(
       child: SizedBox(
         child: Card(
+          color: cardBgColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),

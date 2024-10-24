@@ -2,32 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/visibility_air_quality/visibility_air_quality.dart';
+import 'package:twinned_models/models.dart';
+import 'package:twinned_models/parameter_value_widget/parameter_value_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class AirQualityWidget extends StatefulWidget {
-  final VisibilityAirQualityWidgetConfig config;
-  const AirQualityWidget({
+class ParameterValueWidget extends StatefulWidget {
+  final ParameterValueWidgetConfig config;
+  const ParameterValueWidget({
     super.key,
     required this.config,
   });
+
   @override
-  State<AirQualityWidget> createState() => _AirQualityWidgetState();
+  State<ParameterValueWidget> createState() => _ParameterValueWidgetState();
 }
 
-class _AirQualityWidgetState extends BaseState<AirQualityWidget> {
+class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
   bool isValidConfig = false;
   late String title;
   late String deviceId;
   late String field;
   late FontConfig titleFont;
   late FontConfig valueFont;
-  late FontConfig subLabelFont;
-  double airQualityValue = 0;
-  bool loading = false;
+  double fieldValue = 0;
 
   @override
   void initState() {
@@ -37,7 +36,6 @@ class _AirQualityWidgetState extends BaseState<AirQualityWidget> {
     deviceId = config.deviceId;
     titleFont = FontConfig.fromJson(config.titleFont);
     valueFont = FontConfig.fromJson(config.valueFont);
-    subLabelFont = FontConfig.fromJson(config.subLabelFont);
 
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
@@ -72,23 +70,13 @@ class _AirQualityWidgetState extends BaseState<AirQualityWidget> {
               title,
               style: TwinUtils.getTextStyle(titleFont),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.air,
-                  color: Color(0xFFA4C2E8),
-                ),
-                divider(horizontal: true, width: 5),
-                Text(
-                  airQualityValue.toString() ?? "0.0",
-                  style: TwinUtils.getTextStyle(valueFont),
-                ),
-              ],
+            const Icon(
+              Icons.remove_red_eye_outlined,
+              color: Color(0xFFA4C2E8),
             ),
             Text(
-              'Unhealthy for Sensitive Groups',
-              style: TwinUtils.getTextStyle(subLabelFont),
+              '${fieldValue}km',
+              style: TwinUtils.getTextStyle(valueFont),
             ),
           ],
         ),
@@ -120,8 +108,6 @@ class _AirQualityWidgetState extends BaseState<AirQualityWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-        // Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-        // if (device == null) return;
 
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
@@ -132,10 +118,11 @@ class _AirQualityWidgetState extends BaseState<AirQualityWidget> {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             var value = obj['p_source']['data'][field];
             // debugPrint(value.toString());
-
-            setState(() {
-              airQualityValue = value;
-            });
+            refresh(
+              sync: () {
+                fieldValue = value;
+              },
+            );
           }
         }
       }
@@ -150,11 +137,11 @@ class _AirQualityWidgetState extends BaseState<AirQualityWidget> {
   }
 }
 
-class AirQualityWidgetBuilder extends TwinnedWidgetBuilder {
+class ParameterValueWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return AirQualityWidget(
-      config: VisibilityAirQualityWidgetConfig.fromJson(config),
+    return ParameterValueWidget(
+      config: ParameterValueWidgetConfig.fromJson(config),
     );
   }
 
@@ -165,24 +152,24 @@ class AirQualityWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.air);
+    return const Icon(Icons.visibility_rounded);
   }
 
   @override
   String getPaletteName() {
-    return "Air Quality widget ";
+    return "Parameter value widget ";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return VisibilityAirQualityWidgetConfig.fromJson(config);
+      return ParameterValueWidgetConfig.fromJson(config);
     }
-    return VisibilityAirQualityWidgetConfig();
+    return ParameterValueWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Air Quality widget';
+    return 'Parameter value widget';
   }
 }
