@@ -133,7 +133,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldSplineAreaChartWidget':
       DeviceFieldSplineAreaChartWidgetBuilder(),
   'TWThermometerWidget': ThermometerWidgetBuilder(),
-  'TWHumidityProgressBarWidget': HumidityProgressBarWidgetBuilder(),
+  'TWHumidityProgressBarWidget': LinearProgressBarWidgetBuilder(),
   'TWHumidityWeekWidget': HumidityWeekWidgetBuilder(),
   'TWAirQualityOddEvenCircleWidget': GenericOddEvenCircleWidgetBuilder(),
   'TWFieldCardWidget': FieldCardWidgetBuilder(),
