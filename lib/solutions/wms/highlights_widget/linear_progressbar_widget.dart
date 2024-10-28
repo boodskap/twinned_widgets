@@ -5,10 +5,10 @@ import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
+import 'package:twinned_models/linear_progress_widget_bar/linear_progress_bar_widget.dart';
 
 class ProgressBarWidget extends StatefulWidget {
-  final HumidityProgressBarWidgetConfig config;
+  final LinearProgressBarWidgetConfig config;
   const ProgressBarWidget({super.key, required this.config});
 
   @override
