@@ -202,7 +202,7 @@ class _MultiFieldCardWidgetState extends BaseState<MultiFieldCardWidget> {
                                 height: imageSize,
                                 child: TwinImageHelper.getDomainImage(
                                     fieldData['icon']),
-                              ),
+                              ), 
                             const SizedBox(height: 10),
                           ],
                         ),
