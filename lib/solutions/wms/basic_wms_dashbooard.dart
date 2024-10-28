@@ -12,7 +12,7 @@ import 'package:twinned_widgets/common/parameter_info_widget.dart';
 import 'package:twinned_widgets/common/parameter_value_widget.dart';
 import 'package:twinned_widgets/solutions/wms/current_temperature.dart';
 import 'package:twinned_widgets/solutions/wms/forecast_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/humidity_progress_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/linear_progressbar_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/sunrise_sunset_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/uv_index_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
