@@ -42,102 +42,12 @@ class _CalendarWidgetState extends BaseState<CalendarWidget> {
     titleFont = FontConfig.fromJson(config.titleFont);
     labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
+    isValidConfig = deviceId.isNotEmpty;
 
     super.initState();
   }
 
-  Future<void> _load(DateTime day) async {
-    if (!isValidConfig) return;
-    if (loading) return;
-    loading = true;
-
-    DateTime startOfDay = DateTime(day.year, day.month, day.day);
-    DateTime endOfDay = DateTime(day.year, day.month, day.day, 23, 59, 59);
-
-    String startOfStartDateStr = startOfDay.toUtc().toIso8601String();
-    String endOfEndDateStr = endOfDay.toUtc().toIso8601String();
-
-    EqlCondition filterRange = EqlCondition(name: 'filter', condition: {
-      "range": {
-        "updatedStamp": {
-          "gte": startOfStartDateStr,
-          "lte": endOfEndDateStr,
-        }
-      }
-    });
-    await execute(() async {
-      var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
-        apikey: TwinnedSession.instance.authToken,
-        body: EqlSearch(
-          page: 0,
-          size: 1,
-          source: [],
-          mustConditions: [
-            {
-              "match_phrase": {"deviceId": deviceId}
-            },
-          ],
-          sort: {'updatedStamp': 'desc'},
-          boolConditions: [filterRange],
-        ),
-      );
-
-      if (validateResponse(qRes)) {
-        Map<String, dynamic> json = qRes.body!.result as Map<String, dynamic>;
-        List<dynamic> values = json['hits']['hits'];
-
-        if (values.isNotEmpty) {
-          var data = values[0]['p_source']['data'];
-          var modelId = values[0]['p_source']['modelId'];
-          DeviceModel? deviceModel =
-              await TwinUtils.getDeviceModel(modelId: modelId);
-
-          updatePatientDetails(data, deviceModel);
-        } else {
-          resetPatientDetails();
-        }
-      } else {
-        resetPatientDetails();
-      }
-    });
-
-    loading = false;
-    refresh();
-  }
-
-  void updatePatientDetails(
-      Map<String, dynamic> data, DeviceModel? deviceModel) {
-    patientDetails['Blood Pressure']!['iconId'] =
-        TwinUtils.getParameterIcon('blood_pressure', deviceModel!);
-    patientDetails['Cholesterol']!['iconId'] =
-        TwinUtils.getParameterIcon('cholestrol', deviceModel);
-    patientDetails['Blood Glucose Level']!['iconId'] =
-        TwinUtils.getParameterIcon('blood_glucose_level', deviceModel);
-    patientDetails['Heart Rate']!['iconId'] =
-        TwinUtils.getParameterIcon('heart_rate', deviceModel);
-    patientDetails['Body Temperature']!['iconId'] =
-        TwinUtils.getParameterIcon('temperature', deviceModel);
-
-    setState(() {
-      patientDetails['Blood Pressure']!['value'] =
-          '${data['blood_pressure']} mmHg';
-      patientDetails['Cholesterol']!['value'] = '${data['cholestrol']} mg/dL';
-      patientDetails['Blood Glucose Level']!['value'] =
-          '${data['blood_glucose_level']} mg/dL';
-      patientDetails['Heart Rate']!['value'] = '${data['heart_rate']} bpm';
-      patientDetails['Body Temperature']!['value'] =
-          '${data['temperature']} °C';
-    });
-  }
-
-  void resetPatientDetails() {
-    patientDetails.forEach((key, value) {
-      value['value'] = 'No Data';
-      value['iconId'] = '';
-    });
-    setState(() {});
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     if (!isValidConfig) {
@@ -249,6 +159,97 @@ class _CalendarWidgetState extends BaseState<CalendarWidget> {
         return Colors.grey;
     }
   }
+Future<void> _load(DateTime day) async {
+    if (!isValidConfig) return;
+    if (loading) return;
+    loading = true;
+
+    DateTime startOfDay = DateTime(day.year, day.month, day.day);
+    DateTime endOfDay = DateTime(day.year, day.month, day.day, 23, 59, 59);
+
+    String startOfStartDateStr = startOfDay.toUtc().toIso8601String();
+    String endOfEndDateStr = endOfDay.toUtc().toIso8601String();
+
+    EqlCondition filterRange = EqlCondition(name: 'filter', condition: {
+      "range": {
+        "updatedStamp": {
+          "gte": startOfStartDateStr,
+          "lte": endOfEndDateStr,
+        }
+      }
+    });
+    await execute(() async {
+      var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
+        apikey: TwinnedSession.instance.authToken,
+        body: EqlSearch(
+          page: 0,
+          size: 1,
+          source: [],
+          mustConditions: [
+            {
+              "match_phrase": {"deviceId": deviceId}
+            },
+          ],
+          sort: {'updatedStamp': 'desc'},
+          boolConditions: [filterRange],
+        ),
+      );
+
+      if (validateResponse(qRes)) {
+        Map<String, dynamic> json = qRes.body!.result as Map<String, dynamic>;
+        List<dynamic> values = json['hits']['hits'];
+
+        if (values.isNotEmpty) {
+          var data = values[0]['p_source']['data'];
+          var modelId = values[0]['p_source']['modelId'];
+          DeviceModel? deviceModel =
+              await TwinUtils.getDeviceModel(modelId: modelId);
+
+          updatePatientDetails(data, deviceModel);
+        } else {
+          resetPatientDetails();
+        }
+      } else {
+        resetPatientDetails();
+      }
+    });
+
+    loading = false;
+    refresh();
+  }
+
+  void updatePatientDetails(
+      Map<String, dynamic> data, DeviceModel? deviceModel) {
+    patientDetails['Blood Pressure']!['iconId'] =
+        TwinUtils.getParameterIcon('blood_pressure', deviceModel!);
+    patientDetails['Cholesterol']!['iconId'] =
+        TwinUtils.getParameterIcon('cholestrol', deviceModel);
+    patientDetails['Blood Glucose Level']!['iconId'] =
+        TwinUtils.getParameterIcon('blood_glucose_level', deviceModel);
+    patientDetails['Heart Rate']!['iconId'] =
+        TwinUtils.getParameterIcon('heart_rate', deviceModel);
+    patientDetails['Body Temperature']!['iconId'] =
+        TwinUtils.getParameterIcon('temperature', deviceModel);
+
+    setState(() {
+      patientDetails['Blood Pressure']!['value'] =
+          '${data['blood_pressure']} mmHg';
+      patientDetails['Cholesterol']!['value'] = '${data['cholestrol']} mg/dL';
+      patientDetails['Blood Glucose Level']!['value'] =
+          '${data['blood_glucose_level']} mg/dL';
+      patientDetails['Heart Rate']!['value'] = '${data['heart_rate']} bpm';
+      patientDetails['Body Temperature']!['value'] =
+          '${data['temperature']} °C';
+    });
+  }
+
+  void resetPatientDetails() {
+    patientDetails.forEach((key, value) {
+      value['value'] = 'No Data';
+      value['iconId'] = '';
+    });
+    setState(() {});
+  }
 
   @override
   void setup() {
@@ -291,7 +292,6 @@ class PatientDetailCard extends StatelessWidget {
     );
   }
 }
-
 
 class CalendarWidgetBuilder extends TwinnedWidgetBuilder {
   @override
