@@ -74,7 +74,7 @@ import 'package:twinned_widgets/solutions/tms/device_field_radial_gauge_widget.d
 import 'package:twinned_widgets/solutions/tms/multi_field_device_spline_area_chart_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/sunrise_sunset_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/uv_index_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/wind_status_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
 import 'common/multiple_device_cartesian_chart_widget.dart';
@@ -150,7 +150,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldRadialGaugeWidget': DeviceFieldRadialGaugeWidgetBuilder(),
   'TWGenericOddEvenDiamondWidget': GenericOddEvenDiamondWidgetBuilder(),
   'TWUvIndexWidget': UvIndexWidgetBuilder(),
-  'TWWindStatusWidget': WindStatusWidgetBuilder(),
+  'TWWindStatusWidget': CompassWidgetBuilder(),
   'TWSunriseSunsetWidget': SunriseSunsetWidgetBuilder(),
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
   'TWParameterValueWidget': ParameterValueWidgetBuilder(),
