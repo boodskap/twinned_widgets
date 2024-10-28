@@ -338,15 +338,11 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                                 config: CompassWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   title: 'Wind Status',
-                                  // minimum: 0,
-                                  // maximum: 360,
                                   valueFont: {
                                     "fontSize": 16,
                                     "fontColor": 0XFF7DA9E1,
                                     "fontBold": true
                                   },
-                                  // backgroundColor: 0xFFB3E5FC,
-                                  // markerColor: 0XFF7DA9E1,
                                 ),
                               ),
                             ),
