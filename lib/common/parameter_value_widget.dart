@@ -82,7 +82,7 @@ class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
               TwinImageHelper.getCachedDomainImage(imgIconId,
                   height: 30, width: 30),
             Text(
-              '${fieldValue}km',
+              '$fieldValue',
               style: TwinUtils.getTextStyle(valueFont),
             ),
           ],

@@ -26,7 +26,7 @@ class _ParameterInfoWidgetState extends BaseState<ParameterInfoWidget> {
   late String hintText;
   late FontConfig titleFont;
   late FontConfig valueFont;
-  late FontConfig subLabelFont;
+  late FontConfig hintTextFont;
   double fieldValue = 0;
 
   @override
@@ -38,7 +38,7 @@ class _ParameterInfoWidgetState extends BaseState<ParameterInfoWidget> {
     hintText = config.hintText;
     titleFont = FontConfig.fromJson(config.titleFont);
     valueFont = FontConfig.fromJson(config.valueFont);
-    subLabelFont = FontConfig.fromJson(config.subLabelFont);
+    hintTextFont = FontConfig.fromJson(config.hintTextFont);
 
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
@@ -89,7 +89,7 @@ class _ParameterInfoWidgetState extends BaseState<ParameterInfoWidget> {
             ),
             Text(
               hintText.isNotEmpty ? hintText : '--',
-              style: TwinUtils.getTextStyle(subLabelFont),
+              style: TwinUtils.getTextStyle(hintTextFont),
             ),
           ],
         ),

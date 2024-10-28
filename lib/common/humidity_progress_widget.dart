@@ -3,24 +3,23 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
+import 'package:twinned_models/linear_progress_widget_bar/linear_progress_bar_widget.dart';
+import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class HumidityProgressBarWidget extends StatefulWidget {
-  final HumidityProgressBarWidgetConfig config;
-  const HumidityProgressBarWidget({super.key, required this.config});
+class LinearProgressBarWidget extends StatefulWidget {
+  final LinearProgressBarWidgetConfig config;
+  const LinearProgressBarWidget({super.key, required this.config});
 
   @override
-  State<HumidityProgressBarWidget> createState() =>
-      _HumidityProgressBarWidgetState();
+  State<LinearProgressBarWidget> createState() =>
+      _LinearProgressBarWidgetState();
 }
 
-class _HumidityProgressBarWidgetState
-    extends BaseState<HumidityProgressBarWidget> {
-  bool loading = false;
+class _LinearProgressBarWidgetState
+    extends BaseState<LinearProgressBarWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -152,11 +151,11 @@ class _HumidityProgressBarWidgetState
   }
 }
 
-class HumidityProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
+class LinearProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return HumidityProgressBarWidget(
-      config: HumidityProgressBarWidgetConfig.fromJson(config),
+    return LinearProgressBarWidget(
+      config: LinearProgressBarWidgetConfig.fromJson(config),
     );
   }
 
@@ -172,19 +171,19 @@ class HumidityProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteName() {
-    return "Humidity Progress widget ";
+    return "Linear Progress Bar widget ";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return HumidityProgressBarWidgetConfig.fromJson(config);
+      return LinearProgressBarWidgetConfig.fromJson(config);
     }
-    return HumidityProgressBarWidgetConfig();
+    return LinearProgressBarWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Humidity progress device field widget';
+    return 'Linear progress device field widget';
   }
 }
