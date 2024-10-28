@@ -61,10 +61,10 @@ class _CompassWidgetState extends BaseState<CompassWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4), // Border radius
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: Colors.white, // Border color
-          width: 1, // Border width
+          color: Colors.white,
+          width: 1,
         ),
       ),
       child: Card(
@@ -217,8 +217,7 @@ class _CompassWidgetState extends BaseState<CompassWidget> {
 class CompassWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return CompassWidget(
-        config: CompassWidgetConfig.fromJson(config));
+    return CompassWidget(config: CompassWidgetConfig.fromJson(config));
   }
 
   @override
