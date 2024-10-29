@@ -5,22 +5,22 @@ import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_models/range_gauge/range_gauge.dart';
+import 'package:twinned_models/semi_circle_range_widget/semi_circle_range_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class UvIndexWidget extends StatefulWidget {
-  final DeviceFieldRangeGaugeWidgetConfig config;
-  const UvIndexWidget({
+class SemiCircleRangeWidget extends StatefulWidget {
+  final SemiCircleRangeWidgetConfig config;
+  const SemiCircleRangeWidget({
     super.key,
     required this.config,
   });
 
   @override
-  State<UvIndexWidget> createState() => _UvIndexWidgetState();
+  State<SemiCircleRangeWidget> createState() => _SemiCircleRangeWidgetState();
 }
 
-class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
+class _SemiCircleRangeWidgetState extends BaseState<SemiCircleRangeWidget> {
   bool isValidConfig = false;
   late String title;
   late String deviceId;
@@ -46,7 +46,6 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
     title = config.title;
     field = config.field;
     deviceId = config.deviceId;
-    startAngle = config.startAngle;
     minimum = config.minimum;
     maximum = config.maximum;
     titleFont = FontConfig.fromJson(config.titleFont);
@@ -219,11 +218,11 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
   }
 }
 
-class UvIndexWidgetBuilder extends TwinnedWidgetBuilder {
+class SemiCircleRangeWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return UvIndexWidget(
-        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+    return SemiCircleRangeWidget(
+        config: SemiCircleRangeWidgetConfig.fromJson(config));
   }
 
   @override
@@ -238,19 +237,19 @@ class UvIndexWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteName() {
-    return "UV Index Widget";
+    return "Semi Circle Range Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+      return SemiCircleRangeWidgetConfig.fromJson(config);
     }
-    return DeviceFieldRangeGaugeWidgetConfig();
+    return SemiCircleRangeWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return "UV Index Widget";
+    return "Semi Circle Range Widget";
   }
 }
