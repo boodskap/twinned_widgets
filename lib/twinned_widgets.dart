@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
+import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
@@ -24,6 +25,7 @@ import 'package:twinned_widgets/common/field_card_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_linear_widget.dart';
+import 'package:twinned_widgets/common/generic_multi_shape_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
@@ -165,6 +167,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWSpeedometerWidget': SpeedometerWidgetBuilder(),
   'TWProfileCardWidget': ProfileCardWidgetBuilder(),
   'TWDeviceListCardWidget': DeviceListCardWidgetBuilder(),
+  'TWGenericMultiShapeWidget':GenericMultiShapeWidget(),
+  'TWCalendarWidget': CalendarWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
