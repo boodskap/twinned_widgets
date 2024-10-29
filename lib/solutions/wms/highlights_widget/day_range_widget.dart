@@ -5,33 +5,28 @@ import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart';
+import 'package:twinned_models/day range widget/day_range_widget.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_models/range_gauge/range_gauge.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class SunriseSunsetWidget extends StatefulWidget {
-  final DeviceFieldRangeGaugeWidgetConfig config;
-  const SunriseSunsetWidget({
+class DayRangeWidget extends StatefulWidget {
+  final DayRangeWidgetConfig config;
+  const DayRangeWidget({
     super.key,
     required this.config,
   });
 
   @override
-  State<SunriseSunsetWidget> createState() => _SunriseSunsetWidgetState();
+  State<DayRangeWidget> createState() => _DayRangeWidgetState();
 }
 
-class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
+class _DayRangeWidgetState extends BaseState<DayRangeWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late List<String> fields;
   late String title;
-  late double startAngle;
-  late double endAngle;
-  late double minimum;
-  late double maximum;
   late FontConfig titleFont;
-  late FontConfig labelFont;
   late FontConfig valueFont;
   late Color backgroundColor;
   late Color valueColor;
@@ -45,11 +40,6 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
     title = config.title;
     titleFont = FontConfig.fromJson(config.titleFont);
     deviceId = config.deviceId;
-    startAngle = config.startAngle;
-    endAngle = config.endAngle;
-    minimum = config.minimum;
-    maximum = config.maximum;
-    labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     valueColor = Color(config.valueColor);
     backgroundColor = Color(config.backgroundColor);
@@ -71,10 +61,10 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4), // Border radius
+        borderRadius: BorderRadius.circular(4), 
         border: Border.all(
-          color: Colors.white, // Border color
-          width: 1, // Border width
+          color: Colors.white,
+          width: 1,
         ),
       ),
       child: Card(
@@ -231,11 +221,11 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
   }
 }
 
-class SunriseSunsetWidgetBuilder extends TwinnedWidgetBuilder {
+class DayRangeWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return SunriseSunsetWidget(
-        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+    return DayRangeWidget(
+        config: DayRangeWidgetConfig.fromJson(config));
   }
 
   @override
@@ -250,19 +240,19 @@ class SunriseSunsetWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteName() {
-    return "Sunrise & Sunset Widget";
+    return "Day Range Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+      return DayRangeWidgetConfig.fromJson(config);
     }
-    return DeviceFieldRangeGaugeWidgetConfig();
+    return DayRangeWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return "Sunrise & Sunset Widget";
+    return "Day Range Widget";
   }
 }

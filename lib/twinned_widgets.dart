@@ -74,8 +74,8 @@ import 'package:twinned_widgets/solutions/ems/infrastructure_card_widget.dart';
 import 'package:twinned_widgets/solutions/ems/vertical_progress_bar_widget.dart';
 import 'package:twinned_widgets/solutions/tms/device_field_radial_gauge_widget.dart.dart';
 import 'package:twinned_widgets/solutions/tms/multi_field_device_spline_area_chart_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/sunrise_sunset_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/uv_index_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/day_range_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/semi_circle_range_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
@@ -135,7 +135,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldSplineAreaChartWidget':
       DeviceFieldSplineAreaChartWidgetBuilder(),
   'TWThermometerWidget': ThermometerWidgetBuilder(),
-  'TWHumidityProgressBarWidget': LinearProgressBarWidgetBuilder(),
+  'TWLinearProgressBarWidget': LinearProgressBarWidgetBuilder(),
   'TWHumidityWeekWidget': HumidityWeekWidgetBuilder(),
   'TWAirQualityOddEvenCircleWidget': GenericOddEvenCircleWidgetBuilder(),
   'TWFieldCardWidget': FieldCardWidgetBuilder(),
@@ -151,9 +151,9 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
       MultiFieldDeviceSplineChartWidgetBuilder(),
   'TWDeviceFieldRadialGaugeWidget': DeviceFieldRadialGaugeWidgetBuilder(),
   'TWGenericOddEvenDiamondWidget': GenericOddEvenDiamondWidgetBuilder(),
-  'TWUvIndexWidget': UvIndexWidgetBuilder(),
-  'TWWindStatusWidget': CompassWidgetBuilder(),
-  'TWSunriseSunsetWidget': SunriseSunsetWidgetBuilder(),
+  'TWSemiCircleRangeWidget': SemiCircleRangeWidgetBuilder(),
+  'TWCompassWidget': CompassWidgetBuilder(),
+  'TWDayRangeWidget': DayRangeWidgetBuilder(),
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
   'TWParameterValueWidget': ParameterValueWidgetBuilder(),
   'TWParameterInfoWidget': ParameterInfoWidgetBuilder(),
@@ -167,7 +167,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWSpeedometerWidget': SpeedometerWidgetBuilder(),
   'TWProfileCardWidget': ProfileCardWidgetBuilder(),
   'TWDeviceListCardWidget': DeviceListCardWidgetBuilder(),
-  'TWGenericMultiShapeWidget':GenericMultiShapeWidget(),
+  'TWGenericMultiShapeWidget': GenericMultiShapeWidgetBuilder(),
   'TWCalendarWidget': CalendarWidgetBuilder(),
 };
 
