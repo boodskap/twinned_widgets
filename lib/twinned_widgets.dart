@@ -167,7 +167,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWSpeedometerWidget': SpeedometerWidgetBuilder(),
   'TWProfileCardWidget': ProfileCardWidgetBuilder(),
   'TWDeviceListCardWidget': DeviceListCardWidgetBuilder(),
-  'TWGenericMultiShapeWidget':GenericMultiShapeWidget(),
+  'TWGenericMultiShapeWidget': GenericMultiShapeWidgetBuilder(),
   'TWCalendarWidget': CalendarWidgetBuilder(),
 };
 
