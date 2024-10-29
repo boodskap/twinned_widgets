@@ -88,13 +88,13 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(title, style: TwinUtils.getTextStyle(titleFont)),
+            ),
             Expanded(
               child: SfRadialGauge(
                 enableLoadingAnimation: true,
-                title: GaugeTitle(
-                  text: title,
-                  textStyle: TwinUtils.getTextStyle(titleFont),
-                ),
                 axes: <RadialAxis>[
                   RadialAxis(
                     showTicks: false,
@@ -107,13 +107,13 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
                     showFirstLabel: showFirtLablel,
                     showLabels: showLabel,
                     labelsPosition: ElementsPosition.outside,
-                    labelOffset: 10,
+                    labelOffset: 15,
                     axisLabelStyle: GaugeTextStyle(
                       fontSize: labelFont.fontSize,
                       color: Color(labelFont.fontColor),
                     ),
                     canScaleToFit: true,
-                    radiusFactor: 1,
+                    radiusFactor: 0.95,
                     axisLineStyle: AxisLineStyle(
                       thickness: 15,
                       color: backgroundColor,
@@ -135,21 +135,27 @@ class _UvIndexWidgetState extends BaseState<UvIndexWidget> {
                             style: TwinUtils.getTextStyle(valueFont)),
                       ),
                       GaugeAnnotation(
-                        angle: 0,
+                        angle: 5,
                         horizontalAlignment: GaugeAlignment.near,
                         positionFactor: 1,
-                        widget: Text(
-                          'High',
-                          style: TwinUtils.getTextStyle(labelFont),
+                        widget: Padding(
+                          padding: const EdgeInsets.only(top: 15.0, right: 20),
+                          child: Text(
+                            'High',
+                            style: TwinUtils.getTextStyle(labelFont),
+                          ),
                         ),
                       ),
                       GaugeAnnotation(
-                        horizontalAlignment: GaugeAlignment.far,
-                        angle: 180,
+                        horizontalAlignment: GaugeAlignment.near,
+                        angle: 175,
                         positionFactor: 1,
-                        widget: Text(
-                          'Low',
-                          style: TwinUtils.getTextStyle(labelFont),
+                        widget: Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Text(
+                            'Low',
+                            style: TwinUtils.getTextStyle(labelFont),
+                          ),
                         ),
                       ),
                     ],
