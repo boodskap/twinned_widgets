@@ -133,7 +133,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldSplineAreaChartWidget':
       DeviceFieldSplineAreaChartWidgetBuilder(),
   'TWThermometerWidget': ThermometerWidgetBuilder(),
-  'TWHumidityProgressBarWidget': LinearProgressBarWidgetBuilder(),
+  'TWLinearProgressBarWidget': LinearProgressBarWidgetBuilder(),
   'TWHumidityWeekWidget': HumidityWeekWidgetBuilder(),
   'TWAirQualityOddEvenCircleWidget': GenericOddEvenCircleWidgetBuilder(),
   'TWFieldCardWidget': FieldCardWidgetBuilder(),
@@ -150,7 +150,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldRadialGaugeWidget': DeviceFieldRadialGaugeWidgetBuilder(),
   'TWGenericOddEvenDiamondWidget': GenericOddEvenDiamondWidgetBuilder(),
   'TWUvIndexWidget': UvIndexWidgetBuilder(),
-  'TWWindStatusWidget': CompassWidgetBuilder(),
+  'TWCompassWidget': CompassWidgetBuilder(),
   'TWSunriseSunsetWidget': SunriseSunsetWidgetBuilder(),
   'TWGenericUpDownPentagonWidget': GenericUpDownPentagonWidgetBuilder(),
   'TWParameterValueWidget': ParameterValueWidgetBuilder(),
