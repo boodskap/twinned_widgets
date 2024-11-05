@@ -260,6 +260,7 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
         setState(() {
         heatMapFinalData = mergeStepCounts(heatMapSeries);
         });
+        print(heatMapFinalData);
         _heatMapPrefill();
       }
     });
