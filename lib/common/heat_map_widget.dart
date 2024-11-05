@@ -80,9 +80,9 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
 
     final List<double> sampleData =
         List.filled(rows.length * columns.length, 0.0);
-        print("map");
-        print(heatMapFinalData);
-        print("rr");
+        // print("map");
+        // print(heatMapFinalData);
+        // print("rr");
     for (var entry in heatMapFinalData) {
       final dayIndex = rows.indexOf(entry['day']);
       final timeIndex = columns.indexOf(entry['time']);
@@ -91,7 +91,7 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
         sampleData[index] = entry['data'];
       }
     }
-    print(sampleData);
+    // print(sampleData);
     final items = [
       for (int row = 0; row < rows.length; row++)
         for (int col = 0; col < columns.length; col++)
@@ -110,8 +110,8 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
         items: items,
         colorPalette: colorPalette);
 
-        print("power");
-        print(heatmapDataPower);
+        // print("power");
+        // print(heatmapDataPower);
   }
 
   List<Color> _getChartType(ChartThemeColor type) {
@@ -181,7 +181,7 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
                     showAllButtonText: "",
                   ),
                   Positioned.fill(
-                    left: 50,
+                    left: 30,
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
