@@ -80,7 +80,7 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
 
     final List<double> sampleData =
         List.filled(rows.length * columns.length, 0.0);
-
+    print(heatMapFinalData);
     for (var entry in heatMapFinalData) {
       final dayIndex = rows.indexOf(entry['day']);
       final timeIndex = columns.indexOf(entry['time']);
@@ -258,7 +258,9 @@ class _HeatMapWidgetState extends BaseState<HeatMapWidget> {
           fieldObj['day'] = formattedDay;
           heatMapSeries.add(fieldObj);
         }
+        setState(() {
         heatMapFinalData = mergeStepCounts(heatMapSeries);
+        });
         _heatMapPrefill();
       }
     });
