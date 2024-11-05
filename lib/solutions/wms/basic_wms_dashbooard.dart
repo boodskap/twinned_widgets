@@ -6,20 +6,24 @@ import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/device_field_spline_chart/device_field_spline_chart.dart';
 import 'package:twinned_models/range_gauge/range_gauge.dart';
-import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
-import 'package:twinned_models/visibility_air_quality/visibility_air_quality.dart';
+import 'package:twinned_models/linear_progress_widget_bar/linear_progress_bar_widget.dart';
 import 'package:twinned_models/thermometer_temperature/thermometer_temperature.dart';
+import 'package:twinned_widgets/common/parameter_info_widget.dart';
+import 'package:twinned_widgets/common/parameter_value_widget.dart';
 import 'package:twinned_widgets/solutions/wms/current_temperature.dart';
 import 'package:twinned_widgets/solutions/wms/forecast_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/air_quality_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/humidity_progress_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/sunrise_sunset_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/uv_index_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/visibility_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/wind_status_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/linear_progressbar_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/day_range_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/semi_circle_range_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/solutions/wms/spline_chart_wms.dart';
 import 'package:twinned_widgets/solutions/wms/thermometer_widget.dart';
 import 'package:twinned_widgets/solutions/wms/week_humidity_widget.dart';
+import 'package:twinned_models/semi_circle_range_widget/semi_circle_range_widget.dart';
+import 'package:twinned_models/parameter_info_widget/parameter_info_widget.dart';
+import 'package:twinned_models/parameter_value_widget/parameter_value_widget.dart';
+import 'package:twinned_models/compass_widget/compass_widget.dart';
+import 'package:twinned_models/day range widget/day_range_widget.dart';
 
 class BasicWmsDashboard extends StatefulWidget {
   const BasicWmsDashboard({super.key});
@@ -305,8 +309,8 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.only(),
-                              child: UvIndexWidget(
-                                config: DeviceFieldRangeGaugeWidgetConfig(
+                              child: SemiCircleRangeWidget(
+                                config: SemiCircleRangeWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   field: 'uv',
                                   title: 'UV Index',
@@ -332,25 +336,15 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                             flex: 1,
                             child: Padding(
                               padding: const EdgeInsets.only(left: 4.0),
-                              child: WindStatusWidget(
-                                config: DeviceFieldRangeGaugeWidgetConfig(
+                              child: CompassWidget(
+                                config: CompassWidgetConfig(
                                   deviceId: deviceId ?? "",
-                                  fields: ['winddirection', 'windspeed'],
                                   title: 'Wind Status',
-                                  minimum: 0,
-                                  maximum: 360,
                                   valueFont: {
                                     "fontSize": 16,
                                     "fontColor": 0XFF7DA9E1,
                                     "fontBold": true
                                   },
-                                  labelFont: {
-                                    "fontSize": 14,
-                                    "fontColor": 0xff000000,
-                                    "fontBold": false
-                                  },
-                                  backgroundColor: 0xFFB3E5FC,
-                                  markerColor: 0XFF7DA9E1,
                                 ),
                               ),
                             ),
@@ -360,19 +354,13 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 4.0, right: 4),
-                              child: SunriseSunsetWidget(
-                                config: DeviceFieldRangeGaugeWidgetConfig(
+                              child: DayRangeWidget(
+                                config: DayRangeWidgetConfig(
                                   deviceId: deviceId ?? "",
-                                  field: 'pressure',
                                   fields: ['sunrise', 'sunset'],
                                   title: 'Sunrise & Sunset',
                                   backgroundColor: 0xFFB3E5FC,
                                   valueColor: 0XFF7DA9E1,
-                                  labelFont: {
-                                    "fontSize": 12,
-                                    "fontColor": 0xff000000,
-                                    "fontBold": false
-                                  },
                                 ),
                               ),
                             ),
@@ -388,7 +376,7 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: ProgressBarWidget(
-                                config: HumidityProgressBarWidgetConfig(
+                                config: LinearProgressBarWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   field: 'humidity',
                                   title: 'Humidity',
@@ -400,8 +388,8 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   left: 4.0, top: 4, bottom: 4),
-                              child: VisibilityWidget(
-                                config: VisibilityAirQualityWidgetConfig(
+                              child: ParameterInfoWidget(
+                                config: ParameterInfoWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   field: 'visibility',
                                   title: 'Visibility',
@@ -412,8 +400,8 @@ class _BasicWmsDashboardState extends BaseState<BasicWmsDashboard> {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(4),
-                              child: AirQualityWidget(
-                                config: VisibilityAirQualityWidgetConfig(
+                              child: ParameterValueWidget(
+                                config: ParameterValueWidgetConfig(
                                   deviceId: deviceId ?? "",
                                   field: 'airquality',
                                   title: 'Air Quality',

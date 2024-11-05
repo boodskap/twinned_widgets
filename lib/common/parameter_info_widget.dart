@@ -1,47 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
+import 'package:twinned_models/models.dart';
+import 'package:twinned_models/parameter_info_widget/parameter_info_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class HumidityProgressBarWidget extends StatefulWidget {
-  final HumidityProgressBarWidgetConfig config;
-  const HumidityProgressBarWidget({super.key, required this.config});
-
+class ParameterInfoWidget extends StatefulWidget {
+  final ParameterInfoWidgetConfig config;
+  const ParameterInfoWidget({
+    super.key,
+    required this.config,
+  });
   @override
-  State<HumidityProgressBarWidget> createState() =>
-      _HumidityProgressBarWidgetState();
+  State<ParameterInfoWidget> createState() => _ParameterInfoWidgetState();
 }
 
-class _HumidityProgressBarWidgetState
-    extends BaseState<HumidityProgressBarWidget> {
-  bool loading = false;
+class _ParameterInfoWidgetState extends BaseState<ParameterInfoWidget> {
   bool isValidConfig = false;
-  late String deviceId;
   late String title;
+  late String deviceId;
   late String field;
-  late Color backgroundColor;
-  late Color valueColor;
-  late FontConfig valueFont;
+  late String hintText;
   late FontConfig titleFont;
-  double percentValue = 0;
-  double percentValueText = 0;
+  late FontConfig valueFont;
+  late FontConfig hintTextFont;
+  double fieldValue = 0;
 
   @override
   void initState() {
     var config = widget.config;
+    title = config.title;
     field = config.field;
     deviceId = config.deviceId;
-    title = config.title;
-    valueColor = Color(config.valueColor);
-    backgroundColor = Color(config.backgroundColor);
-    valueFont = FontConfig.fromJson(config.valueFont);
+    hintText = config.hintText;
     titleFont = FontConfig.fromJson(config.titleFont);
+    valueFont = FontConfig.fromJson(config.valueFont);
+    hintTextFont = FontConfig.fromJson(config.hintTextFont);
+
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
   }
@@ -75,17 +73,23 @@ class _HumidityProgressBarWidgetState
               title,
               style: TwinUtils.getTextStyle(titleFont),
             ),
-            LinearPercentIndicator(
-              animation: true,
-              lineHeight: 20,
-              animationDuration: 1000,
-              percent: percentValue,
-              progressColor: valueColor,
-              backgroundColor: backgroundColor,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.info,
+                  color: Color(0xFFA4C2E8),
+                ),
+                divider(horizontal: true, width: 5),
+                Text(
+                  fieldValue.toString() ?? "0.0",
+                  style: TwinUtils.getTextStyle(valueFont),
+                ),
+              ],
             ),
             Text(
-              '${percentValueText}%',
-              style: TwinUtils.getTextStyle(valueFont),
+              hintText.isNotEmpty ? hintText : '--',
+              style: TwinUtils.getTextStyle(hintTextFont),
             ),
           ],
         ),
@@ -98,28 +102,25 @@ class _HumidityProgressBarWidgetState
     loading = true;
 
     await execute(() async {
-      var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
+      var qRes = await TwinnedSession.instance.twin.queryDeviceData(
         apikey: TwinnedSession.instance.authToken,
         body: EqlSearch(
+          source: ["data"],
           page: 0,
-          size: 2000,
-          source: [],
+          size: 1,
           mustConditions: [
             {
               "match_phrase": {"deviceId": deviceId}
             },
+            {
+              "exists": {"field": "data.$field"}
+            },
           ],
-          sort: {'updatedStamp': 'desc'},
-          conditions: [],
-          queryConditions: [],
-          boolConditions: [],
         ),
       );
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-        Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-        if (device == null) return;
 
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
@@ -128,16 +129,13 @@ class _HumidityProgressBarWidgetState
 
           if (hits.isNotEmpty) {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
-            double value = obj['p_source']['data'][field];
-
-            setState(() {
-              // Set the raw value to be displayed
-              percentValueText = value;
-              // Normalize the value to be within the range of 0.0 to 1.0
-              percentValue = (value / 100).clamp(0.0, 1.0);
-              // Ensure the percentValue is in two decimal precision
-              percentValue = double.parse(percentValue.toStringAsFixed(2));
-            });
+            var value = obj['p_source']['data'][field];
+            // debugPrint(value.toString());
+            refresh(
+              sync: () {
+                fieldValue = value;
+              },
+            );
           }
         }
       }
@@ -152,11 +150,11 @@ class _HumidityProgressBarWidgetState
   }
 }
 
-class HumidityProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
+class ParameterInfoWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return HumidityProgressBarWidget(
-      config: HumidityProgressBarWidgetConfig.fromJson(config),
+    return ParameterInfoWidget(
+      config: ParameterInfoWidgetConfig.fromJson(config),
     );
   }
 
@@ -167,24 +165,24 @@ class HumidityProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.linear_scale);
+    return const Icon(Icons.info);
   }
 
   @override
   String getPaletteName() {
-    return "Humidity Progress widget ";
+    return "Parameter info widget ";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return HumidityProgressBarWidgetConfig.fromJson(config);
+      return ParameterInfoWidgetConfig.fromJson(config);
     }
-    return HumidityProgressBarWidgetConfig();
+    return ParameterInfoWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return 'Humidity progress device field widget';
+    return 'Paramter info widget';
   }
 }

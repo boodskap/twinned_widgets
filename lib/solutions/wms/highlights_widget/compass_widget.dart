@@ -5,32 +5,27 @@ import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twinned_models/models.dart';
-import 'package:twinned_models/range_gauge/range_gauge.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:twinned_models/compass_widget/compass_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class WindStatusWidget extends StatefulWidget {
-  final DeviceFieldRangeGaugeWidgetConfig config;
-  const WindStatusWidget({
+class CompassWidget extends StatefulWidget {
+  final CompassWidgetConfig config;
+  const CompassWidget({
     super.key,
     required this.config,
   });
 
   @override
-  State<WindStatusWidget> createState() => _WindStatusWidgetState();
+  State<CompassWidget> createState() => _CompassWidgetState();
 }
 
-class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
+class _CompassWidgetState extends BaseState<CompassWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
-  late List<String> fields;
   late String field;
-  late double minimum;
-  late double maximum;
   late FontConfig titleFont;
-  late FontConfig labelFont;
   late FontConfig valueFont;
   late Color markerColor;
   late Color backgroundColor;
@@ -41,16 +36,12 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
   @override
   void initState() {
     var config = widget.config;
-    fields = config.fields;
     field = config.field;
     title = config.title;
     deviceId = config.deviceId;
-    minimum = config.minimum;
-    maximum = config.maximum;
     markerColor = Color(config.markerColor);
     backgroundColor = Color(config.backgroundColor);
     titleFont = FontConfig.fromJson(config.titleFont);
-    labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
 
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
@@ -70,10 +61,10 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4), // Border radius
+        borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: Colors.white, // Border color
-          width: 1, // Border width
+          color: Colors.white,
+          width: 1,
         ),
       ),
       child: Card(
@@ -92,8 +83,6 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
                   RadialAxis(
                     startAngle: 0,
                     endAngle: 360,
-                    minimum: minimum,
-                    maximum: maximum,
                     showTicks: false,
                     showLabels: false,
                     canScaleToFit: true,
@@ -225,11 +214,10 @@ class _WindStatusWidgetState extends BaseState<WindStatusWidget> {
   }
 }
 
-class WindStatusWidgetBuilder extends TwinnedWidgetBuilder {
+class CompassWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
-    return WindStatusWidget(
-        config: DeviceFieldRangeGaugeWidgetConfig.fromJson(config));
+    return CompassWidget(config: CompassWidgetConfig.fromJson(config));
   }
 
   @override
@@ -239,24 +227,24 @@ class WindStatusWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   Widget getPaletteIcon() {
-    return const Icon(Icons.air_rounded);
+    return const Icon(Icons.location_on);
   }
 
   @override
   String getPaletteName() {
-    return "Wind Status Widget";
+    return "Compass Widget";
   }
 
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return DeviceFieldRangeGaugeWidgetConfig.fromJson(config);
+      return CompassWidgetConfig.fromJson(config);
     }
-    return DeviceFieldRangeGaugeWidgetConfig();
+    return CompassWidgetConfig();
   }
 
   @override
   String getPaletteTooltip() {
-    return "Wind Status Widget";
+    return "Compass Widget";
   }
 }

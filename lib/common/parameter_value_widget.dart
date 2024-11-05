@@ -2,29 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
+import 'package:twin_commons/core/twin_image_helper.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/visibility_air_quality/visibility_air_quality.dart';
+import 'package:twinned_models/models.dart';
+import 'package:twinned_models/parameter_value_widget/parameter_value_widget.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class VisibilityWidget extends StatefulWidget {
-  final VisibilityAirQualityWidgetConfig config;
-  const VisibilityWidget({
+class ParameterValueWidget extends StatefulWidget {
+  final ParameterValueWidgetConfig config;
+  const ParameterValueWidget({
     super.key,
     required this.config,
   });
 
   @override
-  State<VisibilityWidget> createState() => _VisibilityWidgetState();
+  State<ParameterValueWidget> createState() => _ParameterValueWidgetState();
 }
 
-class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
+class _ParameterValueWidgetState extends BaseState<ParameterValueWidget> {
   bool isValidConfig = false;
   late String title;
   late String deviceId;
   late String field;
   late FontConfig titleFont;
   late FontConfig valueFont;
-  double visiblityValue = 0;
+  String imgIconId = '';
+  double fieldValue = 0;
 
   @override
   void initState() {
@@ -41,6 +45,14 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -60,12 +72,17 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
               title,
               style: TwinUtils.getTextStyle(titleFont),
             ),
-            const Icon(
-              Icons.remove_red_eye_outlined,
-              color: Color(0xFFA4C2E8),
-            ),
+            if (imgIconId.isEmpty)
+              const Icon(
+                Icons.info,
+                color: Color(0xFFA4C2E8),
+                size: 30,
+              ),
+            if (imgIconId.isNotEmpty)
+              TwinImageHelper.getCachedDomainImage(imgIconId,
+                  height: 30, width: 30),
             Text(
-              '${visiblityValue}km',
+              '$fieldValue',
               style: TwinUtils.getTextStyle(valueFont),
             ),
           ],
@@ -98,9 +115,6 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
       if (qRes.body != null &&
           qRes.body!.result != null &&
           validateResponse(qRes)) {
-        // Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-        // if (device == null) return;
-
         Map<String, dynamic>? json =
             qRes.body!.result! as Map<String, dynamic>?;
         if (json != null) {
@@ -109,11 +123,17 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
           if (hits.isNotEmpty) {
             Map<String, dynamic> obj = hits[0] as Map<String, dynamic>;
             var value = obj['p_source']['data'][field];
+            var modelId = obj['p_source']['modelId'];
+            DeviceModel? deviceModel =
+                await TwinUtils.getDeviceModel(modelId: modelId);
+            String iconId = TwinUtils.getParameterIcon(field, deviceModel!);
             // debugPrint(value.toString());
-
-            setState(() {
-              visiblityValue = value;
-            });
+            refresh(
+              sync: () {
+                fieldValue = value;
+                imgIconId = iconId;
+              },
+            );
           }
         }
       }
@@ -125,5 +145,42 @@ class _VisibilityWidgetState extends BaseState<VisibilityWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class ParameterValueWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return ParameterValueWidget(
+      config: ParameterValueWidgetConfig.fromJson(config),
+    );
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.visibility_rounded);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Parameter value widget ";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return ParameterValueWidgetConfig.fromJson(config);
+    }
+    return ParameterValueWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Parameter value widget';
   }
 }
