@@ -203,7 +203,10 @@ class _DeviceFieldPercentageWidgetState
         List<dynamic> values = json['hits']['hits'];
         if (values.isNotEmpty) {
           for (Map<String, dynamic> obj in values) {
-            rawValue = obj['p_source']['data'][widget.config.field];
+            // rawValue = obj['p_source']['data'][widget.config.field];
+            rawValue = double.tryParse(
+                    obj['p_source']['data'][widget.config.field].toString()) ??
+                0.0;
             if (rawValue! < 0) {
               rawValue = 0;
             } else if (rawValue! > 100) {
