@@ -42,6 +42,7 @@ import 'package:twinned_widgets/common/generic_odd_even_oval_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
+import 'package:twinned_widgets/common/heat_map_widget.dart';
 import 'package:twinned_widgets/common/linear_progress_bar_widget.dart';
 import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
@@ -170,6 +171,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceListCardWidget': DeviceListCardWidgetBuilder(),
   'TWGenericMultiShapeWidget': GenericMultiShapeWidgetBuilder(),
   'TWCalendarWidget': CalendarWidgetBuilder(),
+  'TWHeatMapWidget': HeatMapWidgetBuilder(),
   'TWDeviceFieldShapeWidget': DeviceFieldShapeWidgetBuilder(),
 };
 
