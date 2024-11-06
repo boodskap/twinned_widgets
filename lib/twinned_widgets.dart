@@ -54,6 +54,7 @@ import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
 import 'package:twinned_widgets/common/parameter_info_widget.dart';
 import 'package:twinned_widgets/common/profile_card_widget.dart';
+import 'package:twinned_widgets/common/single_field_single_shape_widget.dart';
 import 'package:twinned_widgets/common/single_value_slider_widget.dart';
 import 'package:twinned_widgets/common/speedometer_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
@@ -171,6 +172,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericMultiShapeWidget': GenericMultiShapeWidgetBuilder(),
   'TWCalendarWidget': CalendarWidgetBuilder(),
   'TWHeatMapWidget': HeatMapWidgetBuilder(),
+  'TWDeviceFieldShapeWidget': DeviceFieldShapeWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
