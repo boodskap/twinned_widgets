@@ -30,6 +30,7 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
   late double opacity;
   late double interval;
   late double height;
+  late OrientationType orientationType;
   double value = 0;
 
   @override
@@ -48,8 +49,18 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
     opacity = config.opacity;
     interval = config.interval;
     height = config.height;
+    orientationType = config.orientationType;
 
     super.initState();
+  }
+
+  LinearGaugeOrientation _orientationType(OrientationType type) {
+    switch (type) {
+      case OrientationType.horizontal:
+        return LinearGaugeOrientation.horizontal;
+      default:
+        return LinearGaugeOrientation.vertical;
+    }
   }
 
   @override
@@ -87,7 +98,7 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
           child: SfLinearGauge(
             minimum: min,
             maximum: max,
-            orientation: LinearGaugeOrientation.vertical,
+            orientation: _orientationType(orientationType),
             axisTrackStyle: LinearAxisTrackStyle(
               color: color.withOpacity(opacity),
               thickness: thickness,
