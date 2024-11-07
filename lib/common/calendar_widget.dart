@@ -223,7 +223,7 @@ Future<void> _load(DateTime day) async {
     patientDetails['Blood Pressure']!['iconId'] =
         TwinUtils.getParameterIcon('blood_pressure', deviceModel!);
     patientDetails['Cholesterol']!['iconId'] =
-        TwinUtils.getParameterIcon('cholestrol', deviceModel);
+        TwinUtils.getParameterIcon('cholesterol', deviceModel);
     patientDetails['Blood Glucose Level']!['iconId'] =
         TwinUtils.getParameterIcon('blood_glucose_level', deviceModel);
     patientDetails['Heart Rate']!['iconId'] =
@@ -234,12 +234,12 @@ Future<void> _load(DateTime day) async {
     setState(() {
       patientDetails['Blood Pressure']!['value'] =
           '${data['blood_pressure']} mmHg';
-      patientDetails['Cholesterol']!['value'] = '${data['cholestrol']} mg/dL';
+      patientDetails['Cholesterol']!['value'] = '${data['cholesterol']} mg/dL';
       patientDetails['Blood Glucose Level']!['value'] =
           '${data['blood_glucose_level']} mg/dL';
       patientDetails['Heart Rate']!['value'] = '${data['heart_rate']} bpm';
       patientDetails['Body Temperature']!['value'] =
-          '${data['temperature']} °C';
+          '${data['temperature']} °F';
     });
   }
 
