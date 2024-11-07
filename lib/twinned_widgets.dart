@@ -8,6 +8,7 @@ import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
+import 'package:twinned_widgets/common/device_field_percentage_card_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
 import 'package:twinned_widgets/common/device_field_scatter_chart_widget.dart';
@@ -79,7 +80,6 @@ import 'package:twinned_widgets/solutions/wms/highlights_widget/day_range_widget
 import 'package:twinned_widgets/solutions/wms/highlights_widget/semi_circle_range_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
-
 import 'common/multiple_device_cartesian_chart_widget.dart';
 
 export 'common/total_and_reporting_asset_widget.dart';
@@ -171,6 +171,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericMultiShapeWidget': GenericMultiShapeWidgetBuilder(),
   'TWCalendarWidget': CalendarWidgetBuilder(),
   'TWHeatMapWidget': HeatMapWidgetBuilder(),
+  'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
