@@ -29,8 +29,8 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
   late double thickness;
   late double opacity;
   late double interval;
-
-  double height = 0;
+  late double height;
+  double value = 0;
 
   @override
   void initState() {
@@ -47,6 +47,7 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
     thickness = config.thickness;
     opacity = config.opacity;
     interval = config.interval;
+    height = config.height;
 
     super.initState();
   }
@@ -81,32 +82,35 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
                   fontWeight:
                       titleFont.fontBold ? FontWeight.bold : FontWeight.normal,
                   color: Color(titleFont.fontColor))),
-        SfLinearGauge(
-          minimum: min,
-          maximum: max,
-          orientation: LinearGaugeOrientation.vertical,
-          axisTrackStyle: LinearAxisTrackStyle(
-            color: color.withOpacity(opacity),
-            thickness: thickness,
+        SizedBox(
+          height: height,
+          child: SfLinearGauge(
+            minimum: min,
+            maximum: max,
+            orientation: LinearGaugeOrientation.vertical,
+            axisTrackStyle: LinearAxisTrackStyle(
+              color: color.withOpacity(opacity),
+              thickness: thickness,
+            ),
+            interval: interval,
+            markerPointers: [
+              LinearShapePointer(
+                value: value,
+                color: color,
+                onChanged: (val) {
+                  setState(() {
+                    value = val;
+                  });
+                },
+              ),
+            ],
+            barPointers: [
+              LinearBarPointer(
+                value: value,
+                color: color,
+              ),
+            ],
           ),
-          interval: interval,
-          markerPointers: [
-            LinearShapePointer(
-              value: height,
-              color: color,
-              onChanged: (value) {
-                setState(() {
-                  height = value;
-                });
-              },
-            ),
-          ],
-          barPointers: [
-            LinearBarPointer(
-              value: height,
-              color: color,
-            ),
-          ],
         )
       ],
     );
@@ -141,11 +145,11 @@ class _LinearGuageWidgetState extends BaseState<LinearGuageWidget> {
         List<dynamic> values = json['hits']['hits'];
         if (values.isNotEmpty) {
           for (Map<String, dynamic> obj in values) {
-            height = obj['p_source']['data'][widget.config.field];
-            if (height < min) {
-              height = min;
-            } else if (height > max) {
-              height = max;
+            value = obj['p_source']['data'][widget.config.field];
+            if (value < min) {
+              value = min;
+            } else if (value > max) {
+              value = max;
             }
           }
         }
