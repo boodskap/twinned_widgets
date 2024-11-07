@@ -8,6 +8,7 @@ import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
+import 'package:twinned_widgets/common/device_field_percentage_card_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
 import 'package:twinned_widgets/common/device_field_scatter_chart_widget.dart';
@@ -43,6 +44,7 @@ import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
 import 'package:twinned_widgets/common/heat_map_widget.dart';
+import 'package:twinned_widgets/common/linear_guage_widget.dart';
 import 'package:twinned_widgets/common/linear_progress_bar_widget.dart';
 import 'package:twinned_widgets/common/multi_device_bar_chart_widget.dart';
 import 'package:twinned_widgets/common/multi_device_field_card_widget.dart';
@@ -54,6 +56,7 @@ import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
 import 'package:twinned_widgets/common/parameter_info_widget.dart';
 import 'package:twinned_widgets/common/profile_card_widget.dart';
+import 'package:twinned_widgets/common/single_field_single_shape_widget.dart';
 import 'package:twinned_widgets/common/single_value_slider_widget.dart';
 import 'package:twinned_widgets/common/speedometer_widget.dart';
 import 'package:twinned_widgets/common/static_text_widget.dart';
@@ -79,7 +82,6 @@ import 'package:twinned_widgets/solutions/wms/highlights_widget/day_range_widget
 import 'package:twinned_widgets/solutions/wms/highlights_widget/semi_circle_range_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
-
 import 'common/multiple_device_cartesian_chart_widget.dart';
 
 export 'common/total_and_reporting_asset_widget.dart';
@@ -171,6 +173,9 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWGenericMultiShapeWidget': GenericMultiShapeWidgetBuilder(),
   'TWCalendarWidget': CalendarWidgetBuilder(),
   'TWHeatMapWidget': HeatMapWidgetBuilder(),
+  'TWDeviceFieldShapeWidget': DeviceFieldShapeWidgetBuilder(),
+  'TWLinearGuageWidget': LinearGuageWidgetBuilder(),
+  'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
