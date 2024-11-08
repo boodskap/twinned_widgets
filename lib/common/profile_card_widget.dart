@@ -62,6 +62,7 @@ class _ProfileCardWidgetState extends BaseState<ProfileCardWidget> {
     }
     return Center(
       child: SizedBox(
+        height: double.maxFinite,
         child: Card(
           color: cardBgColor,
           shape: RoundedRectangleBorder(
@@ -77,6 +78,7 @@ class _ProfileCardWidgetState extends BaseState<ProfileCardWidget> {
                 children: [
                   divider(height: 15),
                   CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     radius: 40,
                     child: profileIcon.isNotEmpty
                         ? SizedBox(
