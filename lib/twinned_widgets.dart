@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
+import 'package:twinned_widgets/common/bar_chart_widget.dart';
 import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
@@ -22,6 +23,7 @@ import 'package:twinned_widgets/common/device_multi_field_radial_axis_widget.dar
 import 'package:twinned_widgets/common/device_timeline.dart';
 import 'package:twinned_widgets/common/directional_widget.dart';
 import 'package:twinned_widgets/common/dynamic_text_widget.dart';
+import 'package:twinned_widgets/common/ecg_chart_widget.dart';
 import 'package:twinned_widgets/common/field_card_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_circle_widget.dart';
@@ -177,6 +179,8 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWDeviceFieldShapeWidget': DeviceFieldShapeWidgetBuilder(),
   'TWLinearGuageWidget': LinearGuageWidgetBuilder(),
   'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
+  'TWEcgChartWidget': EcgChartWidgetBuilder(),
+  'TWBarChartWidgetBuilder' : BarChartWidgetBuilder(),
   'TWQrCodeWidget': QrCodeWidgetBuilder(),
 };
 
