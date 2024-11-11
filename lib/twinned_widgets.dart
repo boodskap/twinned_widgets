@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_widgets/common/asset_model_data_grid_widget.dart';
 import 'package:twinned_widgets/common/asset_model_grid_widget.dart';
+import 'package:twinned_widgets/common/bar_chart_widget.dart';
 import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
@@ -178,6 +179,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWLinearGuageWidget': LinearGuageWidgetBuilder(),
   'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
   'TWEcgChartWidget': EcgChartWidgetBuilder(),
+  'TWBarChartWidgetBuilder' : BarChartWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {

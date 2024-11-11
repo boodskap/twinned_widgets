@@ -62,7 +62,7 @@ class _ProfileCardWidgetState extends BaseState<ProfileCardWidget> {
     }
     return Center(
       child: SizedBox(
-        height: double.maxFinite,
+        height: MediaQuery.of(context).size.height,
         child: Card(
           color: cardBgColor,
           shape: RoundedRectangleBorder(
