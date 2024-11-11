@@ -5,13 +5,13 @@ import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twinned_api/twinned_api.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/device_field_spline_chart/device_field_spline_chart.dart';
+import 'package:twinned_models/bar_chart_widget/bar_chart_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
 import 'package:twinned_models/models.dart';
 
 class DeviceFieldBarChartWidget extends StatefulWidget {
-  final DeviceFieldSplineChartWidgetConfig config;
+  final BarChartWidgetConfig config;
 
   const DeviceFieldBarChartWidget({super.key, required this.config});
 
@@ -260,7 +260,7 @@ class BarChartWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   Widget build(Map<String, dynamic> config) {
     return DeviceFieldBarChartWidget(
-      config: DeviceFieldSplineChartWidgetConfig.fromJson(config),
+      config: BarChartWidgetConfig.fromJson(config),
     );
   }
 
@@ -282,9 +282,9 @@ class BarChartWidgetBuilder extends TwinnedWidgetBuilder {
   @override
   BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
     if (config != null) {
-      return DeviceFieldSplineChartWidgetConfig.fromJson(config);
+      return BarChartWidgetConfig.fromJson(config);
     }
-    return DeviceFieldSplineChartWidgetConfig();
+    return BarChartWidgetConfig();
   }
 
   @override

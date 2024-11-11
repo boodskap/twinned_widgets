@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twinned_models/calendar_widget/calendar_widget.dart';
-// import 'package:practice_widgets/widgets/activity_bar_garph.dart';
-// import 'package:practice_widgets/widgets/ecg_graph_chart.dart';
-import 'package:twinned_models/device_field_spline_chart/device_field_spline_chart.dart';
+import 'package:twinned_models/bar_chart_widget/bar_chart_widget.dart';
 import 'package:twinned_models/ecg_graph_widget/ecg_graph_widget.dart';
 import 'package:twinned_models/profile_card_widget.dart/profile_card_widget.dart';
 import 'package:twinned_models/progress/progress.dart';
@@ -105,7 +103,7 @@ class _PatientHealthcareDashboardState
                             child: Padding(
                               padding: const EdgeInsets.all(4),
                               child: DeviceFieldBarChartWidget(
-                                config: DeviceFieldSplineChartWidgetConfig(
+                                config: BarChartWidgetConfig(
                                   deviceId:
                                       'ce9738d2-60e9-4573-bd8b-b16dfced7e8a',
                                   title: 'Your Health Conditions',
