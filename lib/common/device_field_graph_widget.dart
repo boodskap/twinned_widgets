@@ -21,11 +21,6 @@ class _DeviceFieldGraphCardWidgetState
     extends BaseState<DeviceFieldGraphCardWidget> {
   final List<SeriesData> _chartSeries = [];
   final DateFormat dateFormat = DateFormat('MM/dd hh:mm:aa');
-  String fieldIcon = '';
-
-  String fieldLabel = '';
-  String value = '-';
-  String unit = '';
   late String deviceId;
   late String field;
   late double elevation;
@@ -37,6 +32,12 @@ class _DeviceFieldGraphCardWidgetState
   late Color chartColor;
   late Color borderColor;
   late Color tooltipColor;
+
+  String fieldIcon = '';
+  String fieldLabel = '';
+  String value = '-';
+  String unit = '';
+  bool apiLoadingStatus = false;
   bool isValidConfig = false;
 
   @override
@@ -66,6 +67,9 @@ class _DeviceFieldGraphCardWidgetState
           style: TextStyle(color: Colors.red),
         ),
       );
+    }
+    if (!apiLoadingStatus) {
+      return const Center(child: CircularProgressIndicator());
     }
 
     return Center(
@@ -97,10 +101,14 @@ class _DeviceFieldGraphCardWidgetState
                                 child: TwinImageHelper.getDomainImage(fieldIcon,
                                     height: 40, width: 40)),
                           ),
-                        Text(
-                          fieldLabel,
-                          style: TwinUtils.getTextStyle(titleFont),
-                          softWrap: true,
+                        Expanded(
+                          child: Text(
+                            fieldLabel,
+                            overflow: TextOverflow
+                                .ellipsis, // Clip the text if it overflows
+                            softWrap: false, // Prevent wrapping the text
+                            style: TwinUtils.getTextStyle(titleFont),
+                          ),
                         ),
                       ],
                     ),
@@ -191,6 +199,7 @@ class _DeviceFieldGraphCardWidgetState
             int millis = obj['p_source']['updatedStamp'];
             DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millis);
             dynamic seriesValue = obj['p_source']['data'][field];
+
             _chartSeries.add(SeriesData(
                 stamp: dateTime,
                 formattedStamp: dateFormat.format(dateTime),
@@ -201,6 +210,7 @@ class _DeviceFieldGraphCardWidgetState
     });
 
     loading = false;
+    apiLoadingStatus = true;
     refresh();
   }
 
