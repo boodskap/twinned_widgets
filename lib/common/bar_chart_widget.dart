@@ -28,8 +28,12 @@ class _DeviceFieldBarChartWidgetState
   late String deviceId;
   late String field;
   late String title;
-  late Color chartColor;
-  late bool enableToolTip;
+  late Color barColor;
+  late double barWidth;
+  late double barRadius;
+  late FontConfig titleFont;
+  late FontConfig labelFont;
+  // late bool enableToolTip;
   String fieldName = '--';
   String unit = '--';
 
@@ -40,8 +44,12 @@ class _DeviceFieldBarChartWidgetState
     deviceId = config.deviceId;
     field = config.field;
     title = config.title;
-    chartColor = Colors.blue;
-    enableToolTip = true;
+    barColor = config.barColor;
+    barWidth = config.barWidth;
+    barRadius = config.barRadius;
+    titleFont = FontConfig.fromJson(config.titleFont);
+    labelFont = FontConfig.fromJson(config.labelFont);
+    // enableToolTip = true;
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
     setup();
@@ -103,7 +111,7 @@ class _DeviceFieldBarChartWidgetState
         majorGridLines: MajorGridLines(width: 0), // Removes vertical grid lines
         majorTickLines: MajorTickLines(size: 0), // Removes X-axis ticks
       ),
-      tooltipBehavior: TooltipBehavior(enable: enableToolTip),
+      tooltipBehavior: TooltipBehavior(enable: true),
       series: <ColumnSeries<ChartData, String>>[
         ColumnSeries<ChartData, String>(
           dataSource: _chartData,
