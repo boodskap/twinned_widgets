@@ -171,7 +171,7 @@ class LinearProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteName() {
-    return "Linear Progress Bar widget ";
+    return "Linear Progress Bar Widget ";
   }
 
   @override
