@@ -9,6 +9,7 @@ import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
+import 'package:twinned_widgets/common/device_field_graph_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_card_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
 import 'package:twinned_widgets/common/device_field_range_label_dial_widget.dart';
@@ -28,20 +29,20 @@ import 'package:twinned_widgets/common/field_card_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_linear_widget.dart';
-import 'package:twinned_widgets/common/generic_multi_shape_widget.dart';
-import 'package:twinned_widgets/common/generic_odd_even_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_air_quality_widget.dart';
 import 'package:twinned_widgets/common/generic_day_weather_widget.dart';
+import 'package:twinned_widgets/common/generic_multi_shape_widget.dart';
 import 'package:twinned_widgets/common/generic_multi_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_card_widget.dart';
+import 'package:twinned_widgets/common/generic_odd_even_circle_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_decagon_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_diamond_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_ellipse_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_hexagon_widget.dart';
 import 'package:twinned_widgets/common/generic_odd_even_octagon_widget.dart';
+import 'package:twinned_widgets/common/generic_odd_even_oval_widget.dart';
 import 'package:twinned_widgets/common/generic_temperature_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_pentagon.dart';
-import 'package:twinned_widgets/common/generic_odd_even_oval_widget.dart';
 import 'package:twinned_widgets/common/generic_up_down_triangle_widget.dart';
 import 'package:twinned_widgets/common/generic_value_card_widget.dart';
 import 'package:twinned_widgets/common/generic_wind_widget.dart';
@@ -57,6 +58,7 @@ import 'package:twinned_widgets/common/multi_field_card_widget.dart';
 import 'package:twinned_widgets/common/multiple_device_model_chart_widget.dart';
 import 'package:twinned_widgets/common/multiple_line_min_max_average_widget.dart';
 import 'package:twinned_widgets/common/parameter_info_widget.dart';
+import 'package:twinned_widgets/common/parameter_value_widget.dart';
 import 'package:twinned_widgets/common/profile_card_widget.dart';
 import 'package:twinned_widgets/common/qr_code_widget.dart';
 import 'package:twinned_widgets/common/single_field_single_shape_widget.dart';
@@ -71,7 +73,6 @@ import 'package:twinned_widgets/common/total_and_reporting_asset_widget.dart';
 import 'package:twinned_widgets/common/total_value_widget.dart';
 import 'package:twinned_widgets/common/value_distribution_pie_widget.dart';
 import 'package:twinned_widgets/common/vertical_card.dart';
-import 'package:twinned_widgets/common/parameter_value_widget.dart';
 import 'package:twinned_widgets/common/week_humidity_widget.dart';
 import 'package:twinned_widgets/palette_category.dart';
 import 'package:twinned_widgets/solutions/ems/circle_progress_bar_widget.dart';
@@ -81,10 +82,11 @@ import 'package:twinned_widgets/solutions/ems/infrastructure_card_widget.dart';
 import 'package:twinned_widgets/solutions/ems/vertical_progress_bar_widget.dart';
 import 'package:twinned_widgets/solutions/tms/device_field_radial_gauge_widget.dart.dart';
 import 'package:twinned_widgets/solutions/tms/multi_field_device_spline_area_chart_widget.dart';
+import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/day_range_widget.dart';
 import 'package:twinned_widgets/solutions/wms/highlights_widget/semi_circle_range_widget.dart';
-import 'package:twinned_widgets/solutions/wms/highlights_widget/compass_widget.dart';
 import 'package:twinned_widgets/twinned_widget_builder.dart';
+
 import 'common/multiple_device_cartesian_chart_widget.dart';
 
 export 'common/total_and_reporting_asset_widget.dart';
@@ -180,8 +182,9 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWLinearGuageWidget': LinearGuageWidgetBuilder(),
   'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
   'TWEcgChartWidget': EcgChartWidgetBuilder(),
-  'TWBarChartWidgetBuilder' : BarChartWidgetBuilder(),
+  'TWBarChartWidgetBuilder': BarChartWidgetBuilder(),
   'TWQrCodeWidget': QrCodeWidgetBuilder(),
+  'TWDeviceFieldGraphCardWidget': DeviceFieldGraphCardWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {
