@@ -33,7 +33,6 @@ class _DeviceFieldBarChartWidgetState
   late double barRadius;
   late FontConfig titleFont;
   late FontConfig labelFont;
-  // late bool enableToolTip;
   String fieldName = '--';
   String unit = '--';
 
@@ -82,8 +81,6 @@ class _DeviceFieldBarChartWidgetState
                         padding: const EdgeInsets.all(4.0),
                         child: Text(
                           title, style: TwinUtils.getTextStyle(titleFont),
-                          // style: const TextStyle(
-                          //     fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -129,8 +126,6 @@ class _DeviceFieldBarChartWidgetState
           dataLabelSettings: DataLabelSettings(
             isVisible: true,
             textStyle: TwinUtils.getTextStyle(labelFont),
-            // textStyle: TextStyle(
-            //     color: Colors.black, fontSize: 10, fontWeight: FontWeight.w500),
           ),
           borderRadius: BorderRadius.circular(barRadius), // Rounded edges
         ),

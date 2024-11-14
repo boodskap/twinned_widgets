@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
@@ -13,7 +14,9 @@ import 'package:twinned_widgets/twinned_widget_builder.dart';
 class ChartData {
   final int x;
   final double y;
-  ChartData({required this.x, required this.y});
+  final String formattedTime;
+
+  ChartData({required this.x, required this.y, required this.formattedTime});
 }
 
 class EcgChartWidget extends StatefulWidget {
@@ -30,7 +33,7 @@ class EcgChartWidget extends StatefulWidget {
 class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
   bool isValidConfig = false;
   List<ChartData> _chartData = [];
-  late Timer _timer;
+  // late Timer _timer;
   late String title;
   late String deviceId;
   late String field;
@@ -38,6 +41,8 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
   late Color borderColor;
   late Color chartBgColor;
   late double borderWidth;
+  String fieldName = '--';
+  String unit = '--';
 
   @override
   void initState() {
@@ -53,9 +58,9 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
     // load(); // Load initial data from the API
-    _timer = Timer.periodic(const Duration(milliseconds: 500), (Timer timer) {
-      load(); // Periodically refresh data from the API
-    });
+    // _timer = Timer.periodic(const Duration(milliseconds: 500), (Timer timer) {
+    //   load(); // Periodically refresh data from the API
+    // });
   }
 
   @override
@@ -84,6 +89,27 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
           primaryYAxis: const NumericAxis(
             isVisible: true,
             axisLine: AxisLine(),
+          ),
+          tooltipBehavior: TooltipBehavior(
+            enable: true,
+            builder: (dynamic data, dynamic point, dynamic series,
+                int pointIndex, int seriesIndex) {
+              ChartData chartData = data;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      fieldName.isNotEmpty ? fieldName : '--',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Text('${chartData.formattedTime} : ${chartData.y}',
+                        style: const TextStyle(color: Colors.white)),
+                  ],
+                ),
+              );
+            },
           ),
           plotAreaBackgroundColor: chartBgColor,
           enableAxisAnimation: true,
@@ -132,6 +158,13 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
       );
 
       if (validateResponse(qRes)) {
+        Device? device = await TwinUtils.getDevice(deviceId: deviceId);
+        if (device == null) return;
+
+        DeviceModel? deviceModel =
+            await TwinUtils.getDeviceModel(modelId: device.modelId);
+        fieldName = TwinUtils.getParameterLabel(field, deviceModel!);
+        unit = TwinUtils.getParameterUnit(field, deviceModel);
         Map<String, dynamic> json = qRes.body!.result! as Map<String, dynamic>;
         List<dynamic> values = json['hits']['hits'];
         _chartData.clear(); // Clear previous data before loading new data
@@ -140,7 +173,11 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
           int millis = obj['p_source']['updatedStamp'];
           dynamic value = obj['p_source']['data'][widget.config.field];
 
-          _chartData.add(ChartData(x: millis, y: value.toDouble()));
+          String formattedTime = DateFormat('HH:mm:ss')
+              .format(DateTime.fromMillisecondsSinceEpoch(millis));
+
+          _chartData.add(
+              ChartData(x: millis, y: value.toDouble(), formattedTime: formattedTime));
         }
 
         if (_chartData.length > 100) {
