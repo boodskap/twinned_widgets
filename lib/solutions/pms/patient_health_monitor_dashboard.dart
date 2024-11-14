@@ -128,7 +128,7 @@ class _PatientHealthcareDashboardState
                           title: 'ECG Monitor',
                           deviceId: '2b1d374a-d59b-4c86-a485-f6482f115385',
                           field: 'heart_rate_ecg',
-                          borderColor: 0xFFF44336,
+                          chartLineColor: 0xFFF44336,
                           borderWidth: 3,
                           chartBgColor: 0xFFFFFFFF,
                         ),

@@ -28,8 +28,12 @@ class _DeviceFieldBarChartWidgetState
   late String deviceId;
   late String field;
   late String title;
-  late Color chartColor;
-  late bool enableToolTip;
+  late Color barColor;
+  late double barWidth;
+  late double barRadius;
+  late FontConfig titleFont;
+  late FontConfig labelFont;
+  // late bool enableToolTip;
   String fieldName = '--';
   String unit = '--';
 
@@ -40,8 +44,11 @@ class _DeviceFieldBarChartWidgetState
     deviceId = config.deviceId;
     field = config.field;
     title = config.title;
-    chartColor = Colors.blue;
-    enableToolTip = true;
+    barColor = Color(config.barColor);
+    barWidth = config.barWidth;
+    barRadius = config.barRadius;
+    titleFont = FontConfig.fromJson(config.titleFont);
+    labelFont = FontConfig.fromJson(config.labelFont);
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
     setup();
@@ -74,9 +81,9 @@ class _DeviceFieldBarChartWidgetState
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: Text(
-                          title,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600),
+                          title, style: TwinUtils.getTextStyle(titleFont),
+                          // style: const TextStyle(
+                          //     fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -103,7 +110,7 @@ class _DeviceFieldBarChartWidgetState
         majorGridLines: MajorGridLines(width: 0), // Removes vertical grid lines
         majorTickLines: MajorTickLines(size: 0), // Removes X-axis ticks
       ),
-      tooltipBehavior: TooltipBehavior(enable: enableToolTip),
+      tooltipBehavior: TooltipBehavior(enable: true),
       series: <ColumnSeries<ChartData, String>>[
         ColumnSeries<ChartData, String>(
           dataSource: _chartData,
@@ -114,16 +121,18 @@ class _DeviceFieldBarChartWidgetState
               data.y != 0 ? data.y.toStringAsFixed(2) : '',
           // Dynamically set color based on the value
           pointColorMapper: (ChartData data, _) {
-            return data.y < 5000 ? Colors.teal.shade200 : Colors.teal;
+            return data.y < 5000 ? barColor.withOpacity(0.6) : barColor;
+            // return data.y < 5000 ? Colors.teal.shade200 : Colors.teal;
           },
           name: fieldName,
-          width: 0.15,
-          dataLabelSettings: const DataLabelSettings(
+          width: barWidth,
+          dataLabelSettings: DataLabelSettings(
             isVisible: true,
-            textStyle: TextStyle(
-                color: Colors.black, fontSize: 10, fontWeight: FontWeight.w500),
+            textStyle: TwinUtils.getTextStyle(labelFont),
+            // textStyle: TextStyle(
+            //     color: Colors.black, fontSize: 10, fontWeight: FontWeight.w500),
           ),
-          borderRadius: BorderRadius.circular(8), // Rounded edges
+          borderRadius: BorderRadius.circular(barRadius), // Rounded edges
         ),
       ],
       backgroundColor: Colors.transparent,
@@ -136,10 +145,7 @@ class _DeviceFieldBarChartWidgetState
 
   Future<void> load() async {
     if (!isValidConfig || loading) return;
-
-    setState(() {
-      loading = true;
-    });
+    loading = true;
 
     _chartData.clear();
 
@@ -158,7 +164,7 @@ class _DeviceFieldBarChartWidgetState
       }
     });
 
-    try {
+    await execute(() async {
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
         apikey: TwinnedSession.instance.authToken,
         body: EqlSearch(
@@ -234,13 +240,9 @@ class _DeviceFieldBarChartWidgetState
           }
         }
       }
-    } catch (e) {
-      debugPrint("Error loading data: $e");
-    } finally {
-      setState(() {
-        loading = false;
-      });
-    }
+    });
+    loading = false;
+    refresh();
   }
 
   @override
@@ -276,7 +278,7 @@ class BarChartWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteName() {
-    return "Bar Chart widget ";
+    return "Bar Chart Widget ";
   }
 
   @override
@@ -289,6 +291,6 @@ class BarChartWidgetBuilder extends TwinnedWidgetBuilder {
 
   @override
   String getPaletteTooltip() {
-    return 'Bar Chart widget';
+    return 'Bar Chart Widget';
   }
 }

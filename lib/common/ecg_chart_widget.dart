@@ -45,7 +45,7 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
     title = config.title;
     deviceId = config.deviceId;
     field = config.field;
-    borderColor = Color(config.borderColor);
+    borderColor = Color(config.chartLineColor);
     chartBgColor = Color(config.chartBgColor);
     borderWidth = config.borderWidth;
     titleFont = FontConfig.fromJson(config.titleFont);
