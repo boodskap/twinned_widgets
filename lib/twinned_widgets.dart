@@ -182,7 +182,7 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWLinearGuageWidget': LinearGuageWidgetBuilder(),
   'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
   'TWEcgChartWidget': EcgChartWidgetBuilder(),
-  'TWBarChartWidgetBuilder': BarChartWidgetBuilder(),
+  'TWDeviceFieldBarChartWidget': BarChartWidgetBuilder(),
   'TWQrCodeWidget': QrCodeWidgetBuilder(),
   'TWDeviceFieldGraphCardWidget': DeviceFieldGraphCardWidgetBuilder(),
 };

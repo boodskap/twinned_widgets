@@ -38,7 +38,6 @@ class _DeviceFieldBarChartWidgetState
 
   @override
   void initState() {
-    super.initState();
     var config = widget.config;
     deviceId = config.deviceId;
     field = config.field;
@@ -50,7 +49,7 @@ class _DeviceFieldBarChartWidgetState
     labelFont = FontConfig.fromJson(config.labelFont);
 
     isValidConfig = deviceId.isNotEmpty && field.isNotEmpty;
-    setup();
+    super.initState();
   }
 
   @override
@@ -80,7 +79,8 @@ class _DeviceFieldBarChartWidgetState
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: Text(
-                          title, style: TwinUtils.getTextStyle(titleFont),
+                          title,
+                          style: TwinUtils.getTextStyle(titleFont),
                         ),
                       ),
                     ),
