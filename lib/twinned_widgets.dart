@@ -9,6 +9,7 @@ import 'package:twinned_widgets/common/calendar_widget.dart';
 import 'package:twinned_widgets/common/current_day_widget.dart';
 import 'package:twinned_widgets/common/device_cartesian_chart_widget.dart';
 import 'package:twinned_widgets/common/device_data_accordion_widget.dart';
+import 'package:twinned_widgets/common/device_field_circular_progress_widget.dart';
 import 'package:twinned_widgets/common/device_field_graph_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_card_widget.dart';
 import 'package:twinned_widgets/common/device_field_percentage_widget.dart';
@@ -21,9 +22,11 @@ import 'package:twinned_widgets/common/device_model_heatmap_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_chart_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_dial_widget.dart';
 import 'package:twinned_widgets/common/device_multi_field_radial_axis_widget.dart';
+import 'package:twinned_widgets/common/device_multi_field_stacked_area_chart_widget.dart';
 import 'package:twinned_widgets/common/device_timeline.dart';
 import 'package:twinned_widgets/common/directional_widget.dart';
 import 'package:twinned_widgets/common/dynamic_text_widget.dart';
+import 'package:twinned_widgets/common/dynamic_value_compare_widget.dart';
 import 'package:twinned_widgets/common/ecg_chart_widget.dart';
 import 'package:twinned_widgets/common/field_card_widget.dart';
 import 'package:twinned_widgets/common/flow_meter_widget.dart';
@@ -182,9 +185,14 @@ final Map<String, TwinnedWidgetBuilder> _builders = {
   'TWLinearGuageWidget': LinearGuageWidgetBuilder(),
   'TWDeviceFieldPercentageCardWidget': DeviceFieldPercentageCardWidgetBuilder(),
   'TWEcgChartWidget': EcgChartWidgetBuilder(),
-  'TWBarChartWidgetBuilder': BarChartWidgetBuilder(),
+  'TWDeviceFieldBarChartWidget': BarChartWidgetBuilder(),
   'TWQrCodeWidget': QrCodeWidgetBuilder(),
   'TWDeviceFieldGraphCardWidget': DeviceFieldGraphCardWidgetBuilder(),
+  'TWMultiFieldDeviceStackedAreaChartWidget':
+      MultiFieldDeviceStackedAreaChartWidgetBuilder(),
+  'TWDeviceFieldCircularProgressWidget':
+      DeviceFieldCircularProgressWidgetBuilder(),
+  'TWDynamicValueCompareWidget': DeviceFieldDynamicValueCompareWidgetBuilder(),
 };
 
 class Tuple<K extends String, V extends TwinnedWidgetBuilder> {

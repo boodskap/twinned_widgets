@@ -33,7 +33,6 @@ class EcgChartWidget extends StatefulWidget {
 class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
   bool isValidConfig = false;
   List<ChartData> _chartData = [];
-  // late Timer _timer;
   late String title;
   late String deviceId;
   late String field;
@@ -57,10 +56,6 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
 
     isValidConfig = field.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
-    // load(); // Load initial data from the API
-    // _timer = Timer.periodic(const Duration(milliseconds: 500), (Timer timer) {
-    //   load(); // Periodically refresh data from the API
-    // });
   }
 
   @override
@@ -176,8 +171,8 @@ class _EcgChartWidgetState extends BaseState<EcgChartWidget> {
           String formattedTime = DateFormat('HH:mm:ss')
               .format(DateTime.fromMillisecondsSinceEpoch(millis));
 
-          _chartData.add(
-              ChartData(x: millis, y: value.toDouble(), formattedTime: formattedTime));
+          _chartData.add(ChartData(
+              x: millis, y: value.toDouble(), formattedTime: formattedTime));
         }
 
         if (_chartData.length > 100) {
