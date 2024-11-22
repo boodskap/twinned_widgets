@@ -166,7 +166,7 @@ class _DynamicValueCompareWidgetState
     String startOfDayStr, endOfDayStr;
     EqlCondition filterRange;
 
-    try {
+    await execute(() async {
       // Fetch today's data
       DateTime startOfDay = DateTime(today.year, today.month, today.day);
       DateTime endOfDay =
@@ -261,9 +261,7 @@ class _DynamicValueCompareWidgetState
           previousDayValue = data[field]?.toDouble();
         }
       }
-    } catch (e) {
-      print("Error fetching data: $e");
-    }
+    });
 
     loading = false;
     refresh();

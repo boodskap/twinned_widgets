@@ -215,61 +215,62 @@ class _MultiFieldDeviceStackedAreaChartWidgetState
 
     _chartSeries.clear();
 
-    var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
-      apikey: TwinnedSession.instance.authToken,
-      body: EqlSearch(
-        page: 0,
-        size: 20,
-        source: [],
-        mustConditions: [
-          {
-            "match_phrase": {"deviceId": deviceId}
-          },
-        ],
-        sort: {'updatedStamp': 'desc'},
-        conditions: [],
-        queryConditions: [],
-      ),
-    );
+    await execute(() async {
+      var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
+        apikey: TwinnedSession.instance.authToken,
+        body: EqlSearch(
+          page: 0,
+          size: 20,
+          source: [],
+          mustConditions: [
+            {
+              "match_phrase": {"deviceId": deviceId}
+            },
+          ],
+          sort: {'updatedStamp': 'desc'},
+          conditions: [],
+          queryConditions: [],
+        ),
+      );
 
-    if (validateResponse(qRes)) {
-      Device? device = await TwinUtils.getDevice(deviceId: deviceId);
-      if (device == null) return;
+      if (validateResponse(qRes)) {
+        Device? device = await TwinUtils.getDevice(deviceId: deviceId);
+        if (device == null) return;
 
-      DeviceModel? deviceModel =
-          await TwinUtils.getDeviceModel(modelId: device.modelId);
+        DeviceModel? deviceModel =
+            await TwinUtils.getDeviceModel(modelId: device.modelId);
 
-      for (String field in fields) {
-        String label = TwinUtils.getParameterLabel(field, deviceModel!);
-        fieldLabels[field] = label;
+        for (String field in fields) {
+          String label = TwinUtils.getParameterLabel(field, deviceModel!);
+          fieldLabels[field] = label;
+        }
+
+        Map<String, dynamic> json = qRes.body!.result as Map<String, dynamic>;
+        List<dynamic> values = json['hits']['hits'];
+
+        for (Map<String, dynamic> obj in values) {
+          int millis = obj['p_source']['updatedStamp'];
+          DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millis);
+          String formattedDate = dateFormat.format(dateTime);
+          Map<String, dynamic> fields =
+              Map<String, dynamic>.from(obj['p_source']['data']);
+          fields['stamp'] = dateTime;
+          fields['formattedStamp'] = formattedDate;
+          _chartSeries.add(SeriesData(
+            stamp: dateTime,
+            formattedStamp: formattedDate,
+            fields: fields,
+          ));
+        }
+
+        if (_chartSeries.isNotEmpty) {
+          updatedTimeAgo = timeago.format(_chartSeries.first.stamp);
+        }
       }
-
-      Map<String, dynamic> json = qRes.body!.result as Map<String, dynamic>;
-      List<dynamic> values = json['hits']['hits'];
-
-      for (Map<String, dynamic> obj in values) {
-        int millis = obj['p_source']['updatedStamp'];
-        DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(millis);
-        String formattedDate = dateFormat.format(dateTime);
-        Map<String, dynamic> fields =
-            Map<String, dynamic>.from(obj['p_source']['data']);
-        fields['stamp'] = dateTime;
-        fields['formattedStamp'] = formattedDate;
-        _chartSeries.add(SeriesData(
-          stamp: dateTime,
-          formattedStamp: formattedDate,
-          fields: fields,
-        ));
-      }
-
-      if (_chartSeries.isNotEmpty) {
-        updatedTimeAgo = timeago.format(_chartSeries.first.stamp);
-      }
-    }
-
-    setState(() {
-      loading = false;
     });
+
+    loading = false;
+    refresh();
   }
 
   @override
