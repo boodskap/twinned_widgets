@@ -5,20 +5,17 @@ import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
 import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
-import 'package:twinned_widgets/palette_category.dart';
-import 'package:twinned_widgets/twinned_widget_builder.dart';
+import 'package:twinned_models/linear_progress_widget_bar/linear_progress_bar_widget.dart';
 
-class HumidityProgressBarWidget extends StatefulWidget {
-  final HumidityProgressBarWidgetConfig config;
-  const HumidityProgressBarWidget({super.key, required this.config});
+class ProgressBarWidget extends StatefulWidget {
+  final LinearProgressBarWidgetConfig config;
+  const ProgressBarWidget({super.key, required this.config});
 
   @override
-  State<HumidityProgressBarWidget> createState() => _HumidityProgressBarWidgetState();
+  State<ProgressBarWidget> createState() => _ProgressBarWidgetState();
 }
 
-class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidget> {
-  bool loading = false;
+class _ProgressBarWidgetState extends BaseState<ProgressBarWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -59,19 +56,25 @@ class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidge
         color: Colors.transparent,
         elevation: 0,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: TwinUtils.getTextStyle(titleFont),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                title,
+                style: TwinUtils.getTextStyle(titleFont),
+              ),
             ),
-            LinearPercentIndicator(
-              animation: true,
-              lineHeight: 20,
-              animationDuration: 1000,
-              percent: percentValue,
-              progressColor: valueColor,
-              backgroundColor: backgroundColor,
+            divider(height: 40),
+            Expanded(
+              child: LinearPercentIndicator(
+                animation: true,
+                lineHeight: 20,
+                animationDuration: 1000,
+                percent: percentValue,
+                progressColor: valueColor,
+                backgroundColor: backgroundColor,
+              ),
             ),
             Text(
               '${percentValueText}%',
@@ -88,33 +91,6 @@ class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidge
     loading = true;
 
     await execute(() async {
-      // Define the start and end of yesterday
-      DateTime now = DateTime.now();
-      DateTime startOfToday = DateTime(now.year, now.month, now.day);
-      DateTime startOfYesterday =
-          startOfToday.subtract(const Duration(days: 1));
-      DateTime endOfYesterday =
-          startOfToday.subtract(const Duration(seconds: 1));
-      // debugPrint(now.toString());
-      // debugPrint(startOfToday.toString());
-      // debugPrint(startOfYesterday.toString());
-      // debugPrint(endOfYesterday.toString());
-
-      // Format the dates to match your query requirements
-      String startOfYesterdayStr = startOfYesterday.toUtc().toIso8601String();
-      String endOfYesterdayStr = endOfYesterday.toUtc().toIso8601String();
-      // debugPrint(startOfYesterdayStr);
-      // debugPrint(endOfYesterdayStr);
-
-      EqlCondition filterRange = EqlCondition(name: 'filter', condition: {
-        "range": {
-          "updatedStamp": {
-            "gte": startOfYesterdayStr,
-            "lte": endOfYesterdayStr,
-          }
-        }
-      });
-
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
         apikey: TwinnedSession.instance.authToken,
         body: EqlSearch(
@@ -166,42 +142,5 @@ class _HumidityProgressBarWidgetState extends BaseState<HumidityProgressBarWidge
   @override
   void setup() {
     load();
-  }
-}
-
-class HumidityProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
-  @override
-  Widget build(Map<String, dynamic> config) {
-    return HumidityProgressBarWidget(
-      config: HumidityProgressBarWidgetConfig.fromJson(config),
-    );
-  }
-
-  @override
-  PaletteCategory getPaletteCategory() {
-    return PaletteCategory.chartsAndGraphs;
-  }
-
-  @override
-  Widget getPaletteIcon() {
-    return const Icon(Icons.linear_scale);
-  }
-
-  @override
-  String getPaletteName() {
-    return "Humidity Progress widget ";
-  }
-
-  @override
-  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
-    if (config != null) {
-      return HumidityProgressBarWidgetConfig.fromJson(config);
-    }
-    return HumidityProgressBarWidgetConfig();
-  }
-
-  @override
-  String getPaletteTooltip() {
-    return 'Humidity progress device field widget';
   }
 }

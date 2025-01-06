@@ -4,38 +4,34 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/range_gauge/range_gauge.dart';
+import 'package:twinned_models/day range widget/day_range_widget.dart';
+import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class SunriseSunsetWidget extends StatefulWidget {
-  final DeviceFieldRangeGaugeWidgetConfig config;
-  const SunriseSunsetWidget({
+class DayRangeWidget extends StatefulWidget {
+  final DayRangeWidgetConfig config;
+  const DayRangeWidget({
     super.key,
     required this.config,
   });
 
   @override
-  State<SunriseSunsetWidget> createState() => _SunriseSunsetWidgetState();
+  State<DayRangeWidget> createState() => _DayRangeWidgetState();
 }
 
-class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
+class _DayRangeWidgetState extends BaseState<DayRangeWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late List<String> fields;
   late String title;
-  late double startAngle;
-  late double endAngle;
-  late double minimum;
-  late double maximum;
   late FontConfig titleFont;
-  late FontConfig labelFont;
   late FontConfig valueFont;
   late Color backgroundColor;
   late Color valueColor;
   DateTime sunriseValue = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime sunsetValue = DateTime.fromMillisecondsSinceEpoch(0);
-  bool loading = false;
 
   @override
   void initState() {
@@ -44,34 +40,36 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
     title = config.title;
     titleFont = FontConfig.fromJson(config.titleFont);
     deviceId = config.deviceId;
-    startAngle = config.startAngle;
-    endAngle = config.endAngle;
-    minimum = config.minimum;
-    maximum = config.maximum;
-    labelFont = FontConfig.fromJson(config.labelFont);
     valueFont = FontConfig.fromJson(config.valueFont);
     valueColor = Color(config.valueColor);
     backgroundColor = Color(config.backgroundColor);
 
     isValidConfig = fields.isNotEmpty && deviceId.isNotEmpty;
     super.initState();
-    setup();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4), // Border radius
+        borderRadius: BorderRadius.circular(4), 
         border: Border.all(
-          color: Colors.white, // Border color
-          width: 1, // Border width
+          color: Colors.white,
+          width: 1,
         ),
       ),
       child: Card(
         color: Colors.transparent,
-          elevation: 0,
+        elevation: 0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -118,11 +116,11 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
                           children: [
                             Text(
                               'Sunrise',
-                              style: TwinUtils.getTextStyle(labelFont),
+                              style: TwinUtils.getTextStyle(valueFont),
                             ),
                             Text(
                               _formatTime(sunriseValue) ?? '--',
-                              style: TwinUtils.getTextStyle(labelFont),
+                              style: TwinUtils.getTextStyle(valueFont),
                             ),
                           ],
                         ),
@@ -136,9 +134,9 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text('Sunset',
-                                style: TwinUtils.getTextStyle(labelFont)),
-                            Text(_formatTime(sunsetValue)?? '--',
-                                style: TwinUtils.getTextStyle(labelFont)),
+                                style: TwinUtils.getTextStyle(valueFont)),
+                            Text(_formatTime(sunsetValue) ?? '--',
+                                style: TwinUtils.getTextStyle(valueFont)),
                           ],
                         ),
                       ),
@@ -201,12 +199,14 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
             var sunriseEpoch = obj['p_source']['data'][fields[0]];
             var sunsetEpoch = obj['p_source']['data'][fields[1]];
 
-            setState(() {
-              sunriseValue = DateTime.fromMillisecondsSinceEpoch(sunriseEpoch);
-              sunsetValue = DateTime.fromMillisecondsSinceEpoch(sunsetEpoch);
-            });
-            // debugPrint('Sunrise time: ${_formatTime(sunriseValue)}');
-            // debugPrint('Sunset time: ${_formatTime(sunsetValue)}');
+            // Ensure the state is updated only after fetching data
+            if (mounted) {
+              setState(() {
+                sunriseValue =
+                    DateTime.fromMillisecondsSinceEpoch(sunriseEpoch);
+                sunsetValue = DateTime.fromMillisecondsSinceEpoch(sunsetEpoch);
+              });
+            }
           }
         }
       }
@@ -218,5 +218,41 @@ class _SunriseSunsetWidgetState extends BaseState<SunriseSunsetWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class DayRangeWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return DayRangeWidget(
+        config: DayRangeWidgetConfig.fromJson(config));
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.sunny_snowing);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Day Range Widget";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return DayRangeWidgetConfig.fromJson(config);
+    }
+    return DayRangeWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return "Day Range Widget";
   }
 }

@@ -3,20 +3,23 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:twin_commons/core/base_state.dart';
 import 'package:twin_commons/core/twinned_session.dart';
 import 'package:twin_commons/util/nocode_utils.dart';
-import 'package:twinned_models/models.dart';
 import 'package:twinned_api/twinned_api.dart';
-import 'package:twinned_models/humidity_progress_bar/humidity_progress_bar.dart';
+import 'package:twinned_models/linear_progress_widget_bar/linear_progress_bar_widget.dart';
+import 'package:twinned_models/models.dart';
+import 'package:twinned_widgets/palette_category.dart';
+import 'package:twinned_widgets/twinned_widget_builder.dart';
 
-class ProgressBarWidget extends StatefulWidget {
-  final HumidityProgressBarWidgetConfig config;
-  const ProgressBarWidget({super.key, required this.config});
+class LinearProgressBarWidget extends StatefulWidget {
+  final LinearProgressBarWidgetConfig config;
+  const LinearProgressBarWidget({super.key, required this.config});
 
   @override
-  State<ProgressBarWidget> createState() => _ProgressBarWidgetState();
+  State<LinearProgressBarWidget> createState() =>
+      _LinearProgressBarWidgetState();
 }
 
-class _ProgressBarWidgetState extends BaseState<ProgressBarWidget> {
-  bool loading = false;
+class _LinearProgressBarWidgetState
+    extends BaseState<LinearProgressBarWidget> {
   bool isValidConfig = false;
   late String deviceId;
   late String title;
@@ -44,6 +47,14 @@ class _ProgressBarWidgetState extends BaseState<ProgressBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidConfig) {
+      return const Center(
+        child: Text(
+          'Not configured properly',
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -86,33 +97,6 @@ class _ProgressBarWidgetState extends BaseState<ProgressBarWidget> {
     loading = true;
 
     await execute(() async {
-      // Define the start and end of yesterday
-      DateTime now = DateTime.now();
-      DateTime startOfToday = DateTime(now.year, now.month, now.day);
-      DateTime startOfYesterday =
-          startOfToday.subtract(const Duration(days: 1));
-      DateTime endOfYesterday =
-          startOfToday.subtract(const Duration(seconds: 1));
-      // debugPrint(now.toString());
-      // debugPrint(startOfToday.toString());
-      // debugPrint(startOfYesterday.toString());
-      // debugPrint(endOfYesterday.toString());
-
-      // Format the dates to match your query requirements
-      String startOfYesterdayStr = startOfYesterday.toUtc().toIso8601String();
-      String endOfYesterdayStr = endOfYesterday.toUtc().toIso8601String();
-      // debugPrint(startOfYesterdayStr);
-      // debugPrint(endOfYesterdayStr);
-
-      EqlCondition filterRange = EqlCondition(name: 'filter', condition: {
-        "range": {
-          "updatedStamp": {
-            "gte": startOfYesterdayStr,
-            "lte": endOfYesterdayStr,
-          }
-        }
-      });
-
       var qRes = await TwinnedSession.instance.twin.queryDeviceHistoryData(
         apikey: TwinnedSession.instance.authToken,
         body: EqlSearch(
@@ -164,5 +148,42 @@ class _ProgressBarWidgetState extends BaseState<ProgressBarWidget> {
   @override
   void setup() {
     load();
+  }
+}
+
+class LinearProgressBarWidgetBuilder extends TwinnedWidgetBuilder {
+  @override
+  Widget build(Map<String, dynamic> config) {
+    return LinearProgressBarWidget(
+      config: LinearProgressBarWidgetConfig.fromJson(config),
+    );
+  }
+
+  @override
+  PaletteCategory getPaletteCategory() {
+    return PaletteCategory.chartsAndGraphs;
+  }
+
+  @override
+  Widget getPaletteIcon() {
+    return const Icon(Icons.linear_scale);
+  }
+
+  @override
+  String getPaletteName() {
+    return "Linear Progress Bar Widget ";
+  }
+
+  @override
+  BaseConfig getDefaultConfig({Map<String, dynamic>? config}) {
+    if (config != null) {
+      return LinearProgressBarWidgetConfig.fromJson(config);
+    }
+    return LinearProgressBarWidgetConfig();
+  }
+
+  @override
+  String getPaletteTooltip() {
+    return 'Linear progress device field widget';
   }
 }
