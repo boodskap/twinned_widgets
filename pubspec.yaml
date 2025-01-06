@@ -19,7 +19,7 @@ dependencies:
 #      twin_commons
 
   country_pickers: ^3.0.1
-  data_table_2: ^2.5.10
+  data_table_2: ^2.5.18
   syncfusion_flutter_datagrid: ^27.1.48
   syncfusion_flutter_gauges: ^27.1.48
   syncfusion_flutter_sliders: ^27.1.48
